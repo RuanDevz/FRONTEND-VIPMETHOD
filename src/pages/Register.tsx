@@ -1,30 +1,45 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState } from "react";
+import axios from "axios";
 
 const Register = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // Estado para controlar o loading
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleRegister = async (e) => {
+  const handleRegister = async (e: any) => {
     e.preventDefault();
-    setIsLoading(true); 
+    setIsLoading(true);
 
     try {
-      
-      const response = await axios.post('http://localhost:3001/auth/register', {
+
+      const registerResponse = await axios.post("http://localhost:3001/auth/register", {
         name: name,
         email: email,
         password: password,
-        vip: false
+        vip: false,
       });
 
-      console.log('User registered successfully:', response.data);
+      console.log("User registered successfully:", registerResponse.data);
+
+      localStorage.setItem('name', registerResponse.data.name)
+      localStorage.setItem('email', registerResponse.data.email)
+
+
+      const loginResponse = await axios.post("http://localhost:3001/auth/login", {
+        email: email,
+        password: password,
+      });
+
+      const token = loginResponse.data.token;
+      localStorage.setItem("Token", token);  
+      console.log("Logged in successfully with token:", token);
+
+      window.location.href = "/";
     } catch (err) {
-      console.error('Error during registration:', err);
+      console.error("Error during registration or login:", err);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
@@ -42,7 +57,7 @@ const Register = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              disabled={isLoading} 
+              disabled={isLoading}
             />
           </div>
 
@@ -55,7 +70,7 @@ const Register = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={isLoading} 
+              disabled={isLoading}
             />
           </div>
 
@@ -68,24 +83,24 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              disabled={isLoading} 
+              disabled={isLoading}
             />
           </div>
 
           <button
             type="submit"
             className={`w-full bg-black text-white p-2 rounded mt-4 transition duration-300 ${
-              isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-800'
+              isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-800"
             }`}
-            disabled={isLoading} 
+            disabled={isLoading}
           >
-            {isLoading ? 'Registering...' : 'Register'} {/* Mostra o texto de loading */}
+            {isLoading ? "Registering..." : "Register"}
           </button>
         </form>
 
         <div className="text-center mt-4">
           <p>
-            Already have an account?{' '}
+            Already have an account?{" "}
             <a href="/login" className="text-blue-500 hover:underline">
               Login
             </a>
