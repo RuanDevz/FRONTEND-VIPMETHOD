@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Input from "../components/input";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,23 +17,22 @@ const Login = () => {
         email,
         password,
       });
-  
+
       const token = response.data.token;
-      const name = response.data.name;  
-  
+      const name = response.data.name;
+
       localStorage.setItem("Token", token);
-      localStorage.setItem("name", name);  
-  
+      localStorage.setItem("name", name);
+
       console.log("Logged in successfully with token:", token);
       console.log("User name:", name);
-  
-      window.location.href = '/';  
+
+      window.location.href = "/";
     } catch (err) {
       console.log(err);
       setErrorMessage("Invalid email or password. Please try again.");
     }
   };
-  
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -44,26 +45,24 @@ const Login = () => {
         )}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <label className="block text-gray-700">Email</label>
-            <input
+            <Input
+              id="email"
+              label="Email"
               type="email"
-              className="w-full p-2 border border-gray-300 rounded mt-1"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700">Password</label>
-            <input
+            <Input
+              id="password"
+              label="Password"
               type="password"
-              className="w-full p-2 border border-gray-300 rounded mt-1"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
             />
           </div>
 
@@ -77,10 +76,10 @@ const Login = () => {
 
         <div className="text-center mt-4">
           <p>
-            Don't have an account?{" "}
-            <a href="/register" className="text-blue-500 hover:underline">
-              Register
-            </a>
+            Don't have an account?
+            <Link className="text-blue-500 hover:underline" to="/register">
+               Register
+            </Link>
           </p>
         </div>
       </div>

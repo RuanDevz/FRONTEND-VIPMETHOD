@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Input from "../components/Input";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -7,32 +8,36 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleRegister = async (e: any) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-
-      const registerResponse = await axios.post("http://localhost:3001/auth/register", {
-        name: name,
-        email: email,
-        password: password,
-        vip: false,
-      });
+      const registerResponse = await axios.post(
+        "http://localhost:3001/auth/register",
+        {
+          name,
+          email,
+          password,
+          vip: false,
+        }
+      );
 
       console.log("User registered successfully:", registerResponse.data);
 
-      localStorage.setItem('name', registerResponse.data.name)
-      localStorage.setItem('email', registerResponse.data.email)
+      localStorage.setItem("name", registerResponse.data.name);
+      localStorage.setItem("email", registerResponse.data.email);
 
-
-      const loginResponse = await axios.post("http://localhost:3001/auth/login", {
-        email: email,
-        password: password,
-      });
+      const loginResponse = await axios.post(
+        "http://localhost:3001/auth/login",
+        {
+          email,
+          password,
+        }
+      );
 
       const token = loginResponse.data.token;
-      localStorage.setItem("Token", token);  
+      localStorage.setItem("Token", token);
       console.log("Logged in successfully with token:", token);
 
       window.location.href = "/";
@@ -49,10 +54,10 @@ const Register = () => {
         <h2 className="text-3xl font-bold text-center mb-8">Register</h2>
         <form onSubmit={handleRegister}>
           <div className="mb-4">
-            <label className="block text-gray-700">Name</label>
-            <input
+            <Input
+              id="name"
+              label="Name"
               type="text"
-              className="w-full p-2 border border-gray-300 rounded mt-1"
               placeholder="Enter your name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -62,10 +67,10 @@ const Register = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700">Email</label>
-            <input
+            <Input
+              id="email"
+              label="Email"
               type="email"
-              className="w-full p-2 border border-gray-300 rounded mt-1"
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -75,10 +80,10 @@ const Register = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700">Password</label>
-            <input
+            <Input
+              id="password"
+              label="Password"
               type="password"
-              className="w-full p-2 border border-gray-300 rounded mt-1"
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
