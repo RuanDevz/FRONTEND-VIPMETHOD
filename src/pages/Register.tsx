@@ -1,16 +1,45 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Input from "../components/Input";
+import Button from "../components/Button";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
+
+  const validateForm = () => {
+    const errors: { [key: string]: string } = {};
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (name.length < 3) {
+      errors.name = "Name must be at least 3 characters long.";
+    }
+
+    if (!emailPattern.test(email)) {
+      errors.email = "Invalid email address.";
+    }
+
+    if (password.length <= 6) {
+      errors.password = "Password must be more than 6 characters long.";
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(""); // Limpar qualquer erro anterior
+
+    if (!validateForm()) {
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const registerResponse = await axios.post(
@@ -42,7 +71,7 @@ const Register = () => {
 
       window.location.href = "/";
     } catch (err) {
-      console.error("Error during registration or login:", err);
+      setError("The email is already registered.");
     } finally {
       setIsLoading(false);
     }
@@ -64,6 +93,9 @@ const Register = () => {
               required
               disabled={isLoading}
             />
+            {formErrors.name && (
+              <div className="text-red-600 text-sm">{formErrors.name}</div>
+            )}
           </div>
 
           <div className="mb-4">
@@ -77,6 +109,9 @@ const Register = () => {
               required
               disabled={isLoading}
             />
+            {formErrors.email && (
+              <div className="text-red-600 text-sm">{formErrors.email}</div>
+            )}
           </div>
 
           <div className="mb-4">
@@ -90,9 +125,18 @@ const Register = () => {
               required
               disabled={isLoading}
             />
+            {formErrors.password && (
+              <div className="text-red-600 text-sm">{formErrors.password}</div>
+            )}
           </div>
 
-          <button
+          {error && (
+            <div className="mb-4 p-2 bg-red-100 text-red-700 border border-red-300 rounded">
+              {error}
+            </div>
+          )}
+
+          <Button
             type="submit"
             className={`w-full bg-black text-white p-2 rounded mt-4 transition duration-300 ${
               isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-800"
@@ -100,7 +144,7 @@ const Register = () => {
             disabled={isLoading}
           >
             {isLoading ? "Registering..." : "Register"}
-          </button>
+          </Button>
         </form>
 
         <div className="text-center mt-4">

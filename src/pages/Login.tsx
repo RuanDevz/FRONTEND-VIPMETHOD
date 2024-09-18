@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Input from "../components/input";
+import Input from "../components/Input";
 import { Link } from "react-router-dom";
+import Button from "../components/Button";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -66,12 +67,12 @@ const Login = () => {
             />
           </div>
 
-          <button
+          <Button
             type="submit"
             className="w-full bg-black text-white p-2 rounded mt-4 hover:bg-gray-800 transition duration-300"
           >
             Login
-          </button>
+          </Button>
         </form>
 
         <div className="text-center mt-4">
