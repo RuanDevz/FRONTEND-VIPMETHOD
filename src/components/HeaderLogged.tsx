@@ -22,7 +22,7 @@ const HeaderLogged = () => {
     const checkVipStatus = async () => {
       if (email) {
         try {
-          const response = await axios.get(`http://localhost:3001/auth/is-vip/${email}`); 
+          const response = await axios.get(`https://backend-vip.vercel.app/auth/is-vip/${email}`); 
           setIsVip(response.data.isVip);
         } catch (error) {
           console.error("Erro ao verificar status VIP:", error);
