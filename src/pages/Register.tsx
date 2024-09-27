@@ -23,10 +23,6 @@ const Register = () => {
       errors.email = "Invalid email address.";
     }
 
-    if (password.length <= 6) {
-      errors.password = "Password must be more than 6 characters long.";
-    }
-
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -43,7 +39,7 @@ const Register = () => {
 
     try {
       const registerResponse = await axios.post(
-        "https://backend-vip.vercel.app/auth/register",
+        "http://localhost:3001/auth/register",
         {
           name,
           email,
@@ -58,7 +54,7 @@ const Register = () => {
       localStorage.setItem("email", registerResponse.data.email);
 
       const loginResponse = await axios.post(
-        "https://backend-vip.vercel.app/auth/login",
+        "http://localhost:3001/auth/login",
         {
           email,
           password,

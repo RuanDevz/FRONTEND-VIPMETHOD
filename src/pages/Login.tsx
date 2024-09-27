@@ -14,20 +14,19 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post("https://backend-vip.vercel.app/auth/login", {
+      const response = await axios.post("http://localhost:3001/auth/login", {
         email,
         password,
       });
 
-      const token = response.data.token;
-      const name = response.data.name;
+      console.log(response.data.token);
 
-      localStorage.setItem("Token", token);
-      localStorage.setItem("name", name);
+      // Armazenando o token corretamente
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("name", response.data.name);
+      localStorage.setItem("email", email);
 
-      console.log("Logged in successfully with token:", token);
-      console.log("User name:", name);
-
+      // Navegar para a página inicial
       window.location.href = "/";
     } catch (err) {
       console.log(err);
@@ -79,7 +78,7 @@ const Login = () => {
           <p>
             Don't have an account?
             <Link className="text-blue-500 hover:underline" to="/register">
-               Register
+              Register
             </Link>
           </p>
         </div>

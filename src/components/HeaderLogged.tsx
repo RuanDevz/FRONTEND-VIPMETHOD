@@ -6,6 +6,7 @@ import axios from "axios"; // Biblioteca para fazer requisições HTTP
 const HeaderLogged = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVip, setIsVip] = useState(false);
+  const token = localStorage.getItem("token"); // Altere para "Token" (com T maiúsculo)
   const name = localStorage.getItem("name");
   const email = localStorage.getItem("email");
 
@@ -14,15 +15,17 @@ const HeaderLogged = () => {
   };
 
   const Logout = () => {
-    localStorage.removeItem("Token");
+    localStorage.removeItem("token"); // Mantenha a consistência com o nome
+    localStorage.removeItem("name");
+    localStorage.removeItem("email"); // Remova também o email se necessário
     window.location.reload();
   };
 
   useEffect(() => {
     const checkVipStatus = async () => {
-      if (email) {
+      if (token && email) { // Verifique se o token e o email estão presentes
         try {
-          const response = await axios.get(`https://backend-vip.vercel.app/auth/is-vip/${email}`); 
+          const response = await axios.get(`http://localhost:3001/auth/is-vip/${email}`);
           setIsVip(response.data.isVip);
         } catch (error) {
           console.error("Erro ao verificar status VIP:", error);
@@ -31,7 +34,7 @@ const HeaderLogged = () => {
     };
 
     checkVipStatus();
-  }, [email]);
+  }, [token]); // Adicione o token à lista de dependências
 
   return (
     <header className="bg-black text-white p-4">

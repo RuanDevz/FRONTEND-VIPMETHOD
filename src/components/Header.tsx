@@ -10,12 +10,12 @@ const Header = () => {
         </Link>
 
         <nav className="space-x-6 hidden md:flex">
-          <a href="/login" className="hover:text-gray-400">
+          <Link to="/login" className="hover:text-gray-400">
             Login
-          </a>
-          <a href="/register" className="hover:text-gray-400">
+          </Link>
+          <Link to="/register" className="hover:text-gray-400">
             Register
-          </a>
+          </Link>
         </nav>
 
         <div className="md:hidden">

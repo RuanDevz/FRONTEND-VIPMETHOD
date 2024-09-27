@@ -1,6 +1,79 @@
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 
 const Homepage = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isVip, setIsVip] = useState(false); 
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const email = localStorage.getItem('email')
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "http://localhost:3001/auth/dashboard",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          setIsAuthenticated(true);
+        } else {
+          localStorage.removeItem("Token");
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Erro ao verificar autenticação:", error);
+        localStorage.removeItem("token");
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const checkVipStatus = async () => {
+      if (token) {
+        try {
+          const response = await fetch(`http://localhost:3001/auth/is-vip/${email}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          const data = await response.json();
+          setIsVip(data.isVip);
+        } catch (error) {
+          console.error("Erro ao verificar status VIP:", error);
+        }
+      }
+    };
+
+    checkAuth();
+    checkVipStatus(); // Verifica se o usuário é VIP
+  }, [token]);
+
+  const handleAccessClick = () => {
+    if (isVip) {
+      navigate("/vip-content");
+    } else {
+      navigate("/purchase-vip"); // Redireciona para a página de compra de VIP
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <main className="min-h-screen bg-gray-100 text-black p-8 flex items-center justify-center">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl relative">
@@ -12,25 +85,31 @@ const Homepage = () => {
             <li>Free access to content from the last 90 days.</li>
             <li>Content displayed with ads.</li>
           </ul>
-          <Button onClick={() => (window.location.href = "/free-content")}>
-            Access Free Content
-          </Button>
+          <Link to="/free-content">
+            <Button>Access Free Content</Button>
+          </Link>
         </div>
 
         <div className="relative">
           <div className="bg-white p-10 shadow-lg rounded-lg text-center flex flex-col justify-between">
             <h2 className="text-lg font-semibold">VIP ALL CONTENT ACCESS</h2>
             <p className="text-gray-500">(3 YEARS OF CONTENT)</p>
-            <p className="text-4xl font-bold text-black mt-2">USD 5.00 / month</p>
+            <p className="text-4xl font-bold text-black mt-2">
+              USD 5.00 / month
+            </p>
             <ul className="text-left list-disc list-inside mt-4 flex flex-col gap-2">
               <li>Access to 3 years of content with no ads.</li>
               <li>Access to all content before it's posted for free users.</li>
               <li>VIP badge on our Discord community.</li>
-              <li>Early access to exclusive content and special newsletters.</li>
+              <li>
+                Early access to exclusive content and special newsletters.
+              </li>
               <li>Priority support for viewing and accessing all content.</li>
-              <li>Exclusive Q&A sessions, webinars, and personalized content.</li>
+              <li>
+                Exclusive Q&A sessions, webinars, and personalized content.
+              </li>
             </ul>
-            <Button onClick={() => (window.location.href = "/vip-access")}>
+            <Button onClick={handleAccessClick}>
               Get VIP Access
             </Button>
           </div>
@@ -44,7 +123,7 @@ const Homepage = () => {
             <li>Access to all previous content.</li>
             <li>Content displayed with ads.</li>
           </ul>
-          <Button onClick={() => (window.location.href = "/previous-content")}>
+          <Button onClick={() => handleAccessClick("/previous-content")}>
             Access Previous Content
           </Button>
         </div>
