@@ -30,7 +30,7 @@ const Register = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError(""); // Limpar qualquer erro anterior
+    setError(""); // Clear any previous errors
 
     if (!validateForm()) {
       setIsLoading(false);
@@ -134,9 +134,6 @@ const Register = () => {
 
           <Button
             type="submit"
-            className={`w-full bg-black text-white p-2 rounded mt-4 transition duration-300 ${
-              isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-800"
-            }`}
             disabled={isLoading}
           >
             {isLoading ? "Registering..." : "Register"}

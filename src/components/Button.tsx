@@ -1,16 +1,10 @@
-import React, { ComponentPropsWithRef } from 'react';
+import React, { ComponentPropsWithRef } from "react";
+import './button.css'
 
-type ButtonProps = ComponentPropsWithRef<'button'>;
+type ButtonProps = ComponentPropsWithRef<"button">;
 
 const Button: React.FC<ButtonProps> = ({ children, ...props }) => {
-  return (
-    <button
-      {...props}
-      className="w-full bg-black text-white p-2 rounded mt-4 hover:bg-gray-800 transition duration-300"
-    >
-      {children}
-    </button>
-  );
+  return <button className="p-3 w-full" {...props}>{children}</button>;
 };
 
 export default Button;

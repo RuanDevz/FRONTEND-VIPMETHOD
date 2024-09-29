@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+
 interface Content {
   id: number;
-  name: string; 
-  link: string; 
-  author: string; 
+  name: string;
+  link: string;
+  author: string;
 }
 
-const FreeContent: React.FC = () => {
+const VIPContent: React.FC = () => {
   const [content, setContent] = useState<Content[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -16,9 +17,9 @@ const FreeContent: React.FC = () => {
   const itemsPerPage = 9;
 
   useEffect(() => {
-    const fetchFreeContent = async () => {
+    const fetchVIPContent = async () => {
       try {
-        const response = await axios.get<Content[]>("http://localhost:3001/freecontent");
+        const response = await axios.get<Content[]>("http://localhost:3001/vipcontent");
         setContent(response.data.sort((a, b) => b.id - a.id));
       } catch (err: any) {
         setError(err.message);
@@ -27,7 +28,7 @@ const FreeContent: React.FC = () => {
       }
     };
 
-    fetchFreeContent();
+    fetchVIPContent();
   }, []);
 
   const filteredContent = content.filter(item =>
@@ -50,7 +51,7 @@ const FreeContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 text-black p-8">
-      <h1 className="text-2xl font-bold mb-6">Free Content</h1>
+      <h1 className="text-2xl font-bold mb-6">VIP Content</h1>
       
       <input
         type="text"
@@ -72,12 +73,12 @@ const FreeContent: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Access Content
+                Access VIP Content
               </a>
             </div>
           ))
         ) : (
-          <p>No free content available at this time.</p>
+          <p>No VIP content available at this time.</p>
         )}
       </div>
 
@@ -101,4 +102,4 @@ const FreeContent: React.FC = () => {
   );
 };
 
-export default FreeContent;
+export default VIPContent;
