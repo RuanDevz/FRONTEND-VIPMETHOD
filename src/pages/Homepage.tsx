@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { Link } from "react-router-dom";
 
-const Homepage = () => {
+const Homepage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isVip, setIsVip] = useState(false);
@@ -58,33 +58,30 @@ const Homepage = () => {
     checkAuthAndVipStatus();
   }, [token]);
 
-  const handleAccessClick = async () => {
-    if (isVip) {
-      navigate("/vip-content");
-    } else if (!token) {
+  const handleAccessClick = async (planType: 'monthly' | 'annual') => {
+    if (!token) {
       navigate("/login");
-    } else {
-      try {
-        const response = await fetch("http://localhost:3001/pay/vip-payment", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        });
+      return;
+    }
 
-        if (!response.ok) {
-          throw new Error("Error creating payment session");
-        }
+    try {
+      const response = await fetch("http://localhost:3001/pay/vip-payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, planType }),
+      });
 
-        const { url } = await response.json();
-        window.location.href = url;
-      } catch (error) {
-        console.error("Error creating payment session:", error);
-        alert(
-          "An error occurred while processing your request. Please try again."
-        );
+      if (!response.ok) {
+        throw new Error("Error creating payment session");
       }
+
+      const { url } = await response.json();
+      window.location.href = url;
+    } catch (error) {
+      console.error("Error creating payment session:", error);
+      alert("An error occurred while processing your request. Please try again.");
     }
   };
 
@@ -124,7 +121,7 @@ const Homepage = () => {
             <li>Priority support for viewing and accessing all content.</li>
             <li>Exclusive Q&A sessions, webinars, and personalized content.</li>
           </ul>
-          <Button className="mt-4 p-3" onClick={handleAccessClick}>
+          <Button className="mt-4 p-3" onClick={() => handleAccessClick('monthly')}>
             Get VIP Access
           </Button>
         </div>
@@ -141,7 +138,7 @@ const Homepage = () => {
             <li>Exclusive Q&A sessions, webinars, and personalized content.</li>
             <li>50% discount on future content.</li>
           </ul>
-          <Button className="mt-4 p-3" onClick={handleAccessClick}>
+          <Button className="mt-4 p-3" onClick={() => handleAccessClick('annual')}>
             Get Annual Plan
           </Button>
         </div>

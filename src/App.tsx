@@ -13,6 +13,8 @@ import YourAccount from "./pages/Youraccount";
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
 import VIPContent from "./pages/VIPContent";
+import ForgotPassword from "./pages/Forgotpassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const App = () => {
   const token = localStorage.getItem("token");
@@ -31,6 +33,9 @@ const App = () => {
           <Route path="/account" element={<YourAccount />} />
           <Route path="/success" element={<Success/>}/>
           <Route path="/cancel" element={<Cancel/>}/>
+          <Route path="/forgot-password" element={<ForgotPassword/>}/>
+          <Route path="/reset-password" element={<ResetPassword />} />
+
         </Routes>
       </div>
       <Footer />

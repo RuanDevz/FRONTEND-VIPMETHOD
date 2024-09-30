@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Input from "../components/Input";
-import { Link } from "react-router-dom";
 import Button from "../components/Button";
 
 const Login = () => {
@@ -19,14 +18,10 @@ const Login = () => {
         password,
       });
 
-      console.log(response.data.token);
-
-      // Armazenando o token corretamente
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("name", response.data.name);
       localStorage.setItem("email", email);
 
-      // Navegar para a página inicial
       window.location.href = "/";
     } catch (err) {
       console.log(err);
@@ -66,17 +61,19 @@ const Login = () => {
             />
           </div>
 
-          <Button className="w-full py-2"
-            type="submit"
-           
-          >
+          <Button className="w-full py-2" type="submit">
             Login
           </Button>
         </form>
 
         <div className="text-center mt-4">
           <p>
-            Don't have an account?
+            <Link to="/forgot-password" className="text-blue-500 hover:underline">
+              Forgot your password?
+            </Link>
+          </p>
+          <p>
+            Don't have an account?{" "}
             <Link className="text-blue-500 hover:underline" to="/register">
               Register
             </Link>

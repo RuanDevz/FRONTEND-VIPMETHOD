@@ -37,7 +37,7 @@ const YourAccount = () => {
     fetchUserData();
   }, [token]);
 
-  const calculateDaysLeft = (expirationDate) => {
+  const calculateDaysLeft = (expirationDate: any) => {
     const currentDate = new Date();
     const expDate = new Date(expirationDate);
     const timeDiff = expDate - currentDate;
