@@ -1,29 +1,31 @@
-import { LogOut, Star, User2Icon } from "lucide-react";
+import { Crown, LogOut, Star, User2Icon } from "lucide-react";
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios"; // Biblioteca para fazer requisições HTTP
+import ButtonVIP from "./ButtonVIP";
 
-const HeaderLogged = () => {
+const HeaderLogged: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVip, setIsVip] = useState(false);
-  const token = localStorage.getItem("token"); // Altere para "Token" (com T maiúsculo)
+  const token = localStorage.getItem("token");
   const name = localStorage.getItem("name");
   const email = localStorage.getItem("email");
+  const navigate = useNavigate();
 
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const Logout = () => {
-    localStorage.removeItem("token"); // Mantenha a consistência com o nome
+    localStorage.removeItem("token");
     localStorage.removeItem("name");
-    localStorage.removeItem("email"); // Remova também o email se necessário
+    localStorage.removeItem("email");
     window.location.reload();
   };
 
   useEffect(() => {
     const checkVipStatus = async () => {
-      if (token && email) { // Verifique se o token e o email estão presentes
+      if (token && email) {
         try {
           const response = await axios.get(`http://localhost:3001/auth/is-vip/${email}`);
           setIsVip(response.data.isVip);
@@ -34,15 +36,14 @@ const HeaderLogged = () => {
     };
 
     checkVipStatus();
-  }, [token]); // Adicione o token à lista de dependências
+  }, [token]);
 
   return (
-    <header className="bg-black text-white p-4">
+    <header className="bg-black text-white p-4 z-50">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/">
           <div className="text-2xl font-bold">VIP METHOD</div>
         </Link>
-
         <nav className="relative">
           <div
             className="flex gap-2 items-center cursor-pointer"
@@ -64,6 +65,17 @@ const HeaderLogged = () => {
                     Your Account
                   </Link>
                 </li>
+                {isVip && ( // Adicionando a opção para acessar a área VIP
+                  <li>
+                    <Link
+                      to="/vip-content"
+                      className="px-4 py-2 hover:bg-gray-200 flex gap-2"
+                    >
+                      <Crown />
+                      Access VIP
+                    </Link>
+                  </li>
+                )}
                 <li className="px-4 py-2 flex gap-2">
                   <Star />
                   Status: {isVip ? "VIP" : "Regular"}

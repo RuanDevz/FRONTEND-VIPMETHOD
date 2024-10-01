@@ -1,5 +1,5 @@
 /* From Uiverse.io by alexroumi */ 
-button {
+button#b {
  padding: 15px 25px;
  border: unset;
  border-radius: 15px;
@@ -15,7 +15,7 @@ button {
  overflow: hidden;
 }
 
-button::before {
+button#b::before {
  content: "";
  position: absolute;
  top: 0;
@@ -30,10 +30,10 @@ button::before {
  transition: all 250ms
 }
 
-button:hover {
+button#b:hover {
  color: #e8e8e8;
 }
 
-button:hover::before {
+button#b:hover::before {
  width: 100%;
 }
