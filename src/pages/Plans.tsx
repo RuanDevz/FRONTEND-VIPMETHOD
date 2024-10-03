@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import { Link } from "react-router-dom";
 
-const Homepage: React.FC = () => {
+const Plans: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isVip, setIsVip] = useState(false);
@@ -160,4 +160,4 @@ const Homepage: React.FC = () => {
   );
 };
 
-export default Homepage;
+export default Plans;

@@ -1,8 +1,7 @@
 import { Crown, LogOut, Star, User2Icon } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios"; // Biblioteca para fazer requisições HTTP
-import ButtonVIP from "./ButtonVIP";
+import axios from "axios";
 
 const HeaderLogged: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,13 +35,18 @@ const HeaderLogged: React.FC = () => {
     };
 
     checkVipStatus();
-  }, [token]);
+  }, [token, email]);
 
   return (
     <header className="bg-black text-white p-4 z-50">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/">
           <div className="text-2xl font-bold">VIP METHOD</div>
+        </Link>
+        <Link to='/plans'>
+          <button className="py-3 px-6 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-black font-bold rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+            Buy VIP Access
+          </button>
         </Link>
         <nav className="relative">
           <div
@@ -65,10 +69,10 @@ const HeaderLogged: React.FC = () => {
                     Your Account
                   </Link>
                 </li>
-                {isVip && ( // Adicionando a opção para acessar a área VIP
+                {isVip && (
                   <li>
                     <Link
-                      to="/vip-content"
+                      to="/VIP"
                       className="px-4 py-2 hover:bg-gray-200 flex gap-2"
                     >
                       <Crown />

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Link } from "react-router-dom";
+
 type LinkItem = {
   id: number;
   name: string;
@@ -27,14 +27,14 @@ const months = [
   { value: "12", label: "December" },
 ];
 
-const VIPContentPage: React.FC = () => {
+const VIPcontent: React.FC = () => {
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [filteredLinks, setFilteredLinks] = useState<LinkItem[]>([]);
   const [searchName, setSearchName] = useState<string>("");
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("mostRecent");
   const [isVip, setIsVip] = useState<boolean>(false);
-
+  
   const token = localStorage.getItem("token");
   const email = localStorage.getItem("email");
   const navigate = useNavigate();
@@ -105,7 +105,6 @@ const VIPContentPage: React.FC = () => {
       });
     }
 
-    // Sorting Logic
     switch (sortOption) {
       case "mostRecent":
         filtered.sort(
@@ -129,9 +128,20 @@ const VIPContentPage: React.FC = () => {
     setFilteredLinks(filtered);
   }, [searchName, selectedMonth, sortOption, links]);
 
+  const recentLinks = filteredLinks.slice(0, 5);
+
   if (!isVip) {
     return <p>Loading...</p>;
   }
+
+  const groupedLinks: { [key: string]: LinkItem[] } = {};
+  filteredLinks.forEach((link) => {
+    const date = new Date(link.createdAt).toLocaleDateString("pt-BR");
+    if (!groupedLinks[date]) {
+      groupedLinks[date] = [];
+    }
+    groupedLinks[date].push(link);
+  });
 
   return (
     <div className="vip-content-page p-6 bg-gray-100 min-h-screen">
@@ -169,30 +179,31 @@ const VIPContentPage: React.FC = () => {
         </select>
       </div>
 
-      <div className="link-boxes grid grid-cols-6 gap-4">
-        {filteredLinks.length > 0 ? (
-          filteredLinks.map((link) => (
-            <div
-              key={link.id}
-              className="link-box bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-            >
-              <h3 className="text-lg font-semibold text-gray-800 mb-1">
-                {link.name}
-              </h3>
-              <p className="text-gray-600 text-sm">Author: {link.author}</p>
-              <Link
-                to={link.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className=" text-gray-600 text-sm"
-              >
-                Link:{" "}
-                <a className="text-blue-600 hover:underline">{link.link}</a>
-              </Link>
-              <p className="text-gray-500 text-xs">
-                Posted on:{" "}
-                {new Date(link.createdAt).toLocaleDateString("en-US")}
-              </p>
+      <div className="link-boxes flex flex-col max-w-screen-lg mx-auto">
+        {Object.keys(groupedLinks).length > 0 ? (
+          Object.keys(groupedLinks).map((date) => (
+            <div key={date} className="mb-4">
+              <p className="text-gray-600 font-bold text-lg mb-2">{date}</p>
+              {groupedLinks[date].map((link) => (
+                <div
+                  key={link.id}
+                  className="link-box p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                >
+                  <a
+                    href={link.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline text-lg font-semibold flex items-center"
+                  >
+                    {link.name}
+                    {recentLinks.includes(link) && (
+                      <span className="ml-2 text-red-500 animate-pulse font-bold">
+                        NEW
+                      </span>
+                    )}
+                  </a>
+                </div>
+              ))}
             </div>
           ))
         ) : (
@@ -205,4 +216,4 @@ const VIPContentPage: React.FC = () => {
   );
 };
 
-export default VIPContentPage;
+export default VIPcontent;
