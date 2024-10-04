@@ -37,7 +37,6 @@ const FreeContent: React.FC = () => {
   useEffect(() => {
     const fetchLinks = async () => {
       try {
-        // Busca os links de conteúdo livre sem necessidade de token
         const response = await axios.get<LinkItem[]>(
           "http://localhost:3001/freecontent"
         );
@@ -141,7 +140,7 @@ const FreeContent: React.FC = () => {
         {Object.keys(groupedLinks).length > 0 ? (
           Object.keys(groupedLinks).map((date) => (
             <div key={date} className="mb-4">
-              <p className="text-gray-600 font-bold text-lg mb-2">{date}</p>
+              <p className="text-gray-600 font-bold text-base mb-2">{date}</p>
               {groupedLinks[date].map((link) => (
                 <div
                   key={link.id}

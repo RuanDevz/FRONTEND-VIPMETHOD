@@ -1,4 +1,4 @@
-import { Crown, LogOut, Star, User2Icon } from "lucide-react";
+import { Crown, LogOut, Star, User2Icon, Settings } from "lucide-react"; // Adiciona o ícone de Settings
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -6,6 +6,7 @@ import axios from "axios";
 const HeaderLogged: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVip, setIsVip] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false); // Novo estado para admin
   const token = localStorage.getItem("token");
   const name = localStorage.getItem("name");
   const email = localStorage.getItem("email");
@@ -23,18 +24,23 @@ const HeaderLogged: React.FC = () => {
   };
 
   useEffect(() => {
-    const checkVipStatus = async () => {
+    const checkUserStatus = async () => {
       if (token && email) {
         try {
-          const response = await axios.get(`http://localhost:3001/auth/is-vip/${email}`);
-          setIsVip(response.data.isVip);
+          // Verifica se o usuário é VIP
+          const vipResponse = await axios.get(`http://localhost:3001/auth/is-vip/${email}`);
+          setIsVip(vipResponse.data.isVip);
+
+          // Verifica se o usuário é admin
+          const adminResponse = await axios.get(`http://localhost:3001/auth/is-admin/${email}`);
+          setIsAdmin(adminResponse.data.isAdmin);
         } catch (error) {
-          console.error("Erro ao verificar status VIP:", error);
+          console.error("Erro ao verificar status do usuário:", error);
         }
       }
     };
 
-    checkVipStatus();
+    checkUserStatus();
   }, [token, email]);
 
   return (
@@ -77,6 +83,17 @@ const HeaderLogged: React.FC = () => {
                     >
                       <Crown />
                       Access VIP
+                    </Link>
+                  </li>
+                )}
+                {isAdmin && ( // Verifica se o usuário é admin
+                  <li>
+                    <Link
+                      to="/admin"
+                      className="px-4 py-2 hover:bg-gray-200 flex gap-2"
+                    >
+                      <Settings />
+                      Admin Panel
                     </Link>
                   </li>
                 )}

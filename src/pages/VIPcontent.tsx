@@ -183,7 +183,7 @@ const VIPcontent: React.FC = () => {
         {Object.keys(groupedLinks).length > 0 ? (
           Object.keys(groupedLinks).map((date) => (
             <div key={date} className="mb-4">
-              <p className="text-gray-600 font-bold text-lg mb-2">{date}</p>
+              <p className="text-gray-600 font-bold text-base mb-2">{date}</p>
               {groupedLinks[date].map((link) => (
                 <div
                   key={link.id}
@@ -193,7 +193,7 @@ const VIPcontent: React.FC = () => {
                     href={link.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline text-lg font-semibold flex items-center"
+                    className="text-blue-600 hover:underline text-base font-semibold flex items-center"
                   >
                     {link.name}
                     {recentLinks.includes(link) && (

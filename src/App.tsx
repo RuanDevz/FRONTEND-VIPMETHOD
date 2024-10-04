@@ -18,6 +18,7 @@ import Home from "./pages/FreeContent";
 import Plans from "./pages/Plans";
 import VIPcontent from "./pages/VIPcontent";
 import FreeContent from "./pages/FreeContent";
+import AdminPainel from "./pages/AdminPainel";
 
 const App = () => {
   const token = localStorage.getItem("token");
@@ -29,10 +30,10 @@ const App = () => {
         <Routes>
           <Route path="/" element={<FreeContent />} />
           <Route path="/vip" element={<VIPcontent/>}/>
+          <Route path="/admin" element={<AdminPainel/>}/>
           <Route path="/plans" element={<Plans />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/previous-content" element={<PreviousContent />} />
           <Route path="/account" element={<YourAccount />} />
           <Route path="/success" element={<Success />} />
           <Route path="/cancel" element={<Cancel />} />
