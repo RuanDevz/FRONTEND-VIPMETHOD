@@ -23,6 +23,10 @@ const Register = () => {
       errors.email = "Invalid email address.";
     }
 
+    if (password.length < 6) {
+      errors.password = "Password must be at least 6 characters long.";
+    }
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -67,7 +71,11 @@ const Register = () => {
 
       window.location.href = "/";
     } catch (err) {
-      setError("The email is already registered.");
+      if (err.response && err.response.status === 409) {
+        setError("The email is already registered.");
+      } else {
+        setError("An error occurred. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }

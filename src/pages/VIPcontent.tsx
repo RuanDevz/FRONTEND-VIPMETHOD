@@ -35,7 +35,7 @@ const VIPcontent: React.FC = () => {
   const [sortOption, setSortOption] = useState<string>("mostRecent");
   const [isVip, setIsVip] = useState<boolean>(false);
   
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("Token");
   const email = localStorage.getItem("email");
   const navigate = useNavigate();
 

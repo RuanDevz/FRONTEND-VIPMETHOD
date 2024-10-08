@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import FilterControls from "../components/FreeContent/FilterControls";
+import LinkGroup from "../components/FreeContent/LinkGroup";
 
 type LinkItem = {
   id: number;
@@ -9,30 +10,12 @@ type LinkItem = {
   createdAt: string;
 };
 
-const months = [
-  { value: "", label: "All Months" },
-  { value: "01", label: "January" },
-  { value: "02", label: "February" },
-  { value: "03", label: "March" },
-  { value: "04", label: "April" },
-  { value: "05", label: "May" },
-  { value: "06", label: "June" },
-  { value: "07", label: "July" },
-  { value: "08", label: "August" },
-  { value: "09", label: "September" },
-  { value: "10", label: "October" },
-  { value: "11", label: "November" },
-  { value: "12", label: "December" },
-];
-
 const FreeContent: React.FC = () => {
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [filteredLinks, setFilteredLinks] = useState<LinkItem[]>([]);
   const [searchName, setSearchName] = useState<string>("");
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("mostRecent");
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLinks = async () => {
@@ -79,9 +62,6 @@ const FreeContent: React.FC = () => {
             new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
         );
         break;
-      case "mostViewed":
-        filtered.sort((a, b) => b.views - a.views);
-        break;
       default:
         break;
     }
@@ -106,62 +86,24 @@ const FreeContent: React.FC = () => {
         Free Content
       </h1>
 
-      <div className="filters flex justify-center space-x-4 mb-6">
-        <input
-          type="text"
-          placeholder="Filter by name"
-          value={searchName}
-          onChange={(e) => setSearchName(e.target.value)}
-          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
-        />
-        <select
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
-        >
-          {months.map((month) => (
-            <option key={month.value} value={month.value}>
-              {month.label}
-            </option>
-          ))}
-        </select>
-        <select
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
-        >
-          <option value="mostRecent">Most Recent</option>
-          <option value="oldest">Oldest</option>
-          <option value="mostViewed">Most Viewed</option>
-        </select>
-      </div>
+      <FilterControls
+        searchName={searchName}
+        selectedMonth={selectedMonth}
+        sortOption={sortOption}
+        setSearchName={setSearchName}
+        setSelectedMonth={setSelectedMonth}
+        setSortOption={setSortOption}
+      />
 
       <div className="link-boxes flex flex-col max-w-screen-lg mx-auto">
         {Object.keys(groupedLinks).length > 0 ? (
           Object.keys(groupedLinks).map((date) => (
-            <div key={date} className="mb-4">
-              <p className="text-gray-600 font-bold text-base mb-2">{date}</p>
-              {groupedLinks[date].map((link) => (
-                <div
-                  key={link.id}
-                  className="link-box p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-                >
-                  <a
-                    href={link.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline text-lg font-semibold flex items-center"
-                  >
-                    {link.name}
-                    {recentLinks.includes(link) && (
-                      <span className="ml-2 text-red-500 animate-pulse font-bold">
-                        NEW
-                      </span>
-                    )}
-                  </a>
-                </div>
-              ))}
-            </div>
+            <LinkGroup
+              key={date}
+              date={date}
+              links={groupedLinks[date]}
+              recentLinks={recentLinks}
+            />
           ))
         ) : (
           <p className="col-span-full text-center text-gray-600">

@@ -1,26 +1,21 @@
 import React, { useEffect, useState } from "react";
+import UserDetails from "../components/YourAccount/UserDetails";
+import VIPBenefits from "../components/YourAccount/VIPBenefits";
+import Loading from "../components/Loading";
+import ErrorMessage from "../components/ErrorMessage";
+import { Userdatatypes } from "../../types/Userdatatypes";
 
-type Userdatatypes = {
-  name: string,
-  email: string
-  isVip: boolean,
-  vipExpirationDate: number
-}
-
-const YourAccount = () => {
-  const [userData, setUserData] = useState<Userdatatypes>();
+const YourAccount: React.FC = () => {
+  const [userData, setUserData] = useState<Userdatatypes | undefined>();
   const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("Token");
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await fetch("http://localhost:3001/auth/dashboard", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
-
         if (response.ok) {
           const data = await response.json();
           setUserData(data);
@@ -33,51 +28,30 @@ const YourAccount = () => {
         setLoading(false);
       }
     };
-
     fetchUserData();
   }, [token]);
 
-  const calculateDaysLeft = (expirationDate: any) => {
+  const calculateDaysLeft = (expirationDate: number) => {
     const currentDate = new Date();
     const expDate = new Date(expirationDate);
-    const timeDiff = expDate - currentDate;
+    const timeDiff = expDate.getTime() - currentDate.getTime();
     const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
     return daysLeft > 0 ? daysLeft : 0;
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <Loading />;
 
-  if (!userData) {
-    return <div>User not found.</div>;
-  }
+  if (!userData) return <ErrorMessage />;
 
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">Your Account</h1>
-      <div className="mb-4">
-        <p><strong>Name:</strong> {userData.name}</p>
-        <p><strong>Email:</strong> {userData.email}</p>
-        <p><strong>VIP Status:</strong> {userData.isVip ? "Yes" : "No"}</p>
-      </div>
-
+      <UserDetails userData={userData} />
       {userData.isVip && (
-        <div>
-          <h2 className="text-lg font-semibold">Benefits:</h2>
-          <ul className="list-disc list-inside">
-            <li>Access to 3 years of content with no ads.</li>
-            <li>Access to all content before it's posted for free users.</li>
-            <li>VIP badge on our Discord community.</li>
-            <li>Early access to exclusive content and special newsletters.</li>
-            <li>Priority support for viewing and accessing all content.</li>
-            <li>Exclusive Q&A sessions, webinars, and personalized content.</li>
-          </ul>
-          <p className="mt-4">
-            <strong>Days until VIP expiration:</strong>{" "}
-            {calculateDaysLeft(userData.vipExpirationDate)} days
-          </p>
-        </div>
+        <VIPBenefits
+          vipExpirationDate={userData.vipExpirationDate}
+          calculateDaysLeft={calculateDaysLeft}
+        />
       )}
     </div>
   );

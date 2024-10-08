@@ -18,7 +18,7 @@ const Login = () => {
         password,
       });
 
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("Token", response.data.token);
       localStorage.setItem("name", response.data.name);
       localStorage.setItem("email", email);
 
@@ -68,7 +68,10 @@ const Login = () => {
 
         <div className="text-center mt-4">
           <p>
-            <Link to="/forgot-password" className="text-blue-500 hover:underline">
+            <Link
+              to="/forgot-password"
+              className="text-blue-500 hover:underline"
+            >
               Forgot your password?
             </Link>
           </p>
