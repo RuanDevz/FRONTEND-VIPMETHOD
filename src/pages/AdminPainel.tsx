@@ -17,7 +17,7 @@ const AdminPainel: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"free" | "vip">("free");
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [newLink, setNewLink] = useState({ name: "", link: "" });
-  const [searchTerm, setSearchTerm] = useState<string>(""); // Search term
+  const [searchTerm, setSearchTerm] = useState<string>(""); 
   const [isEditing, setIsEditing] = useState<number | null>(null);
 
   useEffect(() => {

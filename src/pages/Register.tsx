@@ -70,7 +70,7 @@ const Register = () => {
       console.log("Logged in successfully with token:", token);
 
       window.location.href = "/";
-    } catch (err) {
+    } catch (err: any) {
       if (err.response && err.response.status === 409) {
         setError("The email is already registered.");
       } else {
