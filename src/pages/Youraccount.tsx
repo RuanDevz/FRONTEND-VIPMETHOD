@@ -13,7 +13,7 @@ const YourAccount: React.FC = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("http://localhost:3001/auth/dashboard", {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/dashboard`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (response.ok) {

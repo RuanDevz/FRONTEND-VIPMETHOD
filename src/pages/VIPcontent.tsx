@@ -44,7 +44,7 @@ const VIPcontent: React.FC = () => {
       if (token && email) {
         try {
           const response = await axios.get(
-            `http://localhost:3001/auth/is-vip/${email}`,
+            `${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -70,7 +70,7 @@ const VIPcontent: React.FC = () => {
     const fetchLinks = async () => {
       try {
         const response = await axios.get<LinkItem[]>(
-          "http://localhost:3001/vipcontent",
+          `${import.meta.env.VITE_BACKEND_URL}/vipcontent`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

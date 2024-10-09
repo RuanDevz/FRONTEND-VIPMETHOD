@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import FilterControls from "../components/FreeContent/FilterControls";
 import LinkGroup from "../components/FreeContent/LinkGroup";
+import { Import } from "lucide-react";
 
 type LinkItem = {
   id: number;
@@ -21,7 +22,7 @@ const FreeContent: React.FC = () => {
     const fetchLinks = async () => {
       try {
         const response = await axios.get<LinkItem[]>(
-          "http://localhost:3001/freecontent"
+          `${import.meta.env.VITE_BACKEND_URL}/freecontent`
         );
         setLinks(response.data);
         setFilteredLinks(response.data);

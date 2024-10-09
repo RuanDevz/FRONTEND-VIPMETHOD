@@ -19,7 +19,7 @@ const Plans: React.FC = () => {
 
       try {
         const authResponse = await fetch(
-          "http://localhost:3001/auth/dashboard",
+          `${import.meta.env.VITE_BACKEND_URL}/auth/dashboard`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -33,7 +33,7 @@ const Plans: React.FC = () => {
         }
 
         const vipResponse = await fetch(
-          `http://localhost:3001/auth/is-vip/${email}`,
+          `${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -60,7 +60,7 @@ const Plans: React.FC = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/pay/vip-payment", {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/pay/vip-payment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, planType }),
