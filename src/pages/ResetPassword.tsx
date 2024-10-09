@@ -12,7 +12,7 @@ const ResetPassword = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const handleResetPassword = async (e) => {
+  const handleResetPassword = async (e: any) => {
     e.preventDefault();
     setMessage('');
     setError('');
