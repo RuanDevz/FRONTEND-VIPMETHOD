@@ -1,5 +1,5 @@
 import React from "react";
-import { Userdatatypes } from "./types"; // Tipos compartilhados
+import { Userdatatypes } from "../../../types/Userdatatypes";
 
 type UserDetailsProps = {
   userData: Userdatatypes;
