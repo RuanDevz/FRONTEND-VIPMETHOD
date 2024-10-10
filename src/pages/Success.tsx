@@ -1,8 +1,38 @@
+import { useEffect } from "react";
 import { CheckCheck } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 
 export default function Success() {
+  const email = localStorage.getItem("email");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const updateVipStatus = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/update-vip-status`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to update VIP status");
+        }
+
+        console.log("VIP status updated successfully");
+      } catch (error) {
+        console.error("Error updating VIP status:", error);
+        alert("There was an error updating your VIP status. Please contact support.");
+        navigate("/"); // Redirect if necessary
+      }
+    };
+
+    updateVipStatus();
+  }, [email, navigate]);
+
   return (
     <div className="h-screen">
       <div className="mt-32 md:max-w-[50vw] mx-auto">
