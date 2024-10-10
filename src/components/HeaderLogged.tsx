@@ -16,23 +16,23 @@ const HeaderLogged: React.FC = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  useEffect(() => {
-    const checkUserStatus = async () => {
-      if (token && email) {
-        try {
-          const vipResponse = await axios.get(`${import.meta.env.BACKEND_URL}/auth/is-vip/${email}`);
-          setIsVip(vipResponse.data.isVip);
+useEffect(() => {
+  const checkUserStatus = async () => {
+    if (token && email) {
+      try {
+        const vipResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`);
+        setIsVip(vipResponse.data.isVip);
 
-          const adminResponse = await axios.get(`${import.meta.env.BACKEND_URL}/auth/is-admin/${email}`);
-          setIsAdmin(adminResponse.data.isAdmin);
-        } catch (error) {
-          console.error("Error checking user status:", error);
-        }
+        const adminResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/is-admin/${email}`);
+        setIsAdmin(adminResponse.data.isAdmin);
+      } catch (error) {
+        console.error("Error checking user status:", error);
       }
-    };
+    }
+  };
 
-    checkUserStatus();
-  }, [token, email]);
+  checkUserStatus();
+}, [token, email]);
 
   return (
     <header className="bg-black text-white p-4 z-50">
