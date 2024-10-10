@@ -26,7 +26,7 @@ export default function Success() {
       } catch (error) {
         console.error("Error updating VIP status:", error);
         alert("There was an error updating your VIP status. Please contact support.");
-        navigate("/"); // Redirect if necessary
+        navigate("/");
       }
     };
 

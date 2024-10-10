@@ -26,7 +26,7 @@ const AdminPainel: React.FC = () => {
 
   const fetchLinks = async () => {
     try {
-      const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
+      const endpoint = activeTab === "free" ? "freecontent" : "vipcontent";
       const response = await axios.get<LinkItem[]>(
         `${import.meta.env.BACKEND_URL}/${endpoint}`
       );
@@ -38,7 +38,7 @@ const AdminPainel: React.FC = () => {
 
   const handleAddLink = async () => {
     try {
-      const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
+      const endpoint = activeTab === "free" ? "freecontent" : "vipcontent";
       await axios.post(`${import.meta.env.BACKEND_URL}/${endpoint}`, newLink);
       setNewLink({ name: "", link: "" });
       fetchLinks();
@@ -57,7 +57,7 @@ const AdminPainel: React.FC = () => {
 
   const handleUpdateLink = async () => {
     try {
-      const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
+      const endpoint = activeTab === "free" ? "freecontent" : "vipcontent";
       await axios.put(`${import.meta.env.BACKEND_URL}/${endpoint}/${isEditing}`, newLink);
       setIsEditing(null);
       setNewLink({ name: "", link: "" });
@@ -69,7 +69,7 @@ const AdminPainel: React.FC = () => {
 
   const handleDeleteLink = async (id: number) => {
     try {
-      const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
+      const endpoint = activeTab === "free" ? "freecontent" : "vipcontent";
       await axios.delete(`${import.meta.env.BACKEND_URL}/${endpoint}/${id}`);
       fetchLinks();
     } catch (error) {
