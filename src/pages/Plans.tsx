@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PlanCard from "../components/Plans/PlanCard";
 import Loading from "../components/Loading";
+
 const Plans: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -28,7 +29,7 @@ const Plans: React.FC = () => {
         if (authResponse.ok) {
           setIsAuthenticated(true);
         } else {
-          localStorage.removeItem("token");
+          localStorage.removeItem("Token"); // Corrigido o nome do item removido
           setIsAuthenticated(false);
         }
 
@@ -43,7 +44,7 @@ const Plans: React.FC = () => {
         setIsVip(data.isVip);
       } catch (error) {
         console.error("Error checking authentication or VIP status:", error);
-        localStorage.removeItem("token");
+        localStorage.removeItem("Token");
         setIsAuthenticated(false);
       } finally {
         setLoading(false);
@@ -69,7 +70,7 @@ const Plans: React.FC = () => {
       if (!response.ok) throw new Error("Error creating payment session");
 
       const { url } = await response.json();
-      window.location.href = url;
+      window.open(url, "_blank"); // Abre a URL em uma nova aba para melhorar a experiência do usuário
     } catch (error) {
       console.error("Error creating payment session:", error);
       alert(
