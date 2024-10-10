@@ -31,6 +31,8 @@ useEffect(() => {
     }
   };
 
+  //
+
   checkUserStatus();
 }, [token, email]);
 
