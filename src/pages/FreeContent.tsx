@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import FilterControls from "../components/FreeContent/FilterControls";
 import LinkGroup from "../components/FreeContent/LinkGroup";
-import { Import } from "lucide-react";
 
 type LinkItem = {
   id: number;
@@ -21,9 +20,7 @@ const FreeContent: React.FC = () => {
   useEffect(() => {
     const fetchLinks = async () => {
       try {
-        const response = await axios.get<LinkItem[]>(
-          `${import.meta.env.VITE_BACKEND_URL}/freecontent`
-        );
+        const response = await axios.get<LinkItem[]>(`${import.meta.env.VITE_BACKEND_URL}/freecontent`);
         setLinks(response.data);
         setFilteredLinks(response.data);
       } catch (error) {
@@ -52,16 +49,10 @@ const FreeContent: React.FC = () => {
 
     switch (sortOption) {
       case "mostRecent":
-        filtered.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
+        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         break;
       case "oldest":
-        filtered.sort(
-          (a, b) =>
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        );
+        filtered.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
         break;
       default:
         break;
@@ -81,22 +72,31 @@ const FreeContent: React.FC = () => {
     groupedLinks[date].push(link);
   });
 
+  const openLinkInNewTab = (link: string) => {
+    window.open(link, "_blank");
+  };
+
   return (
-    <div className="vip-content-page p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
-        Free Content
-      </h1>
+    <div className="vip-content-page p-6 bg-gray-100 min-h-screen flex">
+      {/* Anúncios à esquerda */}
+      <div className="hidden md:flex flex-col w-1/4">
+        {/* Coloque aqui o espaço para os anúncios */}
+      </div>
 
-      <FilterControls
-        searchName={searchName}
-        selectedMonth={selectedMonth}
-        sortOption={sortOption}
-        setSearchName={setSearchName}
-        setSelectedMonth={setSelectedMonth}
-        setSortOption={setSortOption}
-      />
+      <div className="link-boxes flex flex-col max-w-screen-lg mx-auto w-1/2">
+        <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
+          Free Content
+        </h1>
 
-      <div className="link-boxes flex flex-col max-w-screen-lg mx-auto">
+        <FilterControls
+          searchName={searchName}
+          selectedMonth={selectedMonth}
+          sortOption={sortOption}
+          setSearchName={setSearchName}
+          setSelectedMonth={setSelectedMonth}
+          setSortOption={setSortOption}
+        />
+
         {Object.keys(groupedLinks).length > 0 ? (
           Object.keys(groupedLinks).map((date) => (
             <LinkGroup
@@ -104,6 +104,7 @@ const FreeContent: React.FC = () => {
               date={date}
               links={groupedLinks[date]}
               recentLinks={recentLinks}
+              onFirstLinkClick={openLinkInNewTab} // Passa a função para o LinkGroup
             />
           ))
         ) : (
@@ -111,6 +112,11 @@ const FreeContent: React.FC = () => {
             No content found.
           </p>
         )}
+      </div>
+
+      {/* Anúncios à direita */}
+      <div className="hidden md:flex flex-col w-1/4">
+        {/* Coloque aqui o espaço para os anúncios */}
       </div>
     </div>
   );
