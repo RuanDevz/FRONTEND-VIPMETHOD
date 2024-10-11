@@ -7,7 +7,7 @@ type PlanCardProps = {
   description: string;
   features: string[];
   buttonText: string;
-  onButtonClick: () => Promise<void>; // Altere para retornar uma Promise
+  onButtonClick: any
 };
 
 const PlanCard: React.FC<PlanCardProps> = ({ title, price, description, features, buttonText, onButtonClick }) => {
@@ -15,8 +15,14 @@ const PlanCard: React.FC<PlanCardProps> = ({ title, price, description, features
 
   const handleButtonClick = async () => {
     setIsLoading(true); // Inicia o loading
-    await onButtonClick(); // Aguarda a resposta da função passada
-    setIsLoading(false); // Finaliza o loading
+    try {
+      await onButtonClick(); // Aguarda a resposta da função passada
+    } catch (error) {
+      console.error("Error during button click:", error);
+      alert("An error occurred while processing your request. Please try again.");
+    } finally {
+      setIsLoading(false); // Finaliza o loading
+    }
   };
 
   return (
