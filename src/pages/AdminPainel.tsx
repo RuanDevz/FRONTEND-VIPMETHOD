@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Tabs from "../components/AdminPainel/Tabs";
-import SearchBar from "../components/SearchBar";
-import LinkForm from "../components/AdminPainel/LinkForm";
-import LinkList from "../components/AdminPainel/LinkList";
 
-// Types
+// Tipos
 type LinkItem = {
   id: number;
   name: string;
@@ -28,18 +24,24 @@ const AdminPainel: React.FC = () => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
       const response = await axios.get<LinkItem[]>(
-        `${import.meta.env.BACKEND_URL}${endpoint}`
+        `${import.meta.env.VITE_BACKEND_URL}${endpoint}`
       );
-      setLinks(response.data);
+      if (Array.isArray(response.data)) {
+        setLinks(response.data);
+      } else {
+        console.error("Expected an array of links but got:", response.data);
+        setLinks([]);
+      }
     } catch (error) {
       console.error("Error fetching links:", error);
+      setLinks([]);
     }
   };
 
   const handleAddLink = async () => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
-      await axios.post(`${import.meta.env.BACKEND_URL}${endpoint}`, newLink);
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}${endpoint}`, newLink);
       setNewLink({ name: "", link: "" });
       fetchLinks();
     } catch (error) {
@@ -58,7 +60,7 @@ const AdminPainel: React.FC = () => {
   const handleUpdateLink = async () => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
-      await axios.put(`${import.meta.env.BACKEND_URL}${endpoint}${isEditing}`, newLink);
+      await axios.put(`${import.meta.env.VITE_BACKEND_URL}${endpoint}/${isEditing}`, newLink);
       setIsEditing(null);
       setNewLink({ name: "", link: "" });
       fetchLinks();
@@ -70,37 +72,105 @@ const AdminPainel: React.FC = () => {
   const handleDeleteLink = async (id: number) => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
-      await axios.delete(`${import.meta.env.BACKEND_URL}${endpoint}${id}`);
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}${endpoint}/${id}`);
       fetchLinks();
     } catch (error) {
       console.error("Error deleting link:", error);
     }
   };
 
-  // Filter links based on search term
   const filteredLinks = links.filter((link) =>
     link.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="admin-panel p-6 bg-gray-100 min-h-screen flex flex-col items-center">
-      <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="mb-4 p-2 border border-gray-300 rounded"
+      />
       <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
         Admin Panel
       </h1>
-      <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-      <LinkForm
-        newLink={newLink}
-        setNewLink={setNewLink}
-        isEditing={isEditing}
-        handleAddLink={handleAddLink}
-        handleUpdateLink={handleUpdateLink}
-      />
-      <LinkList
-        links={filteredLinks}
-        handleEditLink={handleEditLink}
-        handleDeleteLink={handleDeleteLink}
-      />
+      <div className="tabs flex justify-center mb-6">
+        <button
+          onClick={() => setActiveTab("free")}
+          className={`px-4 py-2 ${activeTab === "free" ? "bg-blue-500 text-white" : "bg-gray-300"}`}
+        >
+          Free Content
+        </button>
+        <button
+          onClick={() => setActiveTab("vip")}
+          className={`px-4 py-2 ${activeTab === "vip" ? "bg-blue-500 text-white" : "bg-gray-300"}`}
+        >
+          VIP Content
+        </button>
+      </div>
+
+      <div className="form mb-4">
+        <input
+          type="text"
+          placeholder="Link Name"
+          value={newLink.name}
+          onChange={(e) => setNewLink({ ...newLink, name: e.target.value })}
+          className="p-2 border border-gray-300 rounded mb-2"
+        />
+        <input
+          type="text"
+          placeholder="Link URL"
+          value={newLink.link}
+          onChange={(e) => setNewLink({ ...newLink, link: e.target.value })}
+          className="p-2 border border-gray-300 rounded mb-2"
+        />
+        {isEditing ? (
+          <button
+            onClick={handleUpdateLink}
+            className="bg-green-500 text-white px-4 py-2 rounded"
+          >
+            Update Link
+          </button>
+        ) : (
+          <button
+            onClick={handleAddLink}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Add Link
+          </button>
+        )}
+      </div>
+
+      <ul className="link-list w-full max-w-xl">
+        {filteredLinks.map((link) => (
+          <li
+            key={link.id}
+            className="flex justify-between items-center p-2 bg-white shadow-sm mb-2 rounded"
+          >
+            <div>
+              <a href={link.link} target="_blank" rel="noopener noreferrer" className="text-blue-500">
+                {link.name}
+              </a>
+              <p className="text-sm text-gray-500">{new Date(link.createdAt).toLocaleDateString()}</p>
+            </div>
+            <div>
+              <button
+                onClick={() => handleEditLink(link.id)}
+                className="bg-yellow-500 text-white px-2 py-1 rounded mr-2"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDeleteLink(link.id)}
+                className="bg-red-500 text-white px-2 py-1 rounded"
+              >
+                Delete
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

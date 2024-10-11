@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "../Button";
 
 type PlanCardProps = {
@@ -7,10 +7,18 @@ type PlanCardProps = {
   description: string;
   features: string[];
   buttonText: string;
-  onButtonClick: () => void;
+  onButtonClick: () => Promise<void>; // Altere para retornar uma Promise
 };
 
 const PlanCard: React.FC<PlanCardProps> = ({ title, price, description, features, buttonText, onButtonClick }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleButtonClick = async () => {
+    setIsLoading(true); // Inicia o loading
+    await onButtonClick(); // Aguarda a resposta da função passada
+    setIsLoading(false); // Finaliza o loading
+  };
+
   return (
     <div className="bg-white p-10 shadow-lg rounded-lg text-center flex flex-col justify-between">
       <h2 className="text-lg font-semibold">{title}</h2>
@@ -21,8 +29,8 @@ const PlanCard: React.FC<PlanCardProps> = ({ title, price, description, features
           <li key={index}>{feature}</li>
         ))}
       </ul>
-      <Button className="mt-4 p-3" onClick={onButtonClick}>
-        {buttonText}
+      <Button className="mt-4 p-3" onClick={handleButtonClick} disabled={isLoading}>
+        {isLoading ? "Loading..." : buttonText}
       </Button>
     </div>
   );
