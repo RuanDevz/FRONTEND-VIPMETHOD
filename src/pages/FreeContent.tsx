@@ -103,18 +103,18 @@ const FreeContent: React.FC = () => {
         Free Content
       </h1>
 
-      <div className="filters flex justify-center space-x-4 mb-6">
+      <div className="filters flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4 mb-6">
         <input
           type="text"
           placeholder="Filter by name"
           value={searchName}
           onChange={(e) => setSearchName(e.target.value)}
-          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500 w-full md:w-auto"
         />
         <select
           value={selectedMonth}
           onChange={(e) => setSelectedMonth(e.target.value)}
-          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500 w-full md:w-auto"
         >
           {months.map((month) => (
             <option key={month.value} value={month.value}>
@@ -125,7 +125,7 @@ const FreeContent: React.FC = () => {
         <select
           value={sortOption}
           onChange={(e) => setSortOption(e.target.value)}
-          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500 w-full md:w-auto"
         >
           <option value="mostRecent">Most Recent</option>
           <option value="oldest">Oldest</option>
