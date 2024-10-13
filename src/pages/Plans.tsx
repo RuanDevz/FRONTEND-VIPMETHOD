@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PlanCard from "../components/Plans/PlanCard";
-import Loading from "../components/Loading";
+import Loading from "../components/Loading/Loading";
 
 const Plans: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -54,26 +54,33 @@ const Plans: React.FC = () => {
     checkAuthAndVipStatus();
   }, [token, email]);
 
-  const handleAccessClick = async (planType: "monthly" | "annual"): Promise<void> => {
+  const handleAccessClick = async (
+    planType: "monthly" | "annual"
+  ): Promise<void> => {
     if (!token) {
       navigate("/login");
       return;
     }
-  
+
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/pay/vip-payment`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, planType }),
-      });
-  
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/pay/vip-payment`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, planType }),
+        }
+      );
+
       if (!response.ok) throw new Error("Error creating payment session");
-  
+
       const { url } = await response.json();
       window.open(url, "_blank");
     } catch (error) {
       console.error("Error creating payment session:", error);
-      alert("An error occurred while processing your request. Please try again.");
+      alert(
+        "An error occurred while processing your request. Please try again."
+      );
     }
   };
 

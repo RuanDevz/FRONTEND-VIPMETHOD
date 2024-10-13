@@ -21,11 +21,11 @@ const UserMenu: React.FC<UserMenuProps> = ({
     localStorage.removeItem("Token");
     localStorage.removeItem("name");
     localStorage.removeItem("email");
-    window.location.reload();
+    window.location.href = '/'
   };
 
   return (
-    <nav className="relative">
+    <nav className="relative z-50">
       <div
         className="flex gap-2 items-center cursor-pointer"
         onClick={handleMenuToggle}

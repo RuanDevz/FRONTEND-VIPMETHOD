@@ -58,7 +58,7 @@ const VIPcontent: React.FC = () => {
           }
         } catch (error) {
           console.error("Error checking VIP status:", error);
-          navigate("/login");
+          navigate("#/login");
         }
       }
     };

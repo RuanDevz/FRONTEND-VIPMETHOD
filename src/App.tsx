@@ -26,8 +26,8 @@ const App = () => {
         {token ? <HeaderLogged /> : <Header />}
         <Routes>
           <Route path="/" element={<FreeContent />} />
-          <Route path="/vip" element={<VIPcontent/>}/>
-          <Route path="/admin" element={<AdminPainel/>}/>
+          <Route path="/vip" element={<VIPcontent />} />
+          <Route path="/admin" element={<AdminPainel />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -38,7 +38,9 @@ const App = () => {
           <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
       </div>
-      <Footer />
+      <div className="">
+        <Footer />
+      </div>
     </Router>
   );
 };

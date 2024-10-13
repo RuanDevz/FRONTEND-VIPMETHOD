@@ -39,8 +39,9 @@ const FilterControls: React.FC<FilterControlsProps> = ({
   ];
 
   return (
-    <div className="filter-controls mb-8 w-[500px] flex  items-center justify-around mx-auto mt-16">
-      <div className="mb-4">
+    <div className="filter-controls mb-8 max-w-[600px] mx-auto flex flex-col md:flex-row md:space-x-4 items-center justify-around mt-8 p-4">
+      {/* Search Name Input */}
+      <div className="mb-4 w-full md:w-1/3">
         <label className="block text-gray-700 font-medium mb-2">
           Search by Name
         </label>
@@ -53,19 +54,25 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         />
       </div>
 
-      <SelectInput
-        label="Filter by Month"
-        value={selectedMonth}
-        onChange={(e: any) => setSelectedMonth(e.target.value)}
-        options={monthOptions}
-      />
+      {/* Filter by Month Select */}
+      <div className="mb-4 w-full md:w-1/3">
+        <SelectInput
+          label="Filter by Month"
+          value={selectedMonth}
+          onChange={(e: any) => setSelectedMonth(e.target.value)}
+          options={monthOptions}
+        />
+      </div>
 
-      <SelectInput
-        label="Sort by"
-        value={sortOption}
-        onChange={(e: any) => setSortOption(e.target.value)}
-        options={sortOptions}
-      />
+      {/* Sort by Select */}
+      <div className="mb-4 w-full md:w-1/3">
+        <SelectInput
+          label="Sort by"
+          value={sortOption}
+          onChange={(e: any) => setSortOption(e.target.value)}
+          options={sortOptions}
+        />
+      </div>
     </div>
   );
 };
