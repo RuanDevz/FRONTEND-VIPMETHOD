@@ -27,10 +27,6 @@ const AdminPainel: React.FC = () => {
       script.async = true;
       document.body.appendChild(script);
 
-      script.onload = () => {
-        linkvertise(1249906, { whitelist: [], blacklist: [""] });
-      };
-
       return () => {
         document.body.removeChild(script); // Limpa o script ao mudar de aba
       };
