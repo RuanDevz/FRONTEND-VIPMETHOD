@@ -29,7 +29,7 @@ const Plans: React.FC = () => {
         if (authResponse.ok) {
           setIsAuthenticated(true);
         } else {
-          localStorage.removeItem("Token"); // Corrigido o nome do item removido
+          localStorage.removeItem("Token");
           setIsAuthenticated(false);
         }
 
@@ -92,6 +92,42 @@ const Plans: React.FC = () => {
     }
   };
 
+  const handleRedirect = async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get("email");
+    const planType = urlParams.get("planType");
+    const isCanceled = window.location.pathname.includes("/cancel");
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/update-vip-status`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            planType,
+            isVip: !isCanceled,
+          }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Error updating VIP status");
+
+      const result = await response.json();
+      console.log(result.message);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    // Chama a função handleRedirect quando a página é carregada
+    handleRedirect();
+  }, []);
+
   if (loading) return <Loading />;
 
   return (
@@ -100,7 +136,7 @@ const Plans: React.FC = () => {
         <PlanCard
           title="VIP ALL CONTENT ACCESS"
           price="USD 10.00 / month"
-          description="(3 YEARS OF CONTENT)"
+          description="(1 MONTH OF CONTENT)"
           features={[
             "Access to all content before it's posted for free users.",
             "VIP badge in our Discord community.",

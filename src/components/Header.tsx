@@ -43,8 +43,6 @@ const Header = () => {
           </button>
         </div>
       </div>
-
-      {/* Mobile Menu */}
       <div
         className={`md:hidden mt-4 space-y-2 transition-transform duration-300 ease-in-out transform ${
           isMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"

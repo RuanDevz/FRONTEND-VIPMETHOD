@@ -66,10 +66,10 @@ const YourAccount: React.FC = () => {
         <h2 className="text-lg font-semibold mb-2">Subscription Management</h2>
         <p>Current Subscription: {userData.isVip ? "VIP" : "Free"}</p>
         <p>
-          Next Billing Date:{" "}
+          Next Billing Date:
           {new Date(userData.vipExpirationDate).toLocaleDateString()}
         </p>
-        <Link to='/plans'>
+        <Link to="/plans">
           <button className="btn btn-primary mt-2">
             Upgrade or Change Plan
           </button>
@@ -82,7 +82,6 @@ const YourAccount: React.FC = () => {
           calculateDaysLeft={calculateDaysLeft}
         />
       )}
-
 
       {/* Favorites */}
       <div className="my-6">
