@@ -20,23 +20,12 @@ const AdminPainel: React.FC = () => {
     fetchLinks();
   }, [activeTab]);
 
-  useEffect(() => {
-    if (activeTab === "free") {
-      const script = document.createElement("script");
-      script.src = "https://publisher.linkvertise.com/cdn/linkvertise.js";
-      script.async = true;
-      document.body.appendChild(script);
-
-      return () => {
-        document.body.removeChild(script); // Limpa o script ao mudar de aba
-      };
-    }
-  }, [activeTab]);
-
   const fetchLinks = async () => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
-      const response = await axios.get<LinkItem[]>(`${import.meta.env.VITE_BACKEND_URL}${endpoint}`);
+      const response = await axios.get<LinkItem[]>(
+        `${import.meta.env.VITE_BACKEND_URL}${endpoint}`
+      );
       if (Array.isArray(response.data)) {
         setLinks(response.data);
       } else {
@@ -120,12 +109,6 @@ const AdminPainel: React.FC = () => {
           VIP Content
         </button>
       </div>
-
-      {activeTab === "free" && (
-        <div id="linkvertise-ad">
-          {/* Anúncios do Linkvertise serão carregados aqui */}
-        </div>
-      )}
 
       <div className="form mb-4">
         <input
