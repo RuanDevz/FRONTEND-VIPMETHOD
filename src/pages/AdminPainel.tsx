@@ -9,6 +9,22 @@ type LinkItem = {
   createdAt: string;
 };
 
+interface LinkvertiseOptions {
+  whitelist: string[];
+  blacklist: string[];
+}
+
+interface Linkvertise {
+  (id: number, options: LinkvertiseOptions): void;
+}
+
+// Declare a interface para o objeto global
+declare global {
+  interface Window {
+    linkvertise: Linkvertise;
+  }
+}
+
 const AdminPainel: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"free" | "vip">("free");
   const [links, setLinks] = useState<LinkItem[]>([]);
@@ -18,7 +34,24 @@ const AdminPainel: React.FC = () => {
 
   useEffect(() => {
     fetchLinks();
+    loadLinkvertiseScript();
   }, [activeTab]);
+
+  const loadLinkvertiseScript = () => {
+    const script = document.createElement("script");
+    script.src = "https://publisher.linkvertise.com/cdn/linkvertise.js";
+    script.async = true;
+    document.body.appendChild(script);
+    
+    script.onload = () => {
+      if (window.linkvertise) {
+        window.linkvertise(518238, {
+          whitelist: [],
+          blacklist: ["mega.nz", "pixeldrain.com"]
+        });
+      }
+    };
+  };
 
   const fetchLinks = async () => {
     try {
