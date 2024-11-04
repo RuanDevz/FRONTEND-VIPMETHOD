@@ -56,7 +56,7 @@ const AdminPainel: React.FC = () => {
   const fetchLinks = async () => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
-      const response = await axios.get<LinkItem[]>(`${import.meta.env.VITE_BACKEND_URL}${endpoint}`);
+      const response = await axios.get<LinkItem[]>(`https://backend-vip.vercel.app${endpoint}`);
       if (Array.isArray(response.data)) {
         setLinks(response.data);
       } else {
@@ -72,7 +72,7 @@ const AdminPainel: React.FC = () => {
   const handleAddLink = async () => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
-      await axios.post(`${import.meta.env.VITE_BACKEND_URL}${endpoint}`, newLink);
+      await axios.post(`https://backend-vip.vercel.app${endpoint}`, newLink);
       setNewLink({ name: "", link: "" });
       fetchLinks();
     } catch (error) {
@@ -91,7 +91,7 @@ const AdminPainel: React.FC = () => {
   const handleUpdateLink = async () => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
-      await axios.put(`${import.meta.env.VITE_BACKEND_URL}${endpoint}/${isEditing}`, newLink);
+      await axios.put(`https://backend-vip.vercel.app${endpoint}/${isEditing}`, newLink);
       setIsEditing(null);
       setNewLink({ name: "", link: "" });
       fetchLinks();
@@ -103,7 +103,7 @@ const AdminPainel: React.FC = () => {
   const handleDeleteLink = async (id: number) => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
-      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}${endpoint}/${id}`);
+      await axios.delete(`https://backend-vip.vercel.app${endpoint}/${id}`);
       fetchLinks();
     } catch (error) {
       console.error("Error deleting link:", error);

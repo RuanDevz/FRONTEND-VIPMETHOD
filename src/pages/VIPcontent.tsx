@@ -44,7 +44,7 @@ const VIPcontent: React.FC = () => {
       if (token && email) {
         try {
           const response = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`,
+            `https://backend-vip.vercel.app/auth/is-vip/${email}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -70,7 +70,7 @@ const VIPcontent: React.FC = () => {
     const fetchLinks = async () => {
       try {
         const response = await axios.get<LinkItem[]>(
-          `${import.meta.env.VITE_BACKEND_URL}/vipcontent`,
+        `https://backend-vip.vercel.app/vipcontent`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

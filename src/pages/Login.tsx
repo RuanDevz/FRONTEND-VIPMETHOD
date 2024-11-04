@@ -13,7 +13,7 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, {
+      const response = await axios.post(`https://backend-vip.vercel.app/auth/login`, {
         email,
         password,
       });

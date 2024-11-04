@@ -20,10 +20,10 @@ useEffect(() => {
   const checkUserStatus = async () => {
     if (token && email) {
       try {
-        const vipResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`);
+        const vipResponse = await axios.get(`https://backend-vip.vercel.app/auth/is-vip/${email}`);
         setIsVip(vipResponse.data.isVip);
 
-        const adminResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/is-admin/${email}`);
+        const adminResponse = await axios.get(`https://backend-vip.vercel.app/auth/is-admin/${email}`);
         setIsAdmin(adminResponse.data.isAdmin);
       } catch (error) {
         console.error("Error checking user status:", error);

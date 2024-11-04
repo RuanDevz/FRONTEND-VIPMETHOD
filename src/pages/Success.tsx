@@ -10,7 +10,7 @@ export default function Success() {
   useEffect(() => {
     const updateVipStatus = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/update-vip-status`, {
+        const response = await fetch(`https://backend-vip.vercel.app/update-vip-status`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
