@@ -28,7 +28,7 @@ const LinkGroup: React.FC<LinkGroupProps> = ({
         key={link.id}
         link={link}
         isNew={recentLinks.includes(link)}
-        onClick={onFirstLinkClick} // Passa a função para cada LinkBox
+        onClick={onFirstLinkClick} // Passa a função para cada 
       />
     ))}
   </div>

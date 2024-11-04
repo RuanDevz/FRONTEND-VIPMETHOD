@@ -9,34 +9,12 @@ type LinkItem = {
   createdAt: string;
 };
 
-type LinkvertiseOptions = {
-  whitelist?: string[];
-  blacklist?: string[];
-};
-
-type NewLink = {
-  name: string;
-  link: string;
-};
-
 const AdminPainel: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"free" | "vip">("free");
   const [links, setLinks] = useState<LinkItem[]>([]);
-  const [newLink, setNewLink] = useState<NewLink>({ name: "", link: "" });
+  const [newLink, setNewLink] = useState({ name: "", link: "" });
   const [searchTerm, setSearchTerm] = useState<string>(""); 
   const [isEditing, setIsEditing] = useState<number | null>(null);
-
-  useEffect(() => {
-    fetchLinks();
-    const script = document.createElement("script");
-    script.src = "https://publisher.linkvertise.com/cdn/linkvertise.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
 
   useEffect(() => {
     fetchLinks();
@@ -103,18 +81,6 @@ const AdminPainel: React.FC = () => {
     link.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const linkvertise = (window as any).linkvertise
-
-  const applyLinkvertise = (link: string): string => {
-    if (activeTab === "free" && linkvertise) {
-      const options: LinkvertiseOptions = {
-        blacklist: ["mega.nz", "pixeldrain.com"]
-      };
-      linkvertise(518238, options);
-    }
-    return link;
-  };
-
   return (
     <div className="admin-panel p-6 bg-gray-100 min-h-screen flex flex-col items-center">
       <input
@@ -124,7 +90,9 @@ const AdminPainel: React.FC = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         className="mb-4 p-2 border border-gray-300 rounded"
       />
-      <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">Admin Panel</h1>
+      <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
+        Admin Panel
+      </h1>
       <div className="tabs flex justify-center mb-6">
         <button
           onClick={() => setActiveTab("free")}
@@ -180,7 +148,7 @@ const AdminPainel: React.FC = () => {
           >
             <div>
               <a
-                href={applyLinkvertise(link.link)} // Aplica o Linkvertise
+                href={link.link} 
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-500"
