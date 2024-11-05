@@ -18,7 +18,6 @@ interface Linkvertise {
   (id: number, options: LinkvertiseOptions): void;
 }
 
-// Declare a interface para o objeto global
 declare global {
   interface Window {
     linkvertise: Linkvertise;
@@ -56,7 +55,7 @@ const AdminPainel: React.FC = () => {
   const fetchLinks = async () => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
-      const response = await axios.get<LinkItem[]>(`https://backend-vip.vercel.app${endpoint}`);
+      const response = await axios.get<LinkItem[]>(`${import.meta.env.VITE_BACKEND_URL}${endpoint}`);
       if (Array.isArray(response.data)) {
         setLinks(response.data);
       } else {
@@ -72,7 +71,7 @@ const AdminPainel: React.FC = () => {
   const handleAddLink = async () => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
-      await axios.post(`https://backend-vip.vercel.app${endpoint}`, newLink);
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}${endpoint}`, newLink);
       setNewLink({ name: "", link: "" });
       fetchLinks();
     } catch (error) {
@@ -91,7 +90,7 @@ const AdminPainel: React.FC = () => {
   const handleUpdateLink = async () => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
-      await axios.put(`https://backend-vip.vercel.app${endpoint}/${isEditing}`, newLink);
+      await axios.put(`${import.meta.env.VITE_BACKEND_URL}${endpoint}/${isEditing}`, newLink);
       setIsEditing(null);
       setNewLink({ name: "", link: "" });
       fetchLinks();
@@ -103,7 +102,7 @@ const AdminPainel: React.FC = () => {
   const handleDeleteLink = async (id: number) => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
-      await axios.delete(`https://backend-vip.vercel.app${endpoint}/${id}`);
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}${endpoint}/${id}`);
       fetchLinks();
     } catch (error) {
       console.error("Error deleting link:", error);
@@ -141,7 +140,7 @@ const AdminPainel: React.FC = () => {
         </button>
       </div>
 
-      <div className="form mb-4">
+      <div className="form mb-4 flex flex-col w-72 lg:flex max-w-[800px]">
         <input
           type="text"
           placeholder="Link Name"

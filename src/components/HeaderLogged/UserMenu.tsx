@@ -21,7 +21,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
     localStorage.removeItem("Token");
     localStorage.removeItem("name");
     localStorage.removeItem("email");
-    window.location.href = '/'
+    window.location.href = '/';
   };
 
   return (
@@ -38,14 +38,14 @@ const UserMenu: React.FC<UserMenuProps> = ({
         <div className="absolute right-0 mt-5 w-48 bg-white text-black rounded-md shadow-lg">
           <ul className="py-1">
             <li>
-              <Link to="/account" className="px-4 py-2 hover:bg-gray-200 flex gap-2">
+              <Link to="/account" className="px-4 py-2 hover:bg-gray-200 flex gap-2" onClick={handleMenuToggle}>
                 <User2Icon />
                 Your Account
               </Link>
             </li>
             {isVip && (
               <li>
-                <Link to="/VIP" className="px-4 py-2 hover:bg-gray-200 flex gap-2">
+                <Link to="/VIP" className="px-4 py-2 hover:bg-gray-200 flex gap-2" onClick={handleMenuToggle}>
                   <Crown />
                   Access VIP
                 </Link>
@@ -53,7 +53,7 @@ const UserMenu: React.FC<UserMenuProps> = ({
             )}
             {isAdmin && (
               <li>
-                <Link to="/admin" className="px-4 py-2 hover:bg-gray-200 flex gap-2">
+                <Link to="/admin" className="px-4 py-2 hover:bg-gray-200 flex gap-2" onClick={handleMenuToggle}>
                   <Settings />
                   Admin Panel
                 </Link>
@@ -64,7 +64,10 @@ const UserMenu: React.FC<UserMenuProps> = ({
               Status: {isVip ? "VIP" : "Regular"}
             </li>
             <li
-              onClick={Logout}
+              onClick={() => {
+                Logout();
+                handleMenuToggle(); // Fechar o menu após logout
+              }}
               className="px-4 py-2 hover:bg-gray-200 flex gap-2 cursor-pointer"
             >
               <LogOut />

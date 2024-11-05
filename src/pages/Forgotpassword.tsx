@@ -14,7 +14,7 @@ const ForgotPassword = () => {
     setError('');
 
     try {
-      const response = await axios.post(`https://backend-vip.vercel.app/forgot-password`, { email });
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/forgot-password`, { email });
       setMessage(response.data.message);
     } catch (err) {
       console.error(err);

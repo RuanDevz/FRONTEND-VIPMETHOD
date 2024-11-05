@@ -9,7 +9,6 @@ import {
   Transaction,
   FavoriteContent,
 } from "../../types/Userdatatypes";
-import Button from "../components/Button";
 
 const YourAccount: React.FC = () => {
   const [userData, setUserData] = useState<Userdatatypes | undefined>();
@@ -20,7 +19,7 @@ const YourAccount: React.FC = () => {
     const fetchUserData = async () => {
       try {
         const response = await fetch(
-          `https://backend-vip.vercel.app/auth/dashboard`,
+          `${import.meta.env.VITE_BACKEND_URL}/auth/dashboard`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

@@ -20,7 +20,7 @@ const Plans: React.FC = () => {
 
       try {
         const authResponse = await fetch(
-          `https://backend-vip.vercel.app/auth/dashboard`,
+          `${import.meta.env.VITE_BACKEND_URL}/auth/dashboard`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -34,7 +34,7 @@ const Plans: React.FC = () => {
         }
 
         const vipResponse = await fetch(
-          `https://backend-vip.vercel.app/auth/is-vip/${email}`,
+          `${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -61,28 +61,30 @@ const Plans: React.FC = () => {
       navigate("/login");
       return;
     }
-
+  
+    // Armazenar o tipo de plano diretamente como string no localStorage
+    localStorage.setItem("selectedPlan", planType);
+  
     try {
       const response = await fetch(
-        `https://backend-vip.vercel.app/pay/vip-payment`,
+        `${import.meta.env.VITE_BACKEND_URL}/pay/vip-payment`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, planType }),
+          body: JSON.stringify({ email, planType }), // Passando o tipo de plano
         }
       );
-
+  
       if (!response.ok) throw new Error("Error creating payment session");
-
+  
       const { url } = await response.json();
-      window.open(url, "_blank");
+      window.open(url, "_blank"); // Redireciona para o gateway de pagamento
     } catch (error) {
       console.error("Error creating payment session:", error);
-      alert(
-        "An error occurred while processing your request. Please try again."
-      );
+      alert("An error occurred while processing your request. Please try again.");
     }
   };
+  
 
   const handleFreeContentClick = () => {
     if (isAuthenticated) {
@@ -100,7 +102,7 @@ const Plans: React.FC = () => {
 
     try {
       const response = await fetch(
-        `https://backend-vip.vercel.app/update-vip-status`,
+        `${import.meta.env.VITE_BACKEND_URL}/update-vip-status`,
         {
           method: "POST",
           headers: {

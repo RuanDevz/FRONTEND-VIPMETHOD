@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Loading from "../components/Loading/Loading";
 
 type LinkItem = {
   id: number;
@@ -34,7 +35,7 @@ const VIPcontent: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("mostRecent");
   const [isVip, setIsVip] = useState<boolean>(false);
-  
+
   const token = localStorage.getItem("Token");
   const email = localStorage.getItem("email");
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const VIPcontent: React.FC = () => {
       if (token && email) {
         try {
           const response = await axios.get(
-            `https://backend-vip.vercel.app/auth/is-vip/${email}`,
+            `${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -70,7 +71,7 @@ const VIPcontent: React.FC = () => {
     const fetchLinks = async () => {
       try {
         const response = await axios.get<LinkItem[]>(
-        `https://backend-vip.vercel.app/vipcontent`,
+          `${import.meta.env.VITE_BACKEND_URL}/vipcontent`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -131,7 +132,7 @@ const VIPcontent: React.FC = () => {
   const recentLinks = filteredLinks.slice(0, 5);
 
   if (!isVip) {
-    return <p>Loading...</p>;
+    return <Loading/>;
   }
 
   const groupedLinks: { [key: string]: LinkItem[] } = {};
@@ -149,35 +150,36 @@ const VIPcontent: React.FC = () => {
         VIP Content
       </h1>
 
-      <div className="filters flex justify-center space-x-4 mb-6">
-        <input
-          type="text"
-          placeholder="Filter by name"
-          value={searchName}
-          onChange={(e) => setSearchName(e.target.value)}
-          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
-        />
-        <select
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
-        >
-          {months.map((month) => (
-            <option key={month.value} value={month.value}>
-              {month.label}
-            </option>
-          ))}
-        </select>
-        <select
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
-        >
-          <option value="mostRecent">Most Recent</option>
-          <option value="oldest">Oldest</option>
-          <option value="mostViewed">Most Viewed</option>
-        </select>
-      </div>
+    
+        <div className="filters flex flex-col gap-5 justify-center mb-6">
+          <input
+            type="text"
+            placeholder="Filter by name"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+            className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+          />
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+          >
+            {months.map((month) => (
+              <option key={month.value} value={month.value}>
+                {month.label}
+              </option>
+            ))}
+          </select>
+          <select
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+            className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
+          >
+            <option value="mostRecent">Most Recent</option>
+            <option value="oldest">Oldest</option>
+            <option value="mostViewed">Most Viewed</option>
+          </select>
+        </div>
 
       <div className="link-boxes flex flex-col max-w-screen-lg mx-auto">
         {Object.keys(groupedLinks).length > 0 ? (

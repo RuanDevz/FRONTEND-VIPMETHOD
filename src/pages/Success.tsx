@@ -5,17 +5,24 @@ import Button from "../components/Button";
 
 export default function Success() {
   const email = localStorage.getItem("email");
+  // Agora, o planType será uma string, não mais um objeto
+  const planType = localStorage.getItem("selectedPlan");
   const navigate = useNavigate();
 
   useEffect(() => {
     const updateVipStatus = async () => {
+      if (!email || !planType) {
+        console.error("Missing email or planType");
+        return;
+      }
+
       try {
-        const response = await fetch(`https://backend-vip.vercel.app/update-vip-status`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/update-vip-status`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({ email, planType }), // Passando planType diretamente
         });
 
         if (!response.ok) {
@@ -30,8 +37,12 @@ export default function Success() {
       }
     };
 
-    updateVipStatus();
-  }, [email, navigate]);
+    if (email && planType) {
+      updateVipStatus();
+    } else {
+      console.error("Email or planType not found in localStorage");
+    }
+  }, [email, planType, navigate]);
 
   return (
     <div className="h-screen">
