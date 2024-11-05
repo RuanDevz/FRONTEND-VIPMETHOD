@@ -78,7 +78,7 @@ const Plans: React.FC = () => {
       if (!response.ok) throw new Error("Error creating payment session");
   
       const { url } = await response.json();
-      window.open(url, "_blank"); // Redireciona para o gateway de pagamento
+      window.open(url, "_blank");
     } catch (error) {
       console.error("Error creating payment session:", error);
       alert("An error occurred while processing your request. Please try again.");

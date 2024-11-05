@@ -16,6 +16,7 @@ import Plans from "./pages/Plans";
 import VIPcontent from "./pages/VIPcontent";
 import FreeContent from "./pages/FreeContent";
 import AdminPainel from "./pages/AdminPainel";
+import LinkvertiseComponent from "./components/LinkvertiseComponent";
 
 const App = () => {
   const token = localStorage.getItem("Token");

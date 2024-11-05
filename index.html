@@ -1,7 +1,14 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <link rel="shortcut icon" href="./public/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="./public/favicon.ico" type="image/x-icon" />
+    <script src="https://publisher.linkvertise.com/cdn/linkvertise.js"></script>
+    <script>
+      linkvertise(518238, {
+        whitelist: [],
+        blacklist: ["mega.nz", "pixeldrain.com"],
+      });
+    </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,14 +16,6 @@
   </head>
   <body>
     <div id="root"></div>
-
-    <!-- Script do Linkvertise (Aqui você insere o código para monetizar links externos) -->
-    <script src="https://publisher.linkvertise.com/cdn/linkvertise.js"></script>
-    <script>
-      linkvertise(518238, { whitelist: [], blacklist: ["mega.nz", "pixeldrain.com"] });
-    </script>
-
-    <!-- Seu script do React -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
