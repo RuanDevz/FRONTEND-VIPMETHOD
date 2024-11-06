@@ -25,7 +25,7 @@ const Login = () => {
       localStorage.setItem("name", response.data.name);
       localStorage.setItem("email", email);
 
-      location.reload()
+      window.location.href = '#/'
     } catch (err) {
       console.log(err);
       setErrorMessage("Invalid email or password. Please try again.");
