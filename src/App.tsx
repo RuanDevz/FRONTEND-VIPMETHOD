@@ -16,6 +16,7 @@ import Plans from "./pages/Plans";
 import VIPcontent from "./pages/VIPcontent";
 import FreeContent from "./pages/FreeContent";
 import AdminPainel from "./pages/AdminPainel";
+import LinkvertiseScriptLoader from "./components/LinkvertiseScriptLoader";
 
 const App = () => {
   const token = localStorage.getItem("Token");
@@ -23,6 +24,7 @@ const App = () => {
   return (
     <Router>
       <div>
+        <LinkvertiseScriptLoader/>
         {token ? <HeaderLogged /> : <Header />}
         <Routes>
           <Route path="/" element={<FreeContent />} />
