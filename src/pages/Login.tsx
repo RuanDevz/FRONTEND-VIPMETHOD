@@ -25,13 +25,12 @@ const Login = () => {
       localStorage.setItem("name", response.data.name);
       localStorage.setItem("email", email);
 
-      // Navega para a página principal
-      navigate("/");
+      location.reload()
     } catch (err) {
       console.log(err);
       setErrorMessage("Invalid email or password. Please try again.");
     } finally {
-      setLoading(false); // Termina o carregamento
+      setLoading(false); 
     }
   };
 
