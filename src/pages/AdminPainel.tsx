@@ -17,17 +17,15 @@ const AdminPainel: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const [isEditing, setIsEditing] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch links whenever the activeTab changes
   useEffect(() => {
     fetchLinks();
   }, [activeTab]);
 
-  // Fetch links from the backend
   const fetchLinks = async () => {
     try {
-      setIsLoading(true); // Set loading before fetching
+      setIsLoading(true); 
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
       const response = await axios.get<LinkItem[]>(`${import.meta.env.VITE_BACKEND_URL}${endpoint}`);
       setLinks(Array.isArray(response.data) ? response.data : []);
@@ -35,18 +33,18 @@ const AdminPainel: React.FC = () => {
       console.error("Error fetching links:", error);
       setLinks([]);
     } finally {
-      setIsLoading(false); // Reset loading after fetching
+      setIsLoading(false);
     }
   };
 
-  // Add new link
+
   const handleAddLink = async () => {
     setIsLoading(true);
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}${endpoint}`, newLink);
       setNewLink({ name: "", link: "" });
-      fetchLinks(); // Re-fetch links after adding a new one
+      fetchLinks(); 
     } catch (error) {
       console.error("Error adding link:", error);
     } finally {
@@ -54,7 +52,6 @@ const AdminPainel: React.FC = () => {
     }
   };
 
-  // Edit link
   const handleEditLink = (id: number) => {
     const linkToEdit = links.find((link) => link.id === id);
     if (linkToEdit) {
@@ -70,7 +67,7 @@ const AdminPainel: React.FC = () => {
       await axios.put(`${import.meta.env.VITE_BACKEND_URL}${endpoint}/${isEditing}`, newLink);
       setIsEditing(null);
       setNewLink({ name: "", link: "" });
-      fetchLinks(); // Re-fetch links after updating
+      fetchLinks(); 
     } catch (error) {
       console.error("Error updating link:", error);
     } finally {
@@ -83,7 +80,7 @@ const AdminPainel: React.FC = () => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}${endpoint}/${id}`);
-      fetchLinks(); // Re-fetch links after deleting
+      fetchLinks();
     } catch (error) {
       console.error("Error deleting link:", error);
     } finally {
