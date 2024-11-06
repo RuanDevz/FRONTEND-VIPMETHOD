@@ -12,10 +12,9 @@ const LinkvertiseScriptLoader: React.FC = () => {
     script.src = 'https://publisher.linkvertise.com/cdn/linkvertise.js';
     script.async = true;
 
-    // Tipagem do evento de carregamento do script
     script.onload = () => {
       try {
-        // Verifica se a função `linkvertise` está disponível no objeto `window`
+       
         if (window.linkvertise) {
           window.linkvertise(518238, { whitelist: [], blacklist: ["mega.nz", "pixeldrain.com"] });
           console.log('Script do Linkvertise carregado com sucesso!');
