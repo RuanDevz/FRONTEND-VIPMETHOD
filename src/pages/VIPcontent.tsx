@@ -151,7 +151,7 @@ const VIPcontent: React.FC = () => {
       </h1>
 
     
-        <div className="filters flex flex-col gap-5 justify-center mb-6">
+        <div className="filters flex flex-col gap-5 justify-center mb-6 lg:w-[500px] mx-auto">
           <input
             type="text"
             placeholder="Filter by name"

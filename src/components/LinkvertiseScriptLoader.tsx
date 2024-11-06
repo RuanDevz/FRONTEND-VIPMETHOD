@@ -26,15 +26,12 @@ const LinkvertiseScriptLoader: React.FC = () => {
       }
     };
 
-    // Tipagem do evento de erro do script
     script.onerror = () => {
       console.error('Erro ao carregar o script do Linkvertise.');
     };
 
-    // Adiciona o script ao corpo da página
     document.body.appendChild(script);
 
-    // Limpeza ao desmontar o componente
     return () => {
       document.body.removeChild(script);
     };

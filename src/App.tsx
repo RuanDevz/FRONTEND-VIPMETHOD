@@ -17,6 +17,7 @@ import VIPcontent from "./pages/VIPcontent";
 import FreeContent from "./pages/FreeContent";
 import AdminPainel from "./pages/AdminPainel";
 import LinkvertiseScriptLoader from "./components/LinkvertiseScriptLoader";
+import SupportPage from "./pages/SupportPage";
 
 const App = () => {
   const token = localStorage.getItem("Token");
@@ -38,6 +39,7 @@ const App = () => {
           <Route path="/cancel" element={<Cancel />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/support" element={<SupportPage/>}/>
         </Routes>
       </div>
     </Router>

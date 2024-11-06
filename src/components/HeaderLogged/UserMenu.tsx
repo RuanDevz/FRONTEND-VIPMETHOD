@@ -1,5 +1,5 @@
 import React from "react";
-import { Crown, LogOut, Star, User2Icon, Settings } from "lucide-react";
+import { Crown, LogOut, Star, User2Icon, Settings, HelpCircle } from "lucide-react"; // Adicionando o ícone HelpCircle para Suporte
 import { Link } from "react-router-dom";
 
 interface UserMenuProps {
@@ -63,10 +63,19 @@ const UserMenu: React.FC<UserMenuProps> = ({
               <Star />
               Status: {isVip ? "VIP" : "Regular"}
             </li>
+
+            {/* Adicionando o item de Suporte */}
+            <li>
+              <Link to="/support" className="px-4 py-2 hover:bg-gray-200 flex gap-2" onClick={handleMenuToggle}>
+                <HelpCircle />
+                Support
+              </Link>
+            </li>
+
             <li
               onClick={() => {
                 Logout();
-                handleMenuToggle(); // Fechar o menu após logout
+                handleMenuToggle(); 
               }}
               className="px-4 py-2 hover:bg-gray-200 flex gap-2 cursor-pointer"
             >
