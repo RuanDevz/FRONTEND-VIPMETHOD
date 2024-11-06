@@ -15,10 +15,16 @@ const AdminPainel: React.FC = () => {
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [newLink, setNewLink] = useState({ name: "", link: "" });
   const [searchTerm, setSearchTerm] = useState<string>("");
+
   const [isEditing, setIsEditing] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false); // Loading state
 
-  // Fetch links
+  // Fetch links whenever the activeTab changes
+  useEffect(() => {
+    fetchLinks();
+  }, [activeTab]);
+
+  // Fetch links from the backend
   const fetchLinks = async () => {
     try {
       setIsLoading(true); // Set loading before fetching
@@ -40,7 +46,7 @@ const AdminPainel: React.FC = () => {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
       await axios.post(`${import.meta.env.VITE_BACKEND_URL}${endpoint}`, newLink);
       setNewLink({ name: "", link: "" });
-      fetchLinks();
+      fetchLinks(); // Re-fetch links after adding a new one
     } catch (error) {
       console.error("Error adding link:", error);
     } finally {
@@ -64,7 +70,7 @@ const AdminPainel: React.FC = () => {
       await axios.put(`${import.meta.env.VITE_BACKEND_URL}${endpoint}/${isEditing}`, newLink);
       setIsEditing(null);
       setNewLink({ name: "", link: "" });
-      fetchLinks();
+      fetchLinks(); // Re-fetch links after updating
     } catch (error) {
       console.error("Error updating link:", error);
     } finally {
@@ -77,7 +83,7 @@ const AdminPainel: React.FC = () => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}${endpoint}/${id}`);
-      fetchLinks();
+      fetchLinks(); // Re-fetch links after deleting
     } catch (error) {
       console.error("Error deleting link:", error);
     } finally {
