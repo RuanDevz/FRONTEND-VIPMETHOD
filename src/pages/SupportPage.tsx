@@ -54,10 +54,10 @@ const SupportPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6 max-w-3xl">
-      <h1 className="text-3xl font-semibold text-center mb-4">Customer Support</h1>
-      <p className="text-center mb-6">Please fill out the form below and our team will get back to you as soon as possible.</p>
+      <h1 className="text-4xl font-semibold text-center mb-4 text-gray-800">Customer Support</h1>
+      <p className="text-center mb-6 text-gray-600">Please fill out the form below and our team will get back to you as soon as possible.</p>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-8">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name:</label>
           <input
@@ -65,7 +65,7 @@ const SupportPage: React.FC = () => {
             type="text"
             value={formData.name}
             onChange={handleChange}
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-all"
             required
           />
         </div>
@@ -77,7 +77,7 @@ const SupportPage: React.FC = () => {
             type="email"
             value={formData.email}
             onChange={handleChange}
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 transition-all"
             required
           />
         </div>
@@ -88,14 +88,14 @@ const SupportPage: React.FC = () => {
             id="message"
             value={formData.message}
             onChange={handleChange}
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 h-40"
+            className="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 h-40 resize-none transition-all"
             required
           />
         </div>
 
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          className="w-full py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all"
         >
           Submit
         </button>

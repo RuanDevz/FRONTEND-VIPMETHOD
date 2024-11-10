@@ -84,7 +84,6 @@ const Plans: React.FC = () => {
       alert("An error occurred while processing your request. Please try again.");
     }
   };
-  
 
   const handleFreeContentClick = () => {
     if (isAuthenticated) {
@@ -134,6 +133,7 @@ const Plans: React.FC = () => {
   return (
     <main className="min-h-screen bg-gray-100 text-black p-8 flex items-center justify-center">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl relative">
+        {/* VIP Plan - Monthly */}
         <PlanCard
           title="VIP ALL CONTENT ACCESS"
           price="USD 10.00 / month"
@@ -144,11 +144,16 @@ const Plans: React.FC = () => {
             "Early access to exclusive content and special newsletters.",
             "Priority support for viewing and accessing all content.",
             "Exclusive Q&A sessions, webinars, and personalized content.",
+            "No ads on the platform.",
+            "Ability to recommend content to be posted.",
+            "Priority in support requests."
           ]}
           buttonText="Get VIP Access"
           onButtonClick={() => handleAccessClick("monthly")}
+          isPopular={isVip}  // Destacar plano VIP
         />
 
+        {/* VIP Plan - Annual */}
         <PlanCard
           title="ANNUAL PLAN"
           price="USD 60.00 / Year"
@@ -160,18 +165,24 @@ const Plans: React.FC = () => {
             "Priority support for viewing and accessing all content.",
             "Exclusive Q&A sessions, webinars, and personalized content.",
             "50% discount on future content.",
+            "No ads on the platform.",
+            "Ability to recommend content to be posted.",
+            "Priority in support requests."
           ]}
           buttonText="Get Annual Plan"
           onButtonClick={() => handleAccessClick("annual")}
+          isPopular={false}  // Destaque no plano anual
         />
 
+        {/* Free Plan */}
         <PlanCard
           title="FREE CONTENT"
           price="USD $0"
-          description=""
+          description="(Free content with ads)"
           features={["Free content with ads."]}
           buttonText="Access Free Content"
           onButtonClick={handleFreeContentClick}
+          isPopular={false}  // Sem destaque para o plano gratuito
         />
       </div>
     </main>

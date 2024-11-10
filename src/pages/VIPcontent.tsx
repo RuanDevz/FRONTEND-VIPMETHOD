@@ -34,6 +34,7 @@ const VIPcontent: React.FC = () => {
   const [searchName, setSearchName] = useState<string>("");
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("mostRecent");
+  const [newLink, setNewLink] = useState({ name: "", author: "", link: "", createdAt: "" });
   const [isVip, setIsVip] = useState<boolean>(false);
 
   const token = localStorage.getItem("Token");
@@ -55,11 +56,11 @@ const VIPcontent: React.FC = () => {
           if (response.data.isVip) {
             setIsVip(true);
           } else {
-            navigate("/");
+            navigate("/"); // Redireciona para a página inicial se não for VIP
           }
         } catch (error) {
           console.error("Error checking VIP status:", error);
-          navigate("#/login");
+          navigate("/login"); // Redireciona para login se houver erro
         }
       }
     };
@@ -70,14 +71,11 @@ const VIPcontent: React.FC = () => {
   useEffect(() => {
     const fetchLinks = async () => {
       try {
-        const response = await axios.get<LinkItem[]>(
-          `${import.meta.env.VITE_BACKEND_URL}/vipcontent`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get<LinkItem[]>(`${import.meta.env.VITE_BACKEND_URL}/vipcontent`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setLinks(response.data);
         setFilteredLinks(response.data);
       } catch (error) {
@@ -129,10 +127,15 @@ const VIPcontent: React.FC = () => {
     setFilteredLinks(filtered);
   }, [searchName, selectedMonth, sortOption, links]);
 
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedDate = e.target.value; // Formato "YYYY-MM-DD"
+    setNewLink({ ...newLink, createdAt: selectedDate });
+  };
+
   const recentLinks = filteredLinks.slice(0, 5);
 
   if (!isVip) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   const groupedLinks: { [key: string]: LinkItem[] } = {};
@@ -145,57 +148,55 @@ const VIPcontent: React.FC = () => {
   });
 
   return (
-    <div className="vip-content-page p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
-        VIP Content
-      </h1>
+    <div className="vip-content-page p-6 bg-gradient-to-br from-blue-50 to-white min-h-screen">
+      <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">VIP Content</h1>
 
-    
-        <div className="filters flex flex-col gap-5 justify-center mb-6 lg:w-[500px] mx-auto">
-          <input
-            type="text"
-            placeholder="Filter by name"
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
-            className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
-          />
-          <select
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
-          >
-            {months.map((month) => (
-              <option key={month.value} value={month.value}>
-                {month.label}
-              </option>
-            ))}
-          </select>
-          <select
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value)}
-            className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
-          >
-            <option value="mostRecent">Most Recent</option>
-            <option value="oldest">Oldest</option>
-            <option value="mostViewed">Most Viewed</option>
-          </select>
-        </div>
+      {/* Filtros de Pesquisa */}
+      <div className="filters flex flex-col gap-5 justify-center mb-6 lg:w-[500px] mx-auto">
+        <input
+          type="text"
+          placeholder="Search by name"
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+          className="p-3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring focus:ring-blue-500"
+        />
+        <select
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(e.target.value)}
+          className="p-3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring focus:ring-blue-500"
+        >
+          {months.map((month) => (
+            <option key={month.value} value={month.value}>
+              {month.label}
+            </option>
+          ))}
+        </select>
+        <select
+          value={sortOption}
+          onChange={(e) => setSortOption(e.target.value)}
+          className="p-3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring focus:ring-blue-500"
+        >
+          <option value="mostRecent">Most Recent</option>
+          <option value="oldest">Oldest</option>
+          <option value="mostViewed">Most Viewed</option>
+        </select>
+      </div>
 
       <div className="link-boxes flex flex-col max-w-screen-lg mx-auto">
         {Object.keys(groupedLinks).length > 0 ? (
           Object.keys(groupedLinks).map((date) => (
-            <div key={date} className="mb-4">
+            <div key={date} className="mb-6">
               <p className="text-gray-600 font-bold text-base mb-2">{date}</p>
               {groupedLinks[date].map((link) => (
                 <div
                   key={link.id}
-                  className="link-box p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                  className="link-box p-4 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 mb-4"
                 >
                   <a
                     href={link.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline text-base font-semibold flex items-center"
+                    className="text-blue-600 hover:underline text-lg font-semibold flex items-center"
                   >
                     {link.name}
                     {recentLinks.includes(link) && (

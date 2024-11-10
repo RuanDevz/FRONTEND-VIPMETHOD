@@ -18,6 +18,9 @@ import FreeContent from "./pages/FreeContent";
 import AdminPainel from "./pages/AdminPainel";
 import LinkvertiseScriptLoader from "./components/LinkvertiseScriptLoader";
 import SupportPage from "./pages/SupportPage";
+import RecommendContent from "./pages/RecommendContent";
+import ViewStats from "./pages/Viewstats";
+import ViewRequests from "./pages/ViewRequests";
 
 const App = () => {
   const token = localStorage.getItem("Token");
@@ -30,7 +33,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<FreeContent />} />
           <Route path="/vip" element={<VIPcontent />} />
-          <Route path="/admin" element={<AdminPainel />} />
+          <Route path="/admin/settings" element={<AdminPainel />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -40,6 +43,10 @@ const App = () => {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/support" element={<SupportPage/>}/>
+          <Route path="/recommend" element={<RecommendContent/>}/>
+          <Route path="/admin/stats" element={<ViewStats/>}/>
+          <Route path="/admin/requests" element={<ViewRequests/>}/>
+
         </Routes>
       </div>
     </Router>

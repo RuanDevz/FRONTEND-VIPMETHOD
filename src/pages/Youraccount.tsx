@@ -4,11 +4,8 @@ import VIPBenefits from "../components/YourAccount/VIPBenefits";
 import Loading from "../components/Loading/Loading";
 import ErrorMessage from "../components/ErrorMessage";
 import { Link } from "react-router-dom";
-import {
-  Userdatatypes,
-  Transaction,
-  FavoriteContent,
-} from "../../types/Userdatatypes";
+import { Userdatatypes, FavoriteContent } from "../../types/Userdatatypes";
+import { CheckCircle, User, Star, Calendar, Heart } from "lucide-react"; // Adicionando ícones
 
 const YourAccount: React.FC = () => {
   const [userData, setUserData] = useState<Userdatatypes | undefined>();
@@ -51,25 +48,28 @@ const YourAccount: React.FC = () => {
   }
 
   if (!userData) {
-    return (
-      <ErrorMessage message="User not found or unable to fetch user data." />
-    );
+    return <ErrorMessage message="User not found or unable to fetch user data." />;
   }
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Your Account</h1>
+    <div className="p-8 bg-gray-800 text-white rounded-lg shadow-lg">
+      <h1 className="text-3xl font-semibold text-center mb-8">Your Account</h1>
+      
       <UserDetails userData={userData} />
 
-      <div className="my-6">
-        <h2 className="text-lg font-semibold mb-2">Subscription Management</h2>
-        <p>Current Subscription: {userData.isVip ? "VIP" : "Free"}</p>
-        <p>
-          Next Billing Date:
-          {new Date(userData.vipExpirationDate).toLocaleDateString()}
-        </p>
+      {/* Subscription Management */}
+      <div className="my-6 p-6 bg-gray-900 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold text-yellow-500 mb-4">Subscription Management</h2>
+        <div className="flex items-center gap-3 mb-3">
+          <Star className="text-yellow-400" />
+          <p className="text-lg">{userData.isVip ? "VIP" : "Free"} Subscription</p>
+        </div>
+        <div className="flex items-center gap-3 mb-6">
+          <Calendar className="text-blue-500" />
+          <p>Next Billing Date: {new Date(userData.vipExpirationDate).toLocaleDateString()}</p>
+        </div>
         <Link to="/plans">
-          <button className="btn btn-primary mt-2">
+          <button className="bg-gradient-to-r from-blue-500 to-teal-500 text-white py-2 px-6 rounded-lg hover:shadow-lg transition-all">
             Upgrade or Change Plan
           </button>
         </Link>
@@ -82,16 +82,20 @@ const YourAccount: React.FC = () => {
         />
       )}
 
-      {/* Favorites */}
-      <div className="my-6">
+      {/* Favorite Content */}
+      <div className="my-6 p-6 bg-gray-900 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold text-pink-400 mb-4">Favorite Content</h2>
         {userData.favorites.length > 0 ? (
-          <ul className="list-disc list-inside">
+          <ul className="space-y-3">
             {userData.favorites.map((content: FavoriteContent) => (
-              <li key={content.id}>{content.title}</li>
+              <li key={content.id} className="flex items-center gap-2 text-lg">
+                <Heart className="text-red-400" />
+                {content.title}
+              </li>
             ))}
           </ul>
         ) : (
-          <p></p>
+          <p className="text-gray-400">You have no favorite content.</p>
         )}
       </div>
     </div>
@@ -99,3 +103,4 @@ const YourAccount: React.FC = () => {
 };
 
 export default YourAccount;
+

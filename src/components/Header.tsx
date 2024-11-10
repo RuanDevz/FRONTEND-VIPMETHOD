@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Header = () => {
+const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -9,23 +9,31 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-black text-white p-4">
-      <div className="container mx-auto flex justify-between items-center">
+    <header className="bg-gray-800 text-white shadow-md sticky top-0 z-50">
+      <div className="container mx-auto flex justify-between items-center p-4">
+        {/* Logo Section */}
         <Link to="/">
-          <div className="text-3xl font-bold">VIP METHOD</div>
+          <div className="text-3xl font-extrabold text-blue-500 hover:text-blue-400 transition duration-300">
+            VIP METHOD
+          </div>
         </Link>
 
+        {/* Desktop Navigation */}
         <nav className="space-x-8 hidden md:flex">
-          <Link to="/login" className="hover:text-gray-400 text-lg">
+          <Link to="/login" className="text-lg font-semibold hover:text-gray-400 transition duration-300">
             Login
           </Link>
-          <Link to="/register" className="hover:text-gray-400 text-lg">
+          <Link to="/register" className="text-lg font-semibold hover:text-gray-400 transition duration-300">
             Register
           </Link>
         </nav>
 
+        {/* Mobile Menu Toggle */}
         <div className="md:hidden">
-          <button className="text-white focus:outline-none" onClick={toggleMenu}>
+          <button
+            className="text-white focus:outline-none"
+            onClick={toggleMenu}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-8 w-8"
@@ -43,15 +51,25 @@ const Header = () => {
           </button>
         </div>
       </div>
+
+      {/* Mobile Menu */}
       <div
-        className={`md:hidden mt-4 space-y-2 transition-transform duration-300 ease-in-out transform ${
+        className={`md:hidden mt-4 space-y-2 transition-all duration-300 ease-in-out transform ${
           isMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"
         }`}
       >
-        <Link to="/login" className="block hover:text-gray-400 text-lg" onClick={toggleMenu}>
+        <Link
+          to="/login"
+          className="block py-2 text-lg font-semibold text-center hover:text-gray-400 transition duration-300"
+          onClick={toggleMenu}
+        >
           Login
         </Link>
-        <Link to="/register" className="block hover:text-gray-400 text-lg" onClick={toggleMenu}>
+        <Link
+          to="/register"
+          className="block py-2 text-lg font-semibold text-center hover:text-gray-400 transition duration-300"
+          onClick={toggleMenu}
+        >
           Register
         </Link>
       </div>

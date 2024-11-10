@@ -1,6 +1,7 @@
 import React from "react";
-import { Crown, LogOut, Star, User2Icon, Settings, HelpCircle } from "lucide-react"; // Adicionando o ícone HelpCircle para Suporte
+import { Crown, LogOut, Star, User2Icon, Settings, HelpCircle, BadgePlus, UserSearch, Waypoints } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 interface UserMenuProps {
   name: string | null;
@@ -27,63 +28,129 @@ const UserMenu: React.FC<UserMenuProps> = ({
   return (
     <nav className="relative z-50">
       <div
-        className="flex gap-2 items-center cursor-pointer"
+        className="flex gap-2 items-center cursor-pointer text-white hover:text-gray-300"
         onClick={handleMenuToggle}
       >
-        <User2Icon />
-        <p>{name}</p>
+        <User2Icon className="text-white" />
+        <p className="font-semibold text-white">{name}</p> {/* Nome do usuário em branco */}
       </div>
 
+      {/* Mostra o menu somente quando isMenuOpen for true */}
       {isMenuOpen && (
-        <div className="absolute right-0 mt-5 w-48 bg-white text-black rounded-md shadow-lg">
-          <ul className="py-1">
+        <motion.div
+          className="absolute right-0 mt-5 w-56 bg-black text-white rounded-lg shadow-lg border border-gray-800"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ul className="py-2">
             <li>
-              <Link to="/account" className="px-4 py-2 hover:bg-gray-200 flex gap-2" onClick={handleMenuToggle}>
-                <User2Icon />
-                Your Account
+              <Link
+                to="/account"
+                className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
+                onClick={handleMenuToggle}
+              >
+                <User2Icon className="text-white" />
+                <span className="text-sm font-medium">Your Account</span>
               </Link>
             </li>
+
+            {/* Link "Recommend Content" só é mostrado para usuários VIP */}
             {isVip && (
               <li>
-                <Link to="/VIP" className="px-4 py-2 hover:bg-gray-200 flex gap-2" onClick={handleMenuToggle}>
-                  <Crown />
-                  Access VIP
+                <Link
+                  to="/recommend"
+                  className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
+                  onClick={handleMenuToggle}
+                >
+                  <BadgePlus className="text-yellow-500" />
+                  <span className="text-sm font-medium">Recommend Content</span>
                 </Link>
               </li>
             )}
-            {isAdmin && (
+
+            {/* Link "Access VIP" só é mostrado para usuários VIP */}
+            {isVip && (
               <li>
-                <Link to="/admin" className="px-4 py-2 hover:bg-gray-200 flex gap-2" onClick={handleMenuToggle}>
-                  <Settings />
-                  Admin Panel
+                <Link
+                  to="/VIP"
+                  className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
+                  onClick={handleMenuToggle}
+                >
+                  <Crown className="text-yellow-400" />
+                  <span className="text-sm font-medium">Access VIP</span>
                 </Link>
               </li>
             )}
-            <li className="px-4 py-2 flex gap-2">
-              <Star />
-              Status: {isVip ? "VIP" : "Regular"}
+
+            {/* Links para administradores */}
+            {isAdmin && (
+              <>
+                <li>
+                  <Link
+                    to="/admin/requests"
+                    className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
+                    onClick={handleMenuToggle}
+                  >
+                    <UserSearch className="text-blue-500" />
+                    <span className="text-sm font-medium">View Requests</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/admin/stats"
+                    className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
+                    onClick={handleMenuToggle}
+                  >
+                    <Waypoints className="text-green-500" />
+                    <span className="text-sm font-medium">View Stats</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/admin/settings"
+                    className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
+                    onClick={handleMenuToggle}
+                  >
+                    <Settings className="text-indigo-500" />
+                    <span className="text-sm font-medium">Admin Settings</span>
+                  </Link>
+                </li>
+              </>
+            )}
+
+            {/* Status do usuário */}
+            <li className="px-6 py-3 flex items-center gap-3 text-sm font-medium text-gray-400">
+              <Star className="text-yellow-400" />
+              <span>Status: {isVip ? "VIP" : "Regular"}</span>
             </li>
 
-            {/* Adicionando o item de Suporte */}
+            {/* Link para Suporte */}
             <li>
-              <Link to="/support" className="px-4 py-2 hover:bg-gray-200 flex gap-2" onClick={handleMenuToggle}>
-                <HelpCircle />
-                Support
+              <Link
+                to="/support"
+                className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
+                onClick={handleMenuToggle}
+              >
+                <HelpCircle className="text-gray-400" />
+                <span className="text-sm font-medium">Support</span>
               </Link>
             </li>
 
+            {/* Botão de Logout */}
             <li
               onClick={() => {
                 Logout();
-                handleMenuToggle(); 
+                handleMenuToggle();
               }}
-              className="px-4 py-2 hover:bg-gray-200 flex gap-2 cursor-pointer"
+              className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg cursor-pointer transition-all duration-200"
             >
-              <LogOut />
-              Logout
+              <LogOut className="text-red-500" />
+              <span className="text-sm font-medium">Logout</span>
             </li>
           </ul>
-        </div>
+        </motion.div>
       )}
     </nav>
   );

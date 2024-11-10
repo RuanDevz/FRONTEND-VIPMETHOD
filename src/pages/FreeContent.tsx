@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 type LinkItem = {
   id: number;
@@ -31,6 +32,8 @@ const FreeContent: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("mostRecent");
   const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); // Verifica se o usuário está autenticado
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLinks = async () => {
@@ -46,6 +49,13 @@ const FreeContent: React.FC = () => {
     };
 
     fetchLinks();
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("Token");
+    if (token) {
+      setIsAuthenticated(true); // Se o token existir, o usuário está autenticado
+    }
   }, []);
 
   useEffect(() => {
@@ -89,11 +99,21 @@ const FreeContent: React.FC = () => {
     groupedLinks[date].push(link);
   });
 
+  // Função para tratar o clique nos links
+  const handleLinkClick = (link: string) => {
+    if (isAuthenticated) {
+      // Se o usuário estiver autenticado, abre o link normalmente
+      window.open(link, "_blank");
+    } else {
+      // Caso contrário, exibe uma mensagem e redireciona para a página de login
+      alert("You need to be logged in to access this content.");
+      navigate("/login"); // Redireciona para a página de login
+    }
+  };
+
   return (
     <div className="free-content-page p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
-        Free Content
-      </h1>
+      <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">Free Content</h1>
 
       <div className="filters flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4 mb-6">
         <input
@@ -134,11 +154,9 @@ const FreeContent: React.FC = () => {
                   key={link.id}
                   className="link-box p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
                 >
-                  <a
-                    href={link.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline text-base font-semibold flex items-center"
+                  <button
+                    onClick={() => handleLinkClick(link.link)} // Usa o botão para capturar o clique
+                    className="text-blue-600 hover:underline text-base font-semibold flex items-center w-full text-left"
                   >
                     {link.name}
                     {recentLinks.includes(link) && (
@@ -146,15 +164,13 @@ const FreeContent: React.FC = () => {
                         NEW
                       </span>
                     )}
-                  </a>
+                  </button>
                 </div>
               ))}
             </div>
           ))
         ) : (
-          <p className="col-span-full text-center text-gray-600">
-            No content found.
-          </p>
+          <p className="col-span-full text-center text-gray-600">No content found.</p>
         )}
       </div>
     </div>
