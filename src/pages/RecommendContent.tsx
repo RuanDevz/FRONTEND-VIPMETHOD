@@ -40,10 +40,8 @@ const RecommendContent: React.FC = () => {
       setTitle("");
       setDescription("");
 
-      // Após enviar a recomendação, podemos atualizar a tela de "View Requests"
-      // Isso pode ser feito chamando o fetch diretamente ou usando um estado global (Redux, Context API, etc.)
-      // Aqui, chamaremos o fetch diretamente no componente pai para atualizar os dados
-      window.location.reload();  // Isso recarrega a página, forçando um novo fetch para "View Requests"
+      
+      window.location.reload();  
     } catch (error) {
       console.error("Error submitting recommendation:", error);
       setMessage("There was an error submitting your recommendation.");

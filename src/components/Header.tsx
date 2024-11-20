@@ -31,8 +31,9 @@ const Header: React.FC = () => {
         {/* Mobile Menu Toggle */}
         <div className="md:hidden">
           <button
-            className="text-white focus:outline-none"
+            className="text-white focus:outline-none transform transition-transform duration-300"
             onClick={toggleMenu}
+            style={{ transform: isMenuOpen ? 'rotate(90deg)' : 'rotate(0)' }}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +55,7 @@ const Header: React.FC = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden mt-4 space-y-2 transition-all duration-300 ease-in-out transform ${
+        className={`md:hidden mt-4 space-y-2 transition-all duration-500 ease-in-out transform ${
           isMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"
         }`}
       >

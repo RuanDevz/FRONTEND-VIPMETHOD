@@ -6,7 +6,14 @@ type LinkItem = {
   id: number;
   name: string;
   link: string;
+  category: string;
   createdAt: string;
+};
+
+type Category = {
+  id: string;
+  name: string;
+  category: string;
 };
 
 const months = [
@@ -28,34 +35,45 @@ const months = [
 const FreeContent: React.FC = () => {
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [filteredLinks, setFilteredLinks] = useState<LinkItem[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [searchName, setSearchName] = useState<string>("");
   const [selectedMonth, setSelectedMonth] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("mostRecent");
   const [loading, setLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); // Verifica se o usuário está autenticado
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [showPopup, setShowPopup] = useState<boolean>(false); // Popup state
   const navigate = useNavigate();
+  const [isVip, setIsVip] = useState(false);
+  const [isClosing, setIsClosing] = useState(false); // Estado para controlar a animação de fechamento
 
   useEffect(() => {
     const fetchLinks = async () => {
       try {
         setLoading(true);
-        const response = await axios.get<LinkItem[]>(`${import.meta.env.VITE_BACKEND_URL}/freecontent`);
+        const response = await axios.get<LinkItem[]>(
+          `${import.meta.env.VITE_BACKEND_URL}/freecontent`
+        );
         setLoading(false);
         setLinks(response.data);
         setFilteredLinks(response.data);
+
+        const extractedCategories = Array.from(
+          new Set(response.data.map((item) => item.category))
+        ).map((category) => ({
+          id: category,
+          name: category,
+          category: category,
+        }));
+
+        setCategories(extractedCategories);
       } catch (error) {
         console.error("Error fetching free content:", error);
+        setLoading(false);
       }
     };
 
     fetchLinks();
-  }, []);
-
-  useEffect(() => {
-    const token = localStorage.getItem("Token");
-    if (token) {
-      setIsAuthenticated(true); // Se o token existir, o usuário está autenticado
-    }
   }, []);
 
   useEffect(() => {
@@ -74,46 +92,97 @@ const FreeContent: React.FC = () => {
       });
     }
 
+    if (selectedCategory) {
+      filtered = filtered.filter((link) => link.category === selectedCategory);
+    }
+
     switch (sortOption) {
       case "mostRecent":
-        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        filtered.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
         break;
       case "oldest":
-        filtered.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        filtered.sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
         break;
       default:
         break;
     }
 
     setFilteredLinks(filtered);
-  }, [searchName, selectedMonth, sortOption, links]);
+  }, [searchName, selectedMonth, selectedCategory, sortOption, links]);
 
   const recentLinks = filteredLinks.slice(0, 5);
 
-  const groupedLinks: { [key: string]: LinkItem[] } = {};
-  filteredLinks.forEach((link) => {
-    const date = new Date(link.createdAt).toLocaleDateString("pt-BR");
-    if (!groupedLinks[date]) {
-      groupedLinks[date] = [];
-    }
-    groupedLinks[date].push(link);
-  });
 
-  // Função para tratar o clique nos links
+  // Função para formatar a data no formato "DD/MM/YYYY"
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}/${date.getFullYear()}`;
+  };
+
+  // Agrupar links por data
+  const groupByDate = (links: LinkItem[]) => {
+    return links.reduce((acc: any, link: LinkItem) => {
+      const date = formatDate(link.createdAt);
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(link);
+      return acc;
+    }, {});
+  };
+
+  const groupedLinks = groupByDate(filteredLinks);
+
   const handleLinkClick = (link: string) => {
-    if (isAuthenticated) {
-      // Se o usuário estiver autenticado, abre o link normalmente
-      window.open(link, "_blank");
-    } else {
-      // Caso contrário, exibe uma mensagem e redireciona para a página de login
-      alert("You need to be logged in to access this content.");
-      navigate("/login"); // Redireciona para a página de login
-    }
+    window.open(link, "_blank");
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
+
+  const handleBecomeVIP = () => {
+    navigate("/plans");
   };
 
   return (
-    <div className="free-content-page p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">Free Content</h1>
+    <div className="vip-content-page p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
+        Free Content
+      </h1>
+
+      {showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-lg text-center w-80">
+            <h2 className="text-xl font-bold mb-4">Enjoy More with VIP</h2>
+            <p className="text-gray-600 mb-6">
+              Become a VIP to enjoy ad-free content or continue with ads.
+            </p>
+            <div className="flex flex-col space-y-4">
+              <button
+                onClick={handleBecomeVIP}
+                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+              >
+                Become VIP Now
+              </button>
+              <button
+                onClick={handleClosePopup}
+                className="bg-gray-200 text-gray-800 py-2 px-4 rounded hover:bg-gray-300"
+              >
+                I prefer ads
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="filters flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4 mb-6">
         <input
@@ -135,6 +204,18 @@ const FreeContent: React.FC = () => {
           ))}
         </select>
         <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500 w-full md:w-auto"
+        >
+          <option value="">All Categories</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.category}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+        <select
           value={sortOption}
           onChange={(e) => setSortOption(e.target.value)}
           className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500 w-full md:w-auto"
@@ -146,17 +227,19 @@ const FreeContent: React.FC = () => {
 
       <div className="link-boxes flex flex-col max-w-screen-lg mx-auto">
         {Object.keys(groupedLinks).length > 0 ? (
-          Object.keys(groupedLinks).map((date) => (
+          Object.keys(groupedLinks).map((date, index) => (
             <div key={date} className="mb-4">
-              <p className="text-gray-600 font-bold text-base mb-2">{date}</p>
-              {groupedLinks[date].map((link) => (
+              <p className="text-gray-600 font-bold text-base mb-2">
+                {date} {/* Exibe a data apenas quando ela for diferente */}
+              </p>
+              {groupedLinks[date].map((link: any, linkIndex: any) => (
                 <div
                   key={link.id}
-                  className="link-box p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                  className="link-box p-4 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 mb-4"
                 >
                   <button
-                    onClick={() => handleLinkClick(link.link)} // Usa o botão para capturar o clique
-                    className="text-blue-600 hover:underline text-base font-semibold flex items-center w-full text-left"
+                    onClick={() => handleLinkClick(link.link)} 
+                    className="text-blue-600 hover:underline text-lg font-semibold flex items-center"
                   >
                     {link.name}
                     {recentLinks.includes(link) && (
@@ -170,7 +253,7 @@ const FreeContent: React.FC = () => {
             </div>
           ))
         ) : (
-          <p className="col-span-full text-center text-gray-600">No content found.</p>
+          <p>No content available</p>
         )}
       </div>
     </div>

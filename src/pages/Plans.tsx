@@ -61,24 +61,22 @@ const Plans: React.FC = () => {
       navigate("/login");
       return;
     }
-  
-    // Armazenar o tipo de plano diretamente como string no localStorage
     localStorage.setItem("selectedPlan", planType);
-  
+
     try {
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/pay/vip-payment`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, planType }), // Passando o tipo de plano
+          body: JSON.stringify({ email, planType }),
         }
       );
-  
+
       if (!response.ok) throw new Error("Error creating payment session");
-  
+
       const { url } = await response.json();
-      window.open(url, "_blank"); // Redireciona para o gateway de pagamento
+      window.open(url, "_blank");
     } catch (error) {
       console.error("Error creating payment session:", error);
       alert("An error occurred while processing your request. Please try again.");
@@ -98,6 +96,11 @@ const Plans: React.FC = () => {
     const email = urlParams.get("email");
     const planType = urlParams.get("planType");
     const isCanceled = window.location.pathname.includes("/cancel");
+
+    if (!email || !planType) {
+      console.error("Email or planType is missing in the URL");
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -133,7 +136,6 @@ const Plans: React.FC = () => {
   return (
     <main className="min-h-screen bg-gray-100 text-black p-8 flex items-center justify-center">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl relative">
-        {/* VIP Plan - Monthly */}
         <PlanCard
           title="VIP ALL CONTENT ACCESS"
           price="USD 10.00 / month"
@@ -143,46 +145,54 @@ const Plans: React.FC = () => {
             "VIP badge in our Discord community.",
             "Early access to exclusive content and special newsletters.",
             "Priority support for viewing and accessing all content.",
-            "Exclusive Q&A sessions, webinars, and personalized content.",
+            "Exclusive Q&A sessions, webinars",
             "No ads on the platform.",
             "Ability to recommend content to be posted.",
-            "Priority in support requests."
+            "Priority in support requests.",
           ]}
           buttonText="Get VIP Access"
           onButtonClick={() => handleAccessClick("monthly")}
-          isPopular={isVip}  // Destacar plano VIP
+          isPopular={true}
         />
 
-        {/* VIP Plan - Annual */}
         <PlanCard
           title="ANNUAL PLAN"
-          price="USD 60.00 / Year"
+          price="USD 5.00 / Per Month"
           description="(1 year of content access without ads)"
           features={[
             "Access to all content before it's posted for free users.",
             "VIP badge in our Discord community.",
             "Early access to exclusive content and newsletters.",
             "Priority support for viewing and accessing all content.",
-            "Exclusive Q&A sessions, webinars, and personalized content.",
+            "Exclusive Q&A sessions, webinars",
             "50% discount on future content.",
             "No ads on the platform.",
             "Ability to recommend content to be posted.",
-            "Priority in support requests."
+            "Priority in support requests.",
           ]}
           buttonText="Get Annual Plan"
           onButtonClick={() => handleAccessClick("annual")}
-          isPopular={false}  // Destaque no plano anual
+          isPopular={false}
         />
 
-        {/* Free Plan */}
         <PlanCard
           title="FREE CONTENT"
           price="USD $0"
           description="(Free content with ads)"
-          features={["Free content with ads."]}
+          features={[
+            "Free content with ads",
+            "Access to all content before it's posted for free users.",
+            "VIP badge in our Discord community.",
+            "Early access to exclusive content and newsletters.",
+            "Priority support for viewing and accessing all content.",
+            "50% discount on future content.",
+            "No ads on the platform.",
+            "Ability to recommend content to be posted.",
+            "Priority in support requests.",
+          ]}
           buttonText="Access Free Content"
           onButtonClick={handleFreeContentClick}
-          isPopular={false}  // Sem destaque para o plano gratuito
+          isPopular={false}
         />
       </div>
     </main>

@@ -20,10 +20,14 @@ const HeaderLogged: React.FC = () => {
     const checkUserStatus = async () => {
       if (token && email) {
         try {
-          const vipResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`);
+          const vipResponse = await axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`
+          );
           setIsVip(vipResponse.data.isVip);
 
-          const adminResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/is-admin/${email}`);
+          const adminResponse = await axios.get(
+            `${import.meta.env.VITE_BACKEND_URL}/auth/is-admin/${email}`
+          );
           setIsAdmin(adminResponse.data.isAdmin);
         } catch (error) {
           console.error("Error checking user status:", error);
@@ -47,7 +51,7 @@ const HeaderLogged: React.FC = () => {
           {isVip ? (
             <Link
               to="/vip"
-              className="inline-block py-2 px-4 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg shadow-lg transform hover:scale-105 transition duration-300 ease-in-out"
+              className="inline-block py-2 px-4 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg shadow-lg transform hover:scale-105 transition duration-300 ease-in-out animate-shine"
             >
               VIP Access
             </Link>

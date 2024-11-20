@@ -52,13 +52,13 @@ const YourAccount: React.FC = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-800 text-white rounded-lg shadow-lg">
+    <div className="p-8 bg-gray-800 text-white rounded-lg shadow-lg w-full h-full flex flex-col">
       <h1 className="text-3xl font-semibold text-center mb-8">Your Account</h1>
       
       <UserDetails userData={userData} />
 
       {/* Subscription Management */}
-      <div className="my-6 p-6 bg-gray-900 rounded-lg shadow-md">
+      <div className="my-6 p-6 bg-gray-900 rounded-lg shadow-md w-full">
         <h2 className="text-xl font-semibold text-yellow-500 mb-4">Subscription Management</h2>
         <div className="flex items-center gap-3 mb-3">
           <Star className="text-yellow-400" />
@@ -83,7 +83,7 @@ const YourAccount: React.FC = () => {
       )}
 
       {/* Favorite Content */}
-      <div className="my-6 p-6 bg-gray-900 rounded-lg shadow-md">
+      <div className="my-6 p-6 bg-gray-900 rounded-lg shadow-md w-full pb-36">
         <h2 className="text-xl font-semibold text-pink-400 mb-4">Favorite Content</h2>
         {userData.favorites.length > 0 ? (
           <ul className="space-y-3">
@@ -103,4 +103,3 @@ const YourAccount: React.FC = () => {
 };
 
 export default YourAccount;
-

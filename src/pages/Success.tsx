@@ -22,7 +22,7 @@ export default function Success() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email, planType }), // Passando planType diretamente
+          body: JSON.stringify({ email, planType }), 
         });
 
         if (!response.ok) {

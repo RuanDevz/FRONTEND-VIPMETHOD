@@ -8,31 +8,29 @@ const ViewStats: React.FC = () => {
     totalUsers: 0,
     totalVIPs: 0,
     totalContentRecommendations: 0,
-    usersLastMonth: 0, // Novo dado: Usuários no último mês
-    vipPercentage: 0,  // Novo dado: Percentual de VIPs
+    usersLastMonth: 0, 
+    vipPercentage: 0, 
   });
   
-  const [loading, setLoading] = useState<boolean>(true);  // Para controlar o estado de loading
+  const [loading, setLoading] = useState<boolean>(true); 
 
-  // Effect para buscar as estatísticas quando o componente for montado
   useEffect(() => {
     const fetchStats = async () => {
-      setLoading(true);  // Inicia o loading
+      setLoading(true);  
 
       try {
-        // Fazendo a chamada para a API de stats
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/stats`);
         const data = await response.json();
-        setStats(data);  // Atualiza o estado com os dados da API
+        setStats(data);  
       } catch (error) {
-        console.error("Erro ao buscar as estatísticas:", error); // Em caso de erro
+        console.error("Erro ao buscar as estatísticas:", error);
       } finally {
-        setLoading(false);  // Finaliza o loading, seja sucesso ou erro
+        setLoading(false); 
       }
     };
 
-    fetchStats(); // Chama a função para buscar os dados
-  }, []);  // O array vazio significa que o effect só rodará uma vez quando o componente for montado
+    fetchStats(); 
+  }, []); 
 
   return (
     <div className="container mx-auto p-4">

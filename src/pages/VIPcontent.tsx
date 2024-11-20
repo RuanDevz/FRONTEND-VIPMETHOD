@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Loading from "../components/Loading/Loading";
+import { useNavigate } from "react-router-dom";
 
 type LinkItem = {
   id: number;
   name: string;
-  author: string;
   link: string;
+  category: string;
   createdAt: string;
-  views: number;
+};
+
+type Category = {
+  id: string;
+  name: string;
+  category: string;
 };
 
 const months = [
@@ -31,62 +35,43 @@ const months = [
 const VIPcontent: React.FC = () => {
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [filteredLinks, setFilteredLinks] = useState<LinkItem[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [searchName, setSearchName] = useState<string>("");
   const [selectedMonth, setSelectedMonth] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("mostRecent");
-  const [newLink, setNewLink] = useState({ name: "", author: "", link: "", createdAt: "" });
-  const [isVip, setIsVip] = useState<boolean>(false);
-
-  const token = localStorage.getItem("Token");
-  const email = localStorage.getItem("email");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const checkVipStatus = async () => {
-      if (token && email) {
-        try {
-          const response = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          if (response.data.isVip) {
-            setIsVip(true);
-          } else {
-            navigate("/"); // Redireciona para a página inicial se não for VIP
-          }
-        } catch (error) {
-          console.error("Error checking VIP status:", error);
-          navigate("/login"); // Redireciona para login se houver erro
-        }
-      }
-    };
-
-    checkVipStatus();
-  }, [token, email, navigate]);
 
   useEffect(() => {
     const fetchLinks = async () => {
       try {
-        const response = await axios.get<LinkItem[]>(`${import.meta.env.VITE_BACKEND_URL}/vipcontent`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        setLoading(true);
+        const response = await axios.get<LinkItem[]>(
+          `${import.meta.env.VITE_BACKEND_URL}/vipcontent`
+        );
+        setLoading(false);
         setLinks(response.data);
         setFilteredLinks(response.data);
+
+        // Extraindo categorias únicas
+        const extractedCategories = Array.from(
+          new Set(response.data.map((item) => item.category))
+        ).map((category) => ({
+          id: category,
+          name: category,
+          category: category,
+        }));
+
+        setCategories(extractedCategories);
       } catch (error) {
         console.error("Error fetching VIP content:", error);
+        setLoading(false);
       }
     };
 
-    if (isVip) {
-      fetchLinks();
-    }
-  }, [isVip, token]);
+    fetchLinks();
+  }, []);
 
   useEffect(() => {
     let filtered = [...links];
@@ -104,39 +89,30 @@ const VIPcontent: React.FC = () => {
       });
     }
 
+    if (selectedCategory) {
+      filtered = filtered.filter((link) => link.category === selectedCategory);
+    }
+
     switch (sortOption) {
       case "mostRecent":
-        filtered.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
+        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         break;
       case "oldest":
-        filtered.sort(
-          (a, b) =>
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        );
-        break;
-      case "mostViewed":
-        filtered.sort((a, b) => b.views - a.views);
+        filtered.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
         break;
       default:
         break;
     }
 
     setFilteredLinks(filtered);
-  }, [searchName, selectedMonth, sortOption, links]);
-
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedDate = e.target.value; // Formato "YYYY-MM-DD"
-    setNewLink({ ...newLink, createdAt: selectedDate });
-  };
+  }, [searchName, selectedMonth, selectedCategory, sortOption, links]);
 
   const recentLinks = filteredLinks.slice(0, 5);
 
-  if (!isVip) {
-    return <Loading />;
-  }
+
+  const handleLinkClick = (link: string) => {
+    window.open(link, "_blank");
+  };
 
   const groupedLinks: { [key: string]: LinkItem[] } = {};
   filteredLinks.forEach((link) => {
@@ -147,23 +123,31 @@ const VIPcontent: React.FC = () => {
     groupedLinks[date].push(link);
   });
 
+  // Função para verificar se o link é "novo" (últimos 7 dias)
+  const isNew = (createdAt: string) => {
+    const currentDate = new Date();
+    const linkDate = new Date(createdAt);
+    const timeDifference = currentDate.getTime() - linkDate.getTime();
+    const daysDifference = timeDifference / (1000 * 3600 * 24); // Convertendo para dias
+    return daysDifference <= 7;
+  };
+
   return (
-    <div className="vip-content-page p-6 bg-gradient-to-br from-blue-50 to-white min-h-screen">
+    <div className="vip-content-page p-6 bg-gray-100 min-h-screen">
       <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">VIP Content</h1>
 
-      {/* Filtros de Pesquisa */}
-      <div className="filters flex flex-col gap-5 justify-center mb-6 lg:w-[500px] mx-auto">
+      <div className="filters flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4 mb-6">
         <input
           type="text"
-          placeholder="Search by name"
+          placeholder="Filter by name"
           value={searchName}
           onChange={(e) => setSearchName(e.target.value)}
-          className="p-3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring focus:ring-blue-500"
+          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500 w-full md:w-auto"
         />
         <select
           value={selectedMonth}
           onChange={(e) => setSelectedMonth(e.target.value)}
-          className="p-3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring focus:ring-blue-500"
+          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500 w-full md:w-auto"
         >
           {months.map((month) => (
             <option key={month.value} value={month.value}>
@@ -172,18 +156,29 @@ const VIPcontent: React.FC = () => {
           ))}
         </select>
         <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500 w-full md:w-auto"
+        >
+          <option value="">All Categories</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.category}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+        <select
           value={sortOption}
           onChange={(e) => setSortOption(e.target.value)}
-          className="p-3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring focus:ring-blue-500"
+          className="p-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring focus:ring-blue-500 w-full md:w-auto"
         >
           <option value="mostRecent">Most Recent</option>
           <option value="oldest">Oldest</option>
-          <option value="mostViewed">Most Viewed</option>
         </select>
       </div>
 
       <div className="link-boxes flex flex-col max-w-screen-lg mx-auto">
-        {Object.keys(groupedLinks).length > 0 ? (
+      {Object.keys(groupedLinks).length > 0 ? (
           Object.keys(groupedLinks).map((date) => (
             <div key={date} className="mb-6">
               <p className="text-gray-600 font-bold text-base mb-2">{date}</p>

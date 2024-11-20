@@ -25,6 +25,6 @@ export type LinkItem = {
   id: number;
   name: string;
   link: string;
+  category?: string
   createdAt: string;
-  isFavorite: boolean; // Adicionado
 };
