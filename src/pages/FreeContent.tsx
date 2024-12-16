@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading/Loading";
-import { Helmet } from "react-helmet-async";
 
 type LinkItem = {
   id: number;
@@ -34,7 +33,7 @@ const months = [
   { value: "12", label: "December" },
 ];
 
-const FreeContent: React.FC = () => {
+const FreeContent = () => {
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [filteredLinks, setFilteredLinks] = useState<LinkItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -149,10 +148,6 @@ const FreeContent: React.FC = () => {
 
   return (
     <div className="vip-content-page p-6 bg-gray-100 min-h-screen">
-      <Helmet>
-        
-      </Helmet>
-
       <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
         Free Content
       </h1>

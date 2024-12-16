@@ -42,7 +42,6 @@ const LinkvertiseScriptLoader: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Reexecuta o script do Linkvertise após cada atualização de DOM
     const observer = new MutationObserver(() => {
       if (window.linkvertise) {
         window.linkvertise(518238, {
