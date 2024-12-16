@@ -16,7 +16,7 @@ const YourAccount: React.FC = () => {
     const fetchUserData = async () => {
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/auth/dashboard`,
+          `https://backend-vip.vercel.app/auth/dashboard`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

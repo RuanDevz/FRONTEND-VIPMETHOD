@@ -50,7 +50,7 @@ const FreeContent = () => {
       try {
         setLoading(true);
         const response = await axios.get<LinkItem[]>(
-          `${import.meta.env.VITE_BACKEND_URL}/freecontent`
+          `https://backend-vip.vercel.app/freecontent`
         );
         setLoading(false);
         setLinks(response.data);
@@ -216,7 +216,6 @@ const FreeContent = () => {
           <option value="mostRecent">Most Recent</option>
           <option value="oldest">Oldest</option>
         </select>
-        <a href="https://WWW.facebook.com/" target="_blank">FACEBOOK</a>
       </div>
 
       <div className="link-boxes flex flex-col max-w-screen-lg mx-auto">
