@@ -1,5 +1,6 @@
 import React from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { HelmetProvider, Helmet } from "react-helmet-async";
 import Header from "./components/Header";
 import HeaderLogged from "./components/HeaderLogged";
 import Footer from "./components/Footer";
@@ -25,32 +26,34 @@ const App = () => {
   const token = localStorage.getItem("Token");
 
   return (
-    <Router>
-      <div className="flex flex-col min-h-screen">
-        <LinkvertiseScriptLoader />
-        {token ? <HeaderLogged /> : <Header />}
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<FreeContent />} />
-            <Route path="/vip" element={<VIPcontent />} />
-            <Route path="/admin/settings" element={<AdminPainel />} />
-            <Route path="/plans" element={<Plans />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/account" element={<YourAccount />} />
-            <Route path="/success" element={<Success />} />
-            <Route path="/cancel" element={<Cancel />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/support" element={<SupportPage />} />
-            <Route path="/recommend" element={<RecommendContent />} />
-            <Route path="/admin/stats" element={<ViewStats />} />
-            <Route path="/admin/requests" element={<ViewRequests />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <div className="flex flex-col min-h-screen">
+          <LinkvertiseScriptLoader />
+          {token ? <HeaderLogged /> : <Header />}
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/" element={<FreeContent />} />
+              <Route path="/vip" element={<VIPcontent />} />
+              <Route path="/admin/settings" element={<AdminPainel />} />
+              <Route path="/plans" element={<Plans />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/account" element={<YourAccount />} />
+              <Route path="/success" element={<Success />} />
+              <Route path="/cancel" element={<Cancel />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/support" element={<SupportPage />} />
+              <Route path="/recommend" element={<RecommendContent />} />
+              <Route path="/admin/stats" element={<ViewStats />} />
+              <Route path="/admin/requests" element={<ViewRequests />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </HelmetProvider>
   );
 };
 

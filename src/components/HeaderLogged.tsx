@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import UserMenu from "../components/HeaderLogged/UserMenu";
-import HeaderButton from "../components/HeaderLogged/HeaderButton";
 
 const HeaderLogged: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,7 +41,7 @@ const HeaderLogged: React.FC = () => {
     <header className="bg-gray-900 text-white p-4 shadow-md sticky top-0 z-50">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/">
-          <div className="text-xl lg:text-2xl font-extrabold text-blue-500 hover:text-blue-400 transition duration-300">
+          <div className="text-base lg:text-2xl font-extrabold text-blue-500 hover:text-blue-400 transition duration-300">
             VIP METHOD
           </div>
         </Link>
@@ -51,14 +50,14 @@ const HeaderLogged: React.FC = () => {
           {isVip ? (
             <Link
               to="/vip"
-              className="inline-block py-2 px-4 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg shadow-lg transform hover:scale-105 transition duration-300 ease-in-out animate-shine"
+              className="text-sm inline-block py-2 px-4 lg:text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg shadow-lg transform hover:scale-105 transition duration-300 ease-in-out animate-shine"
             >
               VIP Access
             </Link>
           ) : (
             <Link
               to="/plans"
-              className="inline-block py-2 px-4 text-lg font-semibold bg-black text-white rounded-lg border-2 border-gray-700 hover:border-blue-500 transition duration-300 ease-in-out"
+              className=" text-sm inline-block py-2 px-4 lg:text-lg font-semibold bg-black text-white rounded-lg border-2 border-gray-700 hover:border-blue-500 transition duration-300 ease-in-out"
             >
               Become VIP
             </Link>

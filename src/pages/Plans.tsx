@@ -152,7 +152,7 @@ const Plans: React.FC = () => {
           ]}
           buttonText="Get VIP Access"
           onButtonClick={() => handleAccessClick("monthly")}
-          isPopular={true}
+          isPopular={false}
         />
 
         <PlanCard
@@ -172,7 +172,7 @@ const Plans: React.FC = () => {
           ]}
           buttonText="Get Annual Plan"
           onButtonClick={() => handleAccessClick("annual")}
-          isPopular={false}
+          isPopular={true}
         />
 
         <PlanCard
@@ -193,6 +193,7 @@ const Plans: React.FC = () => {
           buttonText="Access Free Content"
           onButtonClick={handleFreeContentClick}
           isPopular={false}
+          unPopular={true}
         />
       </div>
     </main>

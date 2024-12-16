@@ -120,16 +120,14 @@ const UserMenu: React.FC<UserMenuProps> = ({
               </>
             )}
 
-            {/* Status do usuário */}
             <li className="px-6 py-3 flex items-center gap-3 text-sm font-medium text-gray-400">
               <Star className="text-yellow-400" />
               <span>Status: {isVip ? "VIP" : "Regular"}</span>
             </li>
 
-            {/* Link para Suporte */}
             <li>
               <Link
-                to="/support"
+                to="https://discord.gg/95BKaYTPPS"
                 className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
                 onClick={handleMenuToggle}
               >
@@ -138,7 +136,6 @@ const UserMenu: React.FC<UserMenuProps> = ({
               </Link>
             </li>
 
-            {/* Botão de Logout */}
             <li
               onClick={() => {
                 Logout();

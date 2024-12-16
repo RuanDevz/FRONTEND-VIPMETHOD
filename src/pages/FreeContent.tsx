@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Loading from "../components/Loading/Loading";
+import { Helmet } from "react-helmet-async";
 
 type LinkItem = {
   id: number;
@@ -22,7 +24,7 @@ const months = [
   { value: "02", label: "February" },
   { value: "03", label: "March" },
   { value: "04", label: "April" },
-  { value: "05", label: "May" },
+  { value: "05", label: "June" },
   { value: "06", label: "June" },
   { value: "07", label: "July" },
   { value: "08", label: "August" },
@@ -41,11 +43,8 @@ const FreeContent: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("mostRecent");
   const [loading, setLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [showPopup, setShowPopup] = useState<boolean>(false); // Popup state
+  const [showPopup, setShowPopup] = useState<boolean>(false);
   const navigate = useNavigate();
-  const [isVip, setIsVip] = useState(false);
-  const [isClosing, setIsClosing] = useState(false); // Estado para controlar a animação de fechamento
 
   useEffect(() => {
     const fetchLinks = async () => {
@@ -118,32 +117,27 @@ const FreeContent: React.FC = () => {
 
   const recentLinks = filteredLinks.slice(0, 5);
 
+  const addOneDay = (date: Date): Date => {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate());
+    return newDate;
+  };
 
-  // Função para formatar a data no formato "DD/MM/YYYY"
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1)
+  const groupedLinks: { [key: string]: LinkItem[] } = {};
+  filteredLinks.forEach((link) => {
+    let linkDate = new Date(link.createdAt);
+    linkDate = addOneDay(linkDate);
+    const formattedDate = `${(linkDate.getMonth() + 1)
       .toString()
-      .padStart(2, "0")}/${date.getFullYear()}`;
-  };
-
-  // Agrupar links por data
-  const groupByDate = (links: LinkItem[]) => {
-    return links.reduce((acc: any, link: LinkItem) => {
-      const date = formatDate(link.createdAt);
-      if (!acc[date]) {
-        acc[date] = [];
-      }
-      acc[date].push(link);
-      return acc;
-    }, {});
-  };
-
-  const groupedLinks = groupByDate(filteredLinks);
-
-  const handleLinkClick = (link: string) => {
-    window.open(link, "_blank");
-  };
+      .padStart(2, "0")}/${linkDate
+      .getDate()
+      .toString()
+      .padStart(2, "0")}/${linkDate.getFullYear()}`;
+    if (!groupedLinks[formattedDate]) {
+      groupedLinks[formattedDate] = [];
+    }
+    groupedLinks[formattedDate].push(link);
+  });
 
   const handleClosePopup = () => {
     setShowPopup(false);
@@ -155,6 +149,10 @@ const FreeContent: React.FC = () => {
 
   return (
     <div className="vip-content-page p-6 bg-gray-100 min-h-screen">
+      <Helmet>
+        
+      </Helmet>
+
       <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
         Free Content
       </h1>
@@ -223,22 +221,25 @@ const FreeContent: React.FC = () => {
           <option value="mostRecent">Most Recent</option>
           <option value="oldest">Oldest</option>
         </select>
+        <a href="https://WWW.facebook.com/" target="_blank">FACEBOOK</a>
       </div>
 
       <div className="link-boxes flex flex-col max-w-screen-lg mx-auto">
-        {Object.keys(groupedLinks).length > 0 ? (
-          Object.keys(groupedLinks).map((date, index) => (
+        {loading ? (
+          <Loading />
+        ) : Object.keys(groupedLinks).length > 0 ? (
+          Object.keys(groupedLinks).map((date) => (
             <div key={date} className="mb-4">
-              <p className="text-gray-600 font-bold text-base mb-2">
-                {date} {/* Exibe a data apenas quando ela for diferente */}
-              </p>
-              {groupedLinks[date].map((link: any, linkIndex: any) => (
+              <p className="text-gray-600 font-bold text-base mb-2">{date}</p>
+              {groupedLinks[date].map((link: LinkItem) => (
                 <div
                   key={link.id}
                   className="link-box p-4 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 mb-4"
                 >
-                  <button
-                    onClick={() => handleLinkClick(link.link)} 
+                  <a
+                    href={link.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-blue-600 hover:underline text-lg font-semibold flex items-center"
                   >
                     {link.name}
@@ -247,13 +248,15 @@ const FreeContent: React.FC = () => {
                         NEW
                       </span>
                     )}
-                  </button>
+                  </a>
                 </div>
               ))}
             </div>
           ))
         ) : (
-          <p>No content available</p>
+          <div className="text-center text-xl text-gray-600">
+            Content Not Found
+          </div>
         )}
       </div>
     </div>

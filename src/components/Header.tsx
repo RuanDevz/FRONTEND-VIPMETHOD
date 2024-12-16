@@ -17,13 +17,25 @@ const Header: React.FC = () => {
             VIP METHOD
           </div>
         </Link>
-
-        {/* Desktop Navigation */}
+        <div>
+          <Link
+            to="/plans"
+            className="text-sm inline-block py-2 px-4 lg:text-lg font-semibold text-white rounded-lg shadow-lg transform hover:scale-105 transition duration-300 ease-in-out animate-pulse-brightness"
+          >
+            Become Vip
+          </Link>
+        </div>
         <nav className="space-x-8 hidden md:flex">
-          <Link to="/login" className="text-lg font-semibold hover:text-gray-400 transition duration-300">
+          <Link
+            to="/login"
+            className="text-lg font-semibold hover:text-gray-400 transition duration-300"
+          >
             Login
           </Link>
-          <Link to="/register" className="text-lg font-semibold hover:text-gray-400 transition duration-300">
+          <Link
+            to="/register"
+            className="text-lg font-semibold hover:text-gray-400 transition duration-300"
+          >
             Register
           </Link>
         </nav>
@@ -33,7 +45,7 @@ const Header: React.FC = () => {
           <button
             className="text-white focus:outline-none transform transition-transform duration-300"
             onClick={toggleMenu}
-            style={{ transform: isMenuOpen ? 'rotate(90deg)' : 'rotate(0)' }}
+            style={{ transform: isMenuOpen ? "rotate(90deg)" : "rotate(0)" }}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

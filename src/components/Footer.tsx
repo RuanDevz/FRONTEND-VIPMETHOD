@@ -6,6 +6,9 @@ const Footer = () => {
           <h2 className="text-xl font-bold lg:text-2xl">VIP Method</h2>
           <p className="text-gray-400">© {new Date().getFullYear()} VIP Method. All rights reserved.</p>
         </div>
+        <div className="text-center md:text-right">
+          <p className="text-gray-400">Contact: <a href="mailto:dmca@sevenxleaks.com" className="text-blue-400 hover:underline">dmca@sevenxleaks.com</a></p>
+        </div>
       </div>
     </footer>
   );

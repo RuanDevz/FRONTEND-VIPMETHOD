@@ -17,3 +17,22 @@
 .animate-shine {
   animation: shine 1.5s infinite alternate;
 }
+
+@keyframes pulse-brightness {
+  0% {
+    box-shadow: 0 0 5px 2px rgba(255, 215, 0, 0.8);
+    background-color: #FFD700;
+  }
+  50% {
+    box-shadow: 0 0 15px 5px rgba(255, 215, 0, 1);
+    background-color: #ffec8bef;
+  }
+  100% {
+    box-shadow: 0 0 5px 2px rgba(255, 215, 0, 0.8);
+    background-color: #FFD700;
+  }
+}
+
+.animate-pulse-brightness {
+  animation: pulse-brightness 2.5s infinite;
+}

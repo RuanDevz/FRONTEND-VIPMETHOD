@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Loading from "../components/Loading/Loading";
 
 type LinkItem = {
   id: number;
@@ -47,21 +48,17 @@ const VIPcontent: React.FC = () => {
     const fetchLinks = async () => {
       try {
         setLoading(true);
-        const response = await axios.get<LinkItem[]>(
-          `${import.meta.env.VITE_BACKEND_URL}/vipcontent`
-        );
+        const response = await axios.get<LinkItem[]>(`${import.meta.env.VITE_BACKEND_URL}/vipcontent`);
         setLoading(false);
         setLinks(response.data);
         setFilteredLinks(response.data);
 
-        // Extraindo categorias únicas
-        const extractedCategories = Array.from(
-          new Set(response.data.map((item) => item.category))
-        ).map((category) => ({
-          id: category,
-          name: category,
-          category: category,
-        }));
+        const extractedCategories = Array.from(new Set(response.data.map((item) => item.category)))
+          .map((category) => ({
+            id: category,
+            name: category,
+            category: category,
+          }));
 
         setCategories(extractedCategories);
       } catch (error) {
@@ -109,26 +106,32 @@ const VIPcontent: React.FC = () => {
 
   const recentLinks = filteredLinks.slice(0, 5);
 
-
   const handleLinkClick = (link: string) => {
     window.open(link, "_blank");
   };
 
+  const addOneDay = (date: Date): Date => {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate());  
+    return newDate;
+  };
+
   const groupedLinks: { [key: string]: LinkItem[] } = {};
   filteredLinks.forEach((link) => {
-    const date = new Date(link.createdAt).toLocaleDateString("pt-BR");
-    if (!groupedLinks[date]) {
-      groupedLinks[date] = [];
+    let linkDate = new Date(link.createdAt);
+    linkDate = addOneDay(linkDate);  
+    const formattedDate = `${(linkDate.getMonth() + 1).toString().padStart(2, "0")}/${linkDate.getDate().toString().padStart(2, "0")}/${linkDate.getFullYear()}`;
+    if (!groupedLinks[formattedDate]) {
+      groupedLinks[formattedDate] = [];
     }
-    groupedLinks[date].push(link);
+    groupedLinks[formattedDate].push(link);
   });
 
-  // Função para verificar se o link é "novo" (últimos 7 dias)
   const isNew = (createdAt: string) => {
     const currentDate = new Date();
     const linkDate = new Date(createdAt);
     const timeDifference = currentDate.getTime() - linkDate.getTime();
-    const daysDifference = timeDifference / (1000 * 3600 * 24); // Convertendo para dias
+    const daysDifference = timeDifference / (1000 * 3600 * 24); 
     return daysDifference <= 7;
   };
 
@@ -178,10 +181,12 @@ const VIPcontent: React.FC = () => {
       </div>
 
       <div className="link-boxes flex flex-col max-w-screen-lg mx-auto">
-      {Object.keys(groupedLinks).length > 0 ? (
+        {loading ? (
+          <Loading />
+        ) : Object.keys(groupedLinks).length > 0 ? (
           Object.keys(groupedLinks).map((date) => (
             <div key={date} className="mb-6">
-              <p className="text-gray-600 font-bold text-base mb-2">{date}</p>
+              <p className="text-gray-600 font-bold text-base mb-2">{date}</p> {/* Data no formato MM/DD/YYYY */}
               {groupedLinks[date].map((link) => (
                 <div
                   key={link.id}
@@ -205,9 +210,9 @@ const VIPcontent: React.FC = () => {
             </div>
           ))
         ) : (
-          <p className="col-span-full text-center text-gray-600">
-            No content found.
-          </p>
+          <div className="text-center text-xl text-gray-600">
+            Content Not Found
+          </div>
         )}
       </div>
     </div>
