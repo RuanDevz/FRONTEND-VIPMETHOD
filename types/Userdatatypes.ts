@@ -11,6 +11,7 @@ export interface FavoriteContent {
 }
 
 export interface Userdatatypes {
+  id?: number
   name: string;
   email: string;
   isVip: boolean;

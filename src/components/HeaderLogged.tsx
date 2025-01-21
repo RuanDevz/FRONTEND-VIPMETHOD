@@ -20,12 +20,12 @@ const HeaderLogged: React.FC = () => {
       if (token && email) {
         try {
           const vipResponse = await axios.get(
-            `https://backend-vip.vercel.app/auth/is-vip/${email}`
+            `${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`
           );
           setIsVip(vipResponse.data.isVip);
 
           const adminResponse = await axios.get(
-            `https://backend-vip.vercel.app/auth/is-admin/${email}`
+            `${import.meta.env.VITE_BACKEND_URL}/auth/is-admin/${email}`
           );
           setIsAdmin(adminResponse.data.isAdmin);
         } catch (error) {
