@@ -46,7 +46,7 @@ const App = () => {
 
       try {
         // Fazendo a requisição para verificar as permissões do usuário
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/status`, {
+        const response = await axios.get(`https://backend-vip.vercel.app/auth/status`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -22,7 +22,7 @@ const AdminVipUsers: React.FC = () => {
   const fetchVipUsers = async (): Promise<void> => {
     try {
       setLoading(true);
-      const response = await axios.get<User[]>(`${import.meta.env.VITE_BACKEND_URL}/auth/vip-users`, {
+      const response = await axios.get<User[]>(`https://backend-vip.vercel.app/auth/vip-users`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` },
       });
 
@@ -50,7 +50,7 @@ const AdminVipUsers: React.FC = () => {
   // Remove VIP from a single user
   const removeVip = async (email: string): Promise<void> => {
     try {
-      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/auth/remove-vip/${email}`, {}, {
+      await axios.put(`https://backend-vip.vercel.app/auth/remove-vip/${email}`, {}, {
         headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` },
       });
       fetchVipUsers(); // Atualiza a lista após a remoção
@@ -63,7 +63,7 @@ const AdminVipUsers: React.FC = () => {
   // Remove VIP from all expired users
   const removeAllExpiredVip = async (): Promise<void> => {
     try {
-      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/auth/remove-all-expired-vip`, {}, {
+      await axios.put(`https://backend-vip.vercel.app/auth/remove-all-expired-vip`, {}, {
         headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` },
       });
       fetchVipUsers(); // Atualiza a lista após a remoção

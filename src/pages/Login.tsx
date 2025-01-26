@@ -16,7 +16,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true); // Inicia o carregamento
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, {
+      const response = await axios.post(`https://backend-vip.vercel.app/auth/login`, {
         email,
         password,
       });
