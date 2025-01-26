@@ -16,6 +16,7 @@ import Plans from "./pages/Plans";
 import VIPcontent from "./pages/VIPcontent";
 import FreeContent from "./pages/FreeContent";
 import AdminPainel from "./pages/AdminPainel";
+import AdminVipUsers from "./pages/AdminVipUsers"; // Importando a página AdminVipUsers
 import SupportPage from "./pages/SupportPage";
 import RecommendContent from "./pages/RecommendContent";
 import ViewStats from "./pages/Viewstats";
@@ -110,6 +111,16 @@ const App = () => {
               element={
                 hasPermission.admin ? (
                   <ViewRequests />
+                ) : (
+                  <AccessDenied message="You are not an administrator to access this page." />
+                )
+              } 
+            />
+            <Route 
+              path="admin-vip-users" 
+              element={
+                hasPermission.admin ? (
+                  <AdminVipUsers />
                 ) : (
                   <AccessDenied message="You are not an administrator to access this page." />
                 )

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSpring, animated } from "@react-spring/web";
 import { EditIcon, TrashIcon, SearchIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // Importe o useNavigate
 
 // Types
 type LinkItem = {
@@ -13,6 +14,7 @@ type LinkItem = {
 };
 
 const AdminPainel: React.FC = () => {
+  const navigate = useNavigate(); // Hook para navegação
   const [activeTab, setActiveTab] = useState<"free" | "vip">("free");
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [newLink, setNewLink] = useState({
@@ -43,8 +45,8 @@ const AdminPainel: React.FC = () => {
         ...new Set(response.data.map((link) => link.category)),
       ];
 
-      setCategories(uniqueCategories); 
-      setLinks(response.data); 
+      setCategories(uniqueCategories);
+      setLinks(response.data);
     } catch (error) {
       console.error("Error fetching links:", error);
       setLinks([]);
@@ -154,6 +156,14 @@ const AdminPainel: React.FC = () => {
 
   return (
     <div className="admin-panel p-6 bg-gradient-to-br from-blue-50 to-white min-h-screen flex flex-col items-center">
+      {/* Botão para redirecionar para AdminVipUsers */}
+      <button
+        onClick={() => navigate("/admin-vip-users")}
+        className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition duration-300 mb-6"
+      >
+        Manage vip users
+      </button>
+
       {/* Barra de Pesquisa */}
       <div className="w-full max-w-lg mb-6">
         <div className="flex items-center border rounded-md overflow-hidden">
@@ -229,7 +239,7 @@ const AdminPainel: React.FC = () => {
             console.log(
               "Data selecionada:",
               localDate.toISOString().split("T")[0]
-            ); 
+            );
             setNewLink({
               ...newLink,
               createdAt: localDate.toISOString().split("T")[0],

@@ -55,9 +55,10 @@ const ViewStats: React.FC = () => {
                 <FaRegStar size={32} className="text-green-600" />
               </div>
               <div>
-                <h2 className="font-medium text-xl text-gray-800">Total VIP Users</h2>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalVIPs}</p>
-              </div>
+  <h2 className="font-medium text-xl text-gray-800">Total VIP Users</h2>
+  <p className="text-2xl font-bold text-gray-900">{stats.totalVIPs}</p>
+  {/* {stats.totalVIPs} */}
+</div>
             </div>
 
             
