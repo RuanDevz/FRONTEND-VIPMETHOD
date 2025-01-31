@@ -42,7 +42,7 @@ const HeaderLogged: React.FC = () => {
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/">
           <div className="text-base lg:text-2xl font-extrabold text-blue-500 hover:text-blue-400 transition duration-300">
-            VIP METHOD
+            SEVENXLEAKS
           </div>
         </Link>
 

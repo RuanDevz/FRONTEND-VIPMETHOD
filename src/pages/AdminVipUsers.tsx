@@ -9,11 +9,32 @@ interface User {
   vipExpirationDate: string | null;
 }
 
+// Modal Component
+const SuccessModal: React.FC<{ message: string; onClose: () => void }> = ({ message, onClose }) => {
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+        <p className="text-lg text-gray-800 mb-4">{message}</p>
+        <div className="flex justify-end">
+          <button
+            onClick={onClose}
+            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const AdminVipUsers: React.FC = () => {
-  const [vipUsers, setVipUsers] = useState<User[]>([]); // Inicializa como array vazio
+  const [vipUsers, setVipUsers] = useState<User[]>([]);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true); // Estado para carregamento
-  const [error, setError] = useState<string | null>(null); // Estado para erros
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchVipUsers();
@@ -30,14 +51,14 @@ const AdminVipUsers: React.FC = () => {
         setVipUsers(response.data);
       } else {
         setError("Dados inválidos recebidos da API.");
-        setVipUsers([]); // Define como array vazio em caso de dados inválidos
+        setVipUsers([]);
       }
     } catch (error) {
       console.error("Error fetching VIP users:", error);
-      setError("Erro ao carregar usuários VIP."); // Define uma mensagem de erro
-      setVipUsers([]); // Define como array vazio em caso de erro
+      setError("Erro ao carregar usuários VIP.");
+      setVipUsers([]);
     } finally {
-      setLoading(false); // Desativa o estado de carregamento
+      setLoading(false);
     }
   };
 
@@ -53,26 +74,53 @@ const AdminVipUsers: React.FC = () => {
       await axios.put(`https://backend-vip.vercel.app/auth/remove-vip/${email}`, {}, {
         headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` },
       });
-      fetchVipUsers(); // Atualiza a lista após a remoção
+      fetchVipUsers();
     } catch (error) {
       console.error("Error removing VIP:", error);
       setError("Erro ao remover VIP.");
     }
   };
 
-  // Remove VIP from all expired users
-  const removeAllExpiredVip = async (): Promise<void> => {
+  // Renew VIP for a single user
+  const renewVip = async (email: string): Promise<void> => {
     try {
-      await axios.put(`https://backend-vip.vercel.app/auth/remove-all-expired-vip`, {}, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` },
-      });
-      fetchVipUsers(); // Atualiza a lista após a remoção
-      setShowConfirmation(false); // Fecha o popup de confirmação
+      const response = await axios.put(
+        `https://backend-vip.vercel.app/auth/renew-vip/${email}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` },
+        }
+      );
+
+      if (response.status === 200) {
+        setSuccessMessage(response.data.message); // Define a mensagem de sucesso
+        setShowSuccessModal(true); // Exibe o modal de sucesso
+        fetchVipUsers(); // Atualiza a lista de usuários
+      }
     } catch (error) {
-      console.error("Error removing expired VIPs:", error);
-      setError("Erro ao remover VIPs expirados."); // Define uma mensagem de erro
+      console.error("Error renewing VIP:", error);
+      setError("Erro ao renovar VIP.");
     }
   };
+
+  // Ordena os usuários VIP: vencidos no topo, depois os não vencidos
+  const sortedVipUsers = vipUsers.sort((a, b) => {
+    const dateA = a.vipExpirationDate ? new Date(a.vipExpirationDate).getTime() : 0;
+    const dateB = b.vipExpirationDate ? new Date(b.vipExpirationDate).getTime() : 0;
+
+    if (isVipExpired(a.vipExpirationDate) && !isVipExpired(b.vipExpirationDate)) {
+      return -1;
+    }
+    if (!isVipExpired(a.vipExpirationDate) && isVipExpired(b.vipExpirationDate)) {
+      return 1;
+    }
+    return dateA - dateB;
+  });
+
+  // Filtra os usuários VIP para remover os emails específicos
+  const filteredVipUsers = sortedVipUsers.filter(
+    (user) => user.email !== "vjacex@gmail.com" && user.email !== "jvstintimberlake@gmail.com"
+  );
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -120,7 +168,7 @@ const AdminVipUsers: React.FC = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {vipUsers.map((user) => (
+            {filteredVipUsers.map((user) => (
               <tr
                 key={user.email}
                 className={`${
@@ -136,12 +184,20 @@ const AdminVipUsers: React.FC = () => {
                 </td>
                 <td className="px-6 py-4 text-sm">
                   {isVipExpired(user.vipExpirationDate) && (
-                    <button
-                      onClick={() => removeVip(user.email)} // Passa o email aqui
-                      className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition duration-300"
-                    >
-                      Remove VIP
-                    </button>
+                    <>
+                      <button
+                        onClick={() => removeVip(user.email)}
+                        className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition duration-300 mr-2"
+                      >
+                        Remove VIP
+                      </button>
+                      <button
+                        onClick={() => renewVip(user.email)}
+                        className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition duration-300"
+                      >
+                        Renew VIP
+                      </button>
+                    </>
                   )}
                 </td>
               </tr>
@@ -150,29 +206,12 @@ const AdminVipUsers: React.FC = () => {
         </table>
       </div>
 
-      {/* Popup de Confirmação */}
-      {showConfirmation && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-lg text-gray-800 mb-4">
-              Are you sure you want to remove VIP from all expired users?
-            </p>
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={removeAllExpiredVip}
-                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300"
-              >
-                Yes
-              </button>
-              <button
-                onClick={() => setShowConfirmation(false)}
-                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition duration-300"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* Popup de Sucesso para Renovação de VIP */}
+      {showSuccessModal && (
+        <SuccessModal
+          message={successMessage}
+          onClose={() => setShowSuccessModal(false)}
+        />
       )}
     </div>
   );
