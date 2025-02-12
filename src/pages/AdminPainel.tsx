@@ -38,7 +38,7 @@ const AdminPainel: React.FC = () => {
       setIsLoading(true);
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
       const response = await axios.get<LinkItem[]>(
-        `https://backend-vip.vercel.app${endpoint}`
+        `${import.meta.env.VITE_BACKEND_URL}${endpoint}`
       );
 
       const uniqueCategories = [
@@ -59,7 +59,7 @@ const AdminPainel: React.FC = () => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
       const response = await axios.get(
-        `https://backend-vip.vercel.app/categories`
+        `${import.meta.env.VITE_BACKEND_URL}/categories`
       );
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -70,7 +70,7 @@ const AdminPainel: React.FC = () => {
     setIsLoading(true);
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
-      await axios.post(`https://backend-vip.vercel.app${endpoint}`, newLink);
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}${endpoint}`, newLink);
       setNewLink({ name: "", link: "", category: "", createdAt: "" });
       fetchLinks();
     } catch (error) {
@@ -98,7 +98,7 @@ const AdminPainel: React.FC = () => {
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
       await axios.put(
-        `https://backend-vip.vercel.app${endpoint}/${isEditing}`,
+        `${import.meta.env.VITE_BACKEND_URL}${endpoint}/${isEditing}`,
         newLink
       );
       setIsEditing(null);
@@ -115,7 +115,7 @@ const AdminPainel: React.FC = () => {
     setIsLoading(true);
     try {
       const endpoint = activeTab === "free" ? "/freecontent" : "/vipcontent";
-      await axios.delete(`https://backend-vip.vercel.app${endpoint}/${id}`);
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}${endpoint}/${id}`);
       fetchLinks();
     } catch (error) {
       console.error("Error deleting link:", error);
@@ -127,7 +127,7 @@ const AdminPainel: React.FC = () => {
   const handleAddCategory = async () => {
     if (!newCategory) return;
     try {
-      await axios.post(`https://backend-vip.vercel.app/categories`, {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/categories`, {
         name: newCategory,
       });
       setNewCategory("");

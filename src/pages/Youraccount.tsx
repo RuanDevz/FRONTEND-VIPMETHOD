@@ -18,7 +18,7 @@ const YourAccount: React.FC = () => {
     const fetchUserData = async () => {
       try {
         const response = await fetch(
-          `https://backend-vip.vercel.app/auth/dashboard`,
+          `${import.meta.env.VITE_BACKEND_URL}/auth/dashboard`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -57,7 +57,7 @@ const YourAccount: React.FC = () => {
   const cancelSubscription = async () => {
     try {
       const response = await fetch(
-        `https://backend-vip.vercel.app/auth/cancel-subscription`,
+        `${import.meta.env.VITE_BACKEND_URL}/auth/cancel-subscription`,
         {
           method: "POST",
           headers: {

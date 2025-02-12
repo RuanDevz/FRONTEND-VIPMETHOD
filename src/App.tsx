@@ -22,6 +22,7 @@ import RecommendContent from "./pages/RecommendContent";
 import ViewStats from "./pages/Viewstats";
 import ViewRequests from "./pages/ViewRequests";
 import AccessDenied from "./pages/AccessDenied"; // Importando a página de acesso negado
+import AdminDisabledVipUsers from "./pages/AdminDisabledVipUsers";
 
 interface User {
   isAdmin: boolean;
@@ -46,7 +47,7 @@ const App = () => {
 
       try {
         // Fazendo a requisição para verificar as permissões do usuário
-        const response = await axios.get(`https://backend-vip.vercel.app/auth/status`, {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/status`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -73,7 +74,6 @@ const App = () => {
           <Routes>
             <Route path="/" element={<FreeContent />} />
             
-            {/* Rota VIP - apenas usuários VIP podem acessar */}
             <Route 
               path="/vip" 
               element={
@@ -85,7 +85,6 @@ const App = () => {
               } 
             />
             
-            {/* Rota Admin - apenas administradores podem acessar */}
             <Route 
               path="/admin/settings" 
               element={
@@ -117,7 +116,7 @@ const App = () => {
               } 
             />
             <Route 
-              path="admin-vip-users" 
+              path="/admin-vip-users" 
               element={
                 hasPermission.admin ? (
                   <AdminVipUsers />
@@ -126,8 +125,18 @@ const App = () => {
                 )
               } 
             />
+
+<Route 
+              path="/admin-vip-disabled" 
+              element={
+                hasPermission.admin ? (
+                  <AdminDisabledVipUsers />
+                ) : (
+                  <AccessDenied message="You are not an administrator to access this page." />
+                )
+              } 
+            />
             
-            {/* Outras rotas acessíveis para todos */}
             <Route path="/plans" element={<Plans />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

@@ -18,7 +18,7 @@ const ViewRequests: React.FC = () => {
     const fetchRequests = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`https://backend-vip.vercel.app/recommendations`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/recommendations`);
         const data = await response.json();
         setRequests(data);
       } catch (error) {
@@ -32,7 +32,7 @@ const ViewRequests: React.FC = () => {
 
   const handleApprove = async (id: number) => {
     try {
-      const response = await fetch(`https://backend-vip.vercel.app/recommendations/${id}/approve`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/recommendations/${id}/approve`, {
         method: 'POST',
       });
       if (!response.ok) {
@@ -50,7 +50,7 @@ const ViewRequests: React.FC = () => {
 
   const handleReject = async (id: number) => {
     try {
-      const response = await fetch(`https://backend-vip.vercel.app/recommendations/${id}/reject`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/recommendations/${id}/reject`, {
         method: 'POST',
       });
       if (!response.ok) {
