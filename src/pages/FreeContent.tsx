@@ -50,7 +50,7 @@ const FreeContent = () => {
       try {
         setLoading(true);
         const response = await axios.get<LinkItem[]>(
-          `${import.meta.env.VITE_BACKEND_URL}/freecontent`
+          `https://backend-vip.vercel.app/freecontent`
         );
         setLoading(false);
         setLinks(response.data);

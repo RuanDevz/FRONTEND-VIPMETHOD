@@ -98,7 +98,7 @@ const AdminDisabledVipUsers: React.FC = () => {
     try {
       setLoading(true);
       const response = await axios.get<User[]>(
-        `${import.meta.env.VITE_BACKEND_URL}/auth/vip-disabled-users`,
+        `https://backend-vip.vercel.app/auth/vip-disabled-users`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` },
         }
@@ -134,7 +134,7 @@ const AdminDisabledVipUsers: React.FC = () => {
       onConfirm: async () => {
         try {
           const response = await axios.put(
-            `${import.meta.env.VITE_BACKEND_URL}/auth/renew-vip/${email}`,
+            `https://backend-vip.vercel.app/auth/renew-vip/${email}`,
             {},
             { headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` } }
           );
@@ -158,7 +158,7 @@ const AdminDisabledVipUsers: React.FC = () => {
       onConfirm: async () => {
         try {
           const response = await axios.put(
-            `${import.meta.env.VITE_BACKEND_URL}/auth/renew-vip-year/${email}`,
+            `https://backend-vip.vercel.app/auth/renew-vip-year/${email}`,
             {},
             { headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` } }
           );
