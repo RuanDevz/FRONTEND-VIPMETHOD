@@ -14,7 +14,7 @@ const Header: React.FC = () => {
         {/* Logo Section */}
         <Link to="/">
           <div className="text-3xl font-extrabold text-blue-500 hover:text-blue-400 transition duration-300">
-            VIP METHOD
+           SEVENXLEAKS
           </div>
         </Link>
         <div>

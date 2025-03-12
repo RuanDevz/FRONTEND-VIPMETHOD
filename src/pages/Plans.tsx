@@ -20,7 +20,7 @@ const Plans: React.FC = () => {
 
       try {
         const authResponse = await fetch(
-          `https://backend-vip.vercel.app/auth/dashboard`,
+          `${import.meta.env.VITE_BACKEND_URL}/auth/dashboard`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -34,7 +34,7 @@ const Plans: React.FC = () => {
         }
 
         const vipResponse = await fetch(
-          `https://backend-vip.vercel.app/auth/is-vip/${email}`,
+          `${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -55,15 +55,18 @@ const Plans: React.FC = () => {
   }, [token, email]);
 
   const handleAccessClick = async (planType: "monthly" | "annual"): Promise<void> => {
-    if (!token) {
+    const email = localStorage.getItem("email"); 
+
+    if (!token || !email) {
         navigate("/login");
         return;
     }
+
     localStorage.setItem("selectedPlan", planType);
 
     try {
         const response = await fetch(
-            `https://backend-vip.vercel.app/pay/vip-payment`,
+            `${import.meta.env.VITE_BACKEND_URL}/pay/vip-payment`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -71,17 +74,19 @@ const Plans: React.FC = () => {
             }
         );
 
-        console.log('Resposta do backend:', response);
-
-        if (!response.ok) throw new Error("Error creating payment session");
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Erro ao criar sessão de pagamento.");
+        }
 
         const { url } = await response.json();
         window.open(url, "_blank");
     } catch (error) {
-        console.error("Error creating payment session:", error);
-        alert("An error occurred while processing your request. Please try again.");
+        console.error("Erro ao criar sessão de pagamento:", error);
     }
 };
+
+
 
   const handleFreeContentClick = () => {
     if (isAuthenticated) {
@@ -104,7 +109,7 @@ const Plans: React.FC = () => {
 
     try {
       const response = await fetch(
-        `https://backend-vip.vercel.app/update-vip-status`,
+        `${import.meta.env.VITE_BACKEND_URL}/update-vip-status`,
         {
           method: "POST",
           headers: {

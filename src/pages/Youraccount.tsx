@@ -26,14 +26,17 @@ const YourAccount: React.FC = () => {
         if (response.ok) {
           const data = await response.json();
           setUserData(data);
-
-          // Verifica se há um estado de cancelamento armazenado no localStorage
+  
           const storedCanceling = localStorage.getItem("isCanceling");
-          if (storedCanceling === "true") {
-            setIsCanceling(true);
-          } else if (data.isSubscriptionCanceled) {
+          if (storedCanceling === "true" || data.isSubscriptionCanceled) {
             setIsCanceling(true);
             localStorage.setItem("isCanceling", "true");
+          }
+  
+          // Verifica se os dias restantes são 0 e cancela automaticamente
+          const daysLeft = calculateDaysLeft(data.vipExpirationDate);
+          if (daysLeft === 0 && data.isVip && !data.isSubscriptionCanceled) {
+            cancelSubscription(); // Chama a função de cancelamento
           }
         } else {
           console.error("Error fetching user data");
