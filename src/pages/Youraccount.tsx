@@ -6,6 +6,7 @@ import ErrorMessage from "../components/ErrorMessage";
 import { Link } from "react-router-dom";
 import { Userdatatypes, FavoriteContent } from "../../types/Userdatatypes";
 import { CheckCircle, User, Star, Calendar, Heart, XCircle, Crown, Sparkles } from "lucide-react";
+import { useTheme } from "../contexts/ThemeContext"; // Importando o contexto de tema
 
 const YourAccount: React.FC = () => {
   const [userData, setUserData] = useState<Userdatatypes | undefined>(undefined);
@@ -13,6 +14,9 @@ const YourAccount: React.FC = () => {
   const [isCanceling, setIsCanceling] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const token = localStorage.getItem("Token");
+
+  // Usando o contexto de tema
+  const { theme } = useTheme();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -26,13 +30,13 @@ const YourAccount: React.FC = () => {
         if (response.ok) {
           const data = await response.json();
           setUserData(data);
-  
+
           const storedCanceling = localStorage.getItem("isCanceling");
           if (storedCanceling === "true" || data.isSubscriptionCanceled) {
             setIsCanceling(true);
             localStorage.setItem("isCanceling", "true");
           }
-  
+
           const daysLeft = calculateDaysLeft(data.vipExpirationDate);
           if (daysLeft === 0 && data.isVip && !data.isSubscriptionCanceled) {
             cancelSubscription();
@@ -112,9 +116,9 @@ const YourAccount: React.FC = () => {
     : false;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
+    <div className={`min-h-screen p-8 ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-50 text-black'}`}>
       <div className="max-w-7xl mx-auto">
-        <div className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-3xl shadow-2xl p-8 border border-gray-700">
+        <div className={`bg-gradient-to-r ${theme === 'dark' ? 'from-blue-500/10 to-indigo-500/10' : 'from-blue-100/10 to-indigo-100/10'} rounded-3xl shadow-2xl p-8 border border-gray-700`}>
           <div className="flex items-center justify-center mb-8">
             <Crown className="w-12 h-12 text-yellow-400 mr-4" />
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
@@ -125,10 +129,10 @@ const YourAccount: React.FC = () => {
           <UserDetails userData={userData} />
 
           {/* Subscription Management */}
-          <div className="mt-12 bg-gray-800/50 rounded-2xl shadow-xl p-8 border border-gray-700">
+          <div className={`mt-12 ${theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-100/50'} rounded-2xl shadow-xl p-8 border border-gray-700`}>
             <div className="flex items-center mb-6">
               <Sparkles className="w-8 h-8 text-yellow-400 mr-3" />
-              <h2 className="text-2xl font-bold text-yellow-400">Subscription Management</h2>
+              <h2 className={`text-2xl font-bold ${theme === 'dark' ? 'text-yellow-400' : 'text-yellow-600'}`}>Subscription Management</h2>
             </div>
             
             <div className="space-y-4 mb-8">
@@ -155,7 +159,7 @@ const YourAccount: React.FC = () => {
 
             <div className="flex flex-wrap gap-4">
               <Link to="/plans">
-                <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-700 transform hover:scale-[1.02] transition-all duration-200 flex items-center gap-2">
+                <button className={`px-6 py-3 ${theme === 'dark' ? 'bg-gradient-to-r from-blue-500 to-indigo-600' : 'bg-gradient-to-r from-blue-200 to-indigo-200'} rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-700 transform hover:scale-[1.02] transition-all duration-200 flex items-center gap-2`}>
                   <Sparkles className="w-5 h-5" />
                   Upgrade or Change Plan
                 </button>
@@ -200,10 +204,10 @@ const YourAccount: React.FC = () => {
           )}
 
           {/* Favorite Content */}
-          <div className="mt-12 bg-gray-800/50 rounded-2xl shadow-xl p-8 border border-gray-700">
+          <div className={`mt-12 ${theme === 'dark' ? 'bg-gray-800/50' : 'bg-gray-100/50'} rounded-2xl shadow-xl p-8 border border-gray-700`}>
             <div className="flex items-center mb-6">
               <Heart className="w-8 h-8 text-pink-400 mr-3" />
-              <h2 className="text-2xl font-bold text-pink-400">Favorite Content</h2>
+              <h2 className={`text-2xl font-bold ${theme === 'dark' ? 'text-pink-400' : 'text-pink-500'}`}>Favorite Content</h2>
             </div>
 
             {userData.favorites.length > 0 ? (

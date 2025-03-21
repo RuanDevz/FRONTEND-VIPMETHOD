@@ -59,7 +59,6 @@ const HeaderLogged: React.FC = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
-            <ThemeToggle />
             {/* Premium Banner */}
             <div className="bg-gradient-to-r from-gray-800/80 to-gray-800/60 backdrop-blur-sm px-4 py-2 rounded-full text-center flex items-center space-x-3 border border-gray-700/50 shadow-xl">
               <Sparkles className="w-4 h-4 text-blue-400 animate-pulse" />
