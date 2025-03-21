@@ -4,7 +4,7 @@ import axios from "axios";
 import { Sparkles, Flame, Disc as Discord, Menu, X } from 'lucide-react';
 import UserMenu from "../components/HeaderLogged/UserMenu";
 import { motion, AnimatePresence } from "framer-motion";
-import ThemeToggle from "./ThemeToggle";
+import ThemeToggle from "./ThemeToggle"; // Certifique-se de importar o ThemeToggle corretamente
 
 const HeaderLogged: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -63,7 +63,6 @@ const HeaderLogged: React.FC = () => {
             <div className="bg-gradient-to-r from-gray-800/80 to-gray-800/60 backdrop-blur-sm px-4 py-2 rounded-full text-center flex items-center space-x-3 border border-gray-700/50 shadow-xl">
               <Sparkles className="w-4 h-4 text-blue-400 animate-pulse" />
               <span className="text-gray-300 text-sm">Watch premium videos at</span>
-              
               <a
                 href="https://sevenxhub.com"
                 rel="noopener noreferrer"
@@ -114,6 +113,9 @@ const HeaderLogged: React.FC = () => {
               isVip={isVip}
               isAdmin={isAdmin}
             />
+
+            {/* ThemeToggle aligned to the right */}
+            <ThemeToggle />
           </div>
 
           {/* Mobile Menu Button */}

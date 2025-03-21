@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Flame, Sparkles, Menu } from 'lucide-react';
+import ThemeToggle from "./ThemeToggle";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -52,6 +53,9 @@ const Header: React.FC = () => {
           >
             Register
           </Link>
+
+          {/* Theme Toggle Button */}
+          <ThemeToggle />
         </nav>
 
         {/* Mobile Menu Toggle */}
@@ -65,9 +69,7 @@ const Header: React.FC = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden bg-gray-800/95 backdrop-blur-sm transition-all duration-300 ease-in-out ${
-          isMenuOpen ? 'max-h-48 border-t border-gray-700/50' : 'max-h-0'
-        } overflow-hidden`}
+        className={`md:hidden bg-gray-800/95 backdrop-blur-sm transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-48 border-t border-gray-700/50' : 'max-h-0'} overflow-hidden`}
       >
         <div className="container mx-auto px-4 py-2 space-y-4">
           <div className="flex items-center justify-center space-x-3 py-2">
@@ -88,6 +90,11 @@ const Header: React.FC = () => {
           >
             Register
           </Link>
+
+          {/* Theme Toggle in Mobile Menu */}
+          <div className="flex justify-center py-2">
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </header>

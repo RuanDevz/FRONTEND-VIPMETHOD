@@ -30,7 +30,7 @@ const Login = () => {
       localStorage.setItem("name", response.data.name);
       localStorage.setItem("email", email);
 
-      navigate("/"); // Use navigate to programmatically redirect
+       window.location.href = '/'
     } catch (err) {
       console.error(err);
       setErrorMessage("Invalid email or password. Please try again.");

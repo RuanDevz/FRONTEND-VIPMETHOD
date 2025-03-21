@@ -4,6 +4,7 @@ import PlanCard from "../components/Plans/PlanCard";
 import Loading from "../components/Loading/Loading";
 import { motion } from "framer-motion";
 import { Crown, Sparkles, Shield } from "lucide-react";
+import { useTheme } from "../contexts/ThemeContext";
 
 const Plans: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -12,6 +13,7 @@ const Plans: React.FC = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("Token");
   const email = localStorage.getItem("email");
+  const { theme } = useTheme();
 
   useEffect(() => {
     const checkAuthAndVipStatus = async () => {
@@ -140,7 +142,13 @@ const Plans: React.FC = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+    <div
+      className={`min-h-screen ${
+        theme === "dark"
+          ? "bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white"
+          : "bg-gradient-to-br from-gray-50 via-white to-gray-100 text-gray-900"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <motion.div
@@ -148,9 +156,20 @@ const Plans: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-4xl font-bold mb-4">Choose Your Perfect Plan</h1>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Get access to exclusive content and features with our premium plans. Choose the plan that best fits your needs.
+            <h1
+              className={`text-4xl font-bold mb-4 ${
+                theme === "dark" ? "text-white" : "text-gray-900"
+              }`}
+            >
+              Choose Your Perfect Plan
+            </h1>
+            <p
+              className={`text-gray-400 text-lg max-w-2xl mx-auto ${
+                theme === "dark" ? "text-gray-300" : "text-gray-600"
+              }`}
+            >
+              Get access to exclusive content and features with our premium
+              plans. Choose the plan that best fits your needs.
             </p>
           </motion.div>
 
@@ -160,15 +179,15 @@ const Plans: React.FC = () => {
             transition={{ delay: 0.3 }}
             className="flex justify-center gap-8 mt-8 flex-wrap"
           >
-            <div className="flex items-center gap-2 text-sm text-gray-400">
+            <div className="flex items-center gap-2 text-sm">
               <Crown className="w-5 h-5 text-yellow-400" />
               <span>Premium Content</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-400">
+            <div className="flex items-center gap-2 text-sm">
               <Sparkles className="w-5 h-5 text-blue-400" />
               <span>Early Access</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-400">
+            <div className="flex items-center gap-2 text-sm">
               <Shield className="w-5 h-5 text-green-400" />
               <span>Priority Support</span>
             </div>
@@ -189,7 +208,7 @@ const Plans: React.FC = () => {
               "Ad-free experience",
               "Exclusive webinars & Q&A",
               "Content recommendation priority",
-              "Monthly newsletter"
+              "Monthly newsletter",
             ]}
             buttonText="Get VIP Access"
             onButtonClick={() => handleAccessClick("monthly")}
@@ -207,7 +226,7 @@ const Plans: React.FC = () => {
               "Priority feature requests",
               "Exclusive annual events",
               "Personal support manager",
-              "Advanced content analytics"
+              "Advanced content analytics",
             ]}
             buttonText="Get Annual Plan"
             onButtonClick={() => handleAccessClick("annual")}
@@ -226,11 +245,11 @@ const Plans: React.FC = () => {
               "Limited content access",
               "Ad-supported experience",
               "Standard response time",
-              "Basic analytics"
+              "Basic analytics",
             ]}
             buttonText="Access Free Content"
             onButtonClick={handleFreeContentClick}
-            isPopular={true}
+            isPopular={false}
             unPopular={true}
           />
         </div>
