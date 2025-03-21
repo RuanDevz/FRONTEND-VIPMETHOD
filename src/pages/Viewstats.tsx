@@ -19,7 +19,7 @@ const ViewStats: React.FC = () => {
       setLoading(true);  
 
       try {
-        const response = await fetch(`https://backend-vip.vercel.app/api/stats`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/stats`);
         const data = await response.json();
         setStats(data);  
       } catch (error) {

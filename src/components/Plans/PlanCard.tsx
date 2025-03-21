@@ -1,16 +1,19 @@
 import React, { useState } from "react";
-import { CheckCircleIcon, XCircleIcon } from "lucide-react"; // Importando os ícones necessários
+import { CheckCircle, XCircle, Crown, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 
-const PlanCard: React.FC<{
+interface PlanCardProps {
   title: string;
   price: string;
   description: string;
   features: string[];
   buttonText: string;
-  onButtonClick: any;
+  onButtonClick: () => Promise<void>;
   isPopular: boolean;
   unPopular?: boolean;
-}> = ({
+}
+
+const PlanCard: React.FC<PlanCardProps> = ({
   title,
   price,
   description,
@@ -28,72 +31,111 @@ const PlanCard: React.FC<{
       await onButtonClick();
     } catch (error) {
       console.error("Error during button click:", error);
-      alert("An error occurred while processing your request. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div
-      className={`${
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className={`relative rounded-2xl overflow-hidden ${
         isPopular
-          ? "bg-yellow-100 shadow-lg border-2 border-yellow-300"
+          ? "bg-gradient-to-b from-yellow-50 to-yellow-100 border-2 border-yellow-300 transform scale-105"
           : unPopular
-          ? "bg-red-100 shadow-lg border-2 border-red-300"
-          : "bg-white shadow-lg border-2 border-gray-300"
-      } p-8 rounded-lg text-center flex flex-col justify-between transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:border-2 hover:border-blue-500 relative`}
+          ? "bg-gradient-to-b from-gray-50 to-gray-100 border border-gray-200"
+          : "bg-gradient-to-b from-blue-50 to-blue-100 border border-blue-200"
+      } shadow-xl hover:shadow-2xl transition-all duration-300`}
     >
       {isPopular && (
-        <span className="bg-yellow-300 text-black text-sm font-bold px-3 py-1 rounded-full absolute top-4 right-4">
-          Popular
-        </span>
+        <div className="absolute top-4 right-4">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg"
+          >
+            <Crown className="w-3.5 h-3.5" />
+            MOST POPULAR
+          </motion.div>
+        </div>
       )}
-      {unPopular && (
-        <span className="bg-red-300 text-black text-sm font-bold px-3 py-1 rounded-full absolute top-4 right-4">
-          Unpopular
-        </span>
-      )}
-      <h2 className="text-2xl font-semibold text-black">{title}</h2>
-      <p className="text-gray-500 mb-4">{description}</p>
-      <p className="text-4xl font-bold text-black mt-2">{price}</p>
 
-      <ul className="mt-4 flex flex-col gap-2 text-left">
-        {features.map((feature, index) => {
-          // Determina se a feature deve ser negada (exemplo genérico para "unPopular")
-          const isFeatureDenied = unPopular && index > 1; // Exemplo: as features após a segunda serão negadas
-          return (
-            <li key={index} className="flex items-center gap-2 text-left">
-              {isFeatureDenied ? (
-                <>
-                  <XCircleIcon className="text-red-500 h-6 w-6" /> {/* Ícone "X" vermelho */}
-                  <span className="text-red-500">{feature}</span> {/* Texto vermelho para feature negada */}
-                </>
-              ) : (
-                <>
-                  <CheckCircleIcon className="text-green-500 h-6 w-6" /> {/* Ícone "check" verde */}
-                  <span className="text-black">{feature}</span> {/* Texto preto para feature permitida */}
-                </>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+      <div className="p-8">
+        <div className="flex flex-col items-center mb-6">
+          <h2 className={`text-2xl font-bold mb-2 ${
+            isPopular ? "text-yellow-900" : unPopular ? "text-gray-700" : "text-blue-900"
+          }`}>
+            {title}
+          </h2>
+          <p className="text-gray-600 text-sm text-center">{description}</p>
+          <div className="mt-4 flex items-baseline">
+            <span className={`text-4xl font-bold ${
+              isPopular ? "text-yellow-900" : unPopular ? "text-gray-900" : "text-blue-900"
+            }`}>
+              {price}
+            </span>
+          </div>
+        </div>
 
-      <button
-        className={`${
-          isPopular
-            ? "bg-yellow-500 text-white"
-            : unPopular
-            ? "bg-red-500 text-white"
-            : "bg-blue-600 text-white"
-        } mt-4 p-3 rounded-lg transition duration-300 hover:bg-opacity-80 focus:outline-none`}
-        onClick={handleButtonClick}
-        disabled={isLoading}
-      >
-        {isLoading ? "Processing..." : buttonText}
-      </button>
-    </div>
+        <ul className="space-y-4 mb-8">
+          {features.map((feature, index) => {
+            const isFeatureDenied = unPopular && index > 0;
+            return (
+              <motion.li
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className={`flex items-start gap-3 ${
+                  isFeatureDenied ? "opacity-50" : ""
+                }`}
+              >
+                {isFeatureDenied ? (
+                  <XCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                ) : (
+                  <CheckCircle className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
+                    isPopular ? "text-yellow-500" : "text-green-500"
+                  }`} />
+                )}
+                <span className={`text-sm ${
+                  isFeatureDenied ? "text-gray-400 line-through" : "text-gray-700"
+                }`}>
+                  {feature}
+                </span>
+              </motion.li>
+            );
+          })}
+        </ul>
+
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleButtonClick}
+          disabled={isLoading}
+          className={`w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
+            isLoading
+              ? "opacity-75 cursor-not-allowed"
+              : isPopular
+              ? "bg-yellow-400 hover:bg-yellow-500 text-yellow-900"
+              : unPopular
+              ? "bg-gray-200 hover:bg-gray-300 text-gray-700"
+              : "bg-blue-500 hover:bg-blue-600 text-white"
+          }`}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              <span>Processing...</span>
+            </>
+          ) : (
+            buttonText
+          )}
+        </motion.button>
+      </div>
+    </motion.div>
   );
 };
 

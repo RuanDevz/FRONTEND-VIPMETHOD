@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Flame, Sparkles, Menu } from 'lucide-react';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -9,82 +10,85 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-gray-800 text-white shadow-md sticky top-0 z-50">
+    <header className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white shadow-lg sticky top-0 z-50 border-b border-gray-700/50">
       <div className="container mx-auto flex justify-between items-center p-4">
         {/* Logo Section */}
-        <Link to="/">
-          <div className="text-3xl font-extrabold text-blue-500 hover:text-blue-400 transition duration-300">
-           SEVENXLEAKS
+        <Link to="/" className="group flex items-center">
+          <Flame className="w-8 h-8 text-blue-500 group-hover:text-blue-400 transition-all duration-300 transform group-hover:scale-110" />
+          <div className="ml-2 text-2xl font-black bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 bg-clip-text text-transparent hover:from-blue-400 hover:via-blue-300 hover:to-blue-400 transition duration-300">
+            SEVENXLEAKS
           </div>
         </Link>
-        <div>
-          <Link
-            to="/plans"
-            className="text-sm inline-block py-2 px-4 lg:text-lg font-semibold text-white rounded-lg shadow-lg transform hover:scale-105 transition duration-300 ease-in-out animate-pulse-brightness"
-          >
-            Become Vip
-          </Link>
+
+        {/* Center Message */}
+        <div className="hidden md:flex bg-gradient-to-r from-gray-800/80 to-gray-800/60 backdrop-blur-sm px-4 py-2 rounded-full text-center items-center space-x-3 border border-gray-700/50 shadow-xl mx-4">
+          <Sparkles className="w-4 h-4 text-blue-400 animate-pulse" />
+          <span className="text-gray-300">Watch the videos for free at  -  <a className="text-blue-600" href="https://sevenxhub.com">sevenxhub.com</a></span>
         </div>
-        <nav className="space-x-8 hidden md:flex">
+
+        {/* VIP Button */}
+        <Link
+          to="/plans"
+          className="relative group overflow-hidden px-6 py-2 rounded-lg font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:via-blue-400 hover:to-indigo-500 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/20"
+        >
+          <span className="relative z-10 flex items-center space-x-2">
+            <Sparkles className="w-4 h-4" />
+            <span>Become VIP</span>
+          </span>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-500 ease-in-out"></div>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-6">
           <Link
             to="/login"
-            className="text-lg font-semibold hover:text-gray-400 transition duration-300"
+            className="text-lg font-semibold text-gray-300 hover:text-white transition duration-300"
           >
             Login
           </Link>
           <Link
             to="/register"
-            className="text-lg font-semibold hover:text-gray-400 transition duration-300"
+            className="text-lg font-semibold px-6 py-2 rounded-lg bg-black text-white border-2 border-gray-700 hover:border-blue-500 hover:bg-gray-900 transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
             Register
           </Link>
         </nav>
 
         {/* Mobile Menu Toggle */}
-        <div className="md:hidden">
-          <button
-            className="text-white focus:outline-none transform transition-transform duration-300"
-            onClick={toggleMenu}
-            style={{ transform: isMenuOpen ? "rotate(90deg)" : "rotate(0)" }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
-        </div>
+        <button
+          className="md:hidden text-white focus:outline-none transform transition-all duration-300 hover:text-blue-400"
+          onClick={toggleMenu}
+        >
+          <Menu className={`w-8 h-8 transition-transform duration-300 ${isMenuOpen ? 'rotate-90' : ''}`} />
+        </button>
       </div>
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden mt-4 space-y-2 transition-all duration-500 ease-in-out transform ${
-          isMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0"
-        }`}
+        className={`md:hidden bg-gray-800/95 backdrop-blur-sm transition-all duration-300 ease-in-out ${
+          isMenuOpen ? 'max-h-48 border-t border-gray-700/50' : 'max-h-0'
+        } overflow-hidden`}
       >
-        <Link
-          to="/login"
-          className="block py-2 text-lg font-semibold text-center hover:text-gray-400 transition duration-300"
-          onClick={toggleMenu}
-        >
-          Login
-        </Link>
-        <Link
-          to="/register"
-          className="block py-2 text-lg font-semibold text-center hover:text-gray-400 transition duration-300"
-          onClick={toggleMenu}
-        >
-          Register
-        </Link>
+        <div className="container mx-auto px-4 py-2 space-y-4">
+          <div className="flex items-center justify-center space-x-3 py-2">
+            <Sparkles className="w-4 h-4 text-blue-400" />
+            <span className="text-gray-300">Join VIP for exclusive content</span>
+          </div>
+          <Link
+            to="/login"
+            className="block py-2 text-lg font-semibold text-center text-gray-300 hover:text-white transition duration-300"
+            onClick={toggleMenu}
+          >
+            Login
+          </Link>
+          <Link
+            to="/register"
+            className="block py-2 text-lg font-semibold text-center text-gray-300 hover:text-white transition duration-300 mb-2"
+            onClick={toggleMenu}
+          >
+            Register
+          </Link>
+        </div>
       </div>
     </header>
   );

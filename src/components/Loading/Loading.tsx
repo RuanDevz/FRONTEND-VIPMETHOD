@@ -1,198 +1,84 @@
-import React from "react";
-import './Loading.css'
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 
-const Loading: React.FC = () => (
-  <div>
-    <div className="socket">
-      <div className="gel center-gel">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c1 r1">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c2 r1">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c3 r1">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c4 r1">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c5 r1">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c6 r1">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
+interface LoadingProps {
+  fullScreen?: boolean;
+  text?: string;
+}
 
-      <div className="gel c7 r2">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
+const Loading: React.FC<LoadingProps> = ({ 
+  fullScreen = false,
+  text = 'Loading...'
+}) => {
+  const containerClasses = fullScreen 
+    ? "fixed inset-0 bg-gray-900/80 backdrop-blur-sm flex items-center justify-center z-50" 
+    : "flex flex-col items-center justify-center p-8";
 
-      <div className="gel c8 r2">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c9 r2">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c10 r2">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c11 r2">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c12 r2">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c13 r2">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c14 r2">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c15 r2">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c16 r2">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c17 r2">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c18 r2">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c19 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c20 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c21 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c22 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c23 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c24 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c25 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c26 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c28 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c29 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c30 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c31 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c32 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c33 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c34 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c35 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c36 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
-      <div className="gel c37 r3">
-        <div className="hex-brick h1"></div>
-        <div className="hex-brick h2"></div>
-        <div className="hex-brick h3"></div>
-      </div>
+  return (
+    <div className={containerClasses}>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="flex flex-col items-center gap-4"
+      >
+        <div className="relative">
+          {/* Outer spinning circle */}
+          <motion.div
+            className="w-16 h-16 rounded-full border-4 border-blue-500/20"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          />
+          
+          {/* Inner spinning circle */}
+          <motion.div
+            className="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-500"
+            animate={{ rotate: -360 }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+          />
+          
+          {/* Center icon */}
+          <motion.div 
+            className="absolute inset-0 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
+          </motion.div>
+        </div>
+
+        {/* Loading text with gradient */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-center"
+        >
+          <h3 className="text-lg font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">
+            {text}
+          </h3>
+          <div className="mt-2 flex gap-1">
+            {[...Array(3)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="w-1.5 h-1.5 rounded-full bg-blue-500"
+                initial={{ opacity: 0.3 }}
+                animate={{ opacity: 1 }}
+                transition={{
+                  duration: 0.6,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  delay: i * 0.2
+                }}
+              />
+            ))}
+          </div>
+        </motion.div>
+      </motion.div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Loading;

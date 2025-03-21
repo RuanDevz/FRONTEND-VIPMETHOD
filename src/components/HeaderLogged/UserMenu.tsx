@@ -28,111 +28,129 @@ const UserMenu: React.FC<UserMenuProps> = ({
   return (
     <nav className="relative z-50">
       <div
-        className="flex gap-2 items-center cursor-pointer text-white hover:text-gray-300"
+        className="flex items-center gap-3 cursor-pointer px-4 py-2 rounded-xl hover:bg-gray-800/50 transition-all duration-200"
         onClick={handleMenuToggle}
       >
-        <User2Icon className="text-white" />
-        <p className="font-semibold text-white">{name}</p> {/* Nome do usuário em branco */}
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+          <User2Icon className="w-5 h-5 text-white" />
+        </div>
+        <p className="font-medium text-gray-200">{name}</p>
       </div>
 
-      {/* Mostra o menu somente quando isMenuOpen for true */}
       {isMenuOpen && (
         <motion.div
-          className="absolute right-0 mt-5 w-56 bg-black text-white rounded-lg shadow-lg border border-gray-800"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.3 }}
+          className="absolute right-0 mt-4 w-64 bg-gray-900 rounded-2xl shadow-2xl border border-gray-700/50 backdrop-blur-sm overflow-hidden"
+          initial={{ opacity: 0, scale: 0.95, y: -10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: -10 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
         >
+          <div className="p-4 bg-gradient-to-br from-gray-800 to-gray-900 border-b border-gray-700/50">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                <User2Icon className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="font-medium text-gray-200">{name}</p>
+                <p className="text-sm text-gray-400">
+                  Status: {isVip ? (
+                    <span className="text-yellow-400 font-medium">VIP</span>
+                  ) : (
+                    <span className="text-gray-400">Regular</span>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+
           <ul className="py-2">
             <li>
               <Link
                 to="/account"
-                className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
+                className="px-4 py-3 hover:bg-gray-800/50 flex items-center gap-3 transition-all duration-200"
                 onClick={handleMenuToggle}
               >
-                <User2Icon className="text-white" />
-                <span className="text-sm font-medium">Your Account</span>
+                <User2Icon className="w-5 h-5 text-blue-400" />
+                <span className="text-sm font-medium text-gray-200">Your Account</span>
               </Link>
             </li>
 
-            {/* Link "Recommend Content" só é mostrado para usuários VIP */}
             {isVip && (
-              <li>
-                <Link
-                  to="/recommend"
-                  className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
-                  onClick={handleMenuToggle}
-                >
-                  <BadgePlus className="text-yellow-500" />
-                  <span className="text-sm font-medium">Recommend Content</span>
-                </Link>
-              </li>
-            )}
-
-            {/* Link "Access VIP" só é mostrado para usuários VIP */}
-            {isVip && (
-              <li>
-                <Link
-                  to="/VIP"
-                  className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
-                  onClick={handleMenuToggle}
-                >
-                  <Crown className="text-yellow-400" />
-                  <span className="text-sm font-medium">Access VIP</span>
-                </Link>
-              </li>
-            )}
-
-            {/* Links para administradores */}
-            {isAdmin && (
               <>
                 <li>
                   <Link
-                    to="/admin/requests"
-                    className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
+                    to="/recommend"
+                    className="px-4 py-3 hover:bg-gray-800/50 flex items-center gap-3 transition-all duration-200"
                     onClick={handleMenuToggle}
                   >
-                    <UserSearch className="text-blue-500" />
-                    <span className="text-sm font-medium">View Requests</span>
+                    <BadgePlus className="w-5 h-5 text-yellow-400" />
+                    <span className="text-sm font-medium text-gray-200">Recommend Content</span>
                   </Link>
                 </li>
                 <li>
                   <Link
-                    to="/admin/stats"
-                    className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
+                    to="/VIP"
+                    className="px-4 py-3 hover:bg-gray-800/50 flex items-center gap-3 transition-all duration-200 group"
                     onClick={handleMenuToggle}
                   >
-                    <Waypoints className="text-green-500" />
-                    <span className="text-sm font-medium">View Stats</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/admin/settings"
-                    className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
-                    onClick={handleMenuToggle}
-                  >
-                    <Settings className="text-indigo-500" />
-                    <span className="text-sm font-medium">Admin Settings</span>
+                    <div className="relative">
+                      <Crown className="w-5 h-5 text-yellow-400 group-hover:animate-pulse" />
+                      <div className="absolute inset-0 bg-yellow-400/20 blur-sm rounded-full animate-pulse" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-200">Access VIP</span>
                   </Link>
                 </li>
               </>
             )}
 
-            <li className="px-6 py-3 flex items-center gap-3 text-sm font-medium text-gray-400">
-              <Star className="text-yellow-400" />
-              <span>Status: {isVip ? "VIP" : "Regular"}</span>
-            </li>
+            {isAdmin && (
+              <>
+                <li className="pt-2 pb-1 px-4">
+                  <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">Admin Controls</div>
+                </li>
+                <li>
+                  <Link
+                    to="/admin/requests"
+                    className="px-4 py-3 hover:bg-gray-800/50 flex items-center gap-3 transition-all duration-200"
+                    onClick={handleMenuToggle}
+                  >
+                    <UserSearch className="w-5 h-5 text-blue-400" />
+                    <span className="text-sm font-medium text-gray-200">View Requests</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/admin/stats"
+                    className="px-4 py-3 hover:bg-gray-800/50 flex items-center gap-3 transition-all duration-200"
+                    onClick={handleMenuToggle}
+                  >
+                    <Waypoints className="w-5 h-5 text-green-400" />
+                    <span className="text-sm font-medium text-gray-200">View Stats</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/admin/settings"
+                    className="px-4 py-3 hover:bg-gray-800/50 flex items-center gap-3 transition-all duration-200"
+                    onClick={handleMenuToggle}
+                  >
+                    <Settings className="w-5 h-5 text-indigo-400" />
+                    <span className="text-sm font-medium text-gray-200">Admin Settings</span>
+                  </Link>
+                </li>
+              </>
+            )}
 
-            <li>
+            <li className="border-t border-gray-700/50 mt-2">
               <Link
                 to="https://discord.gg/95BKaYTPPS"
-                className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg transition-all duration-200"
+                className="px-4 py-3 hover:bg-gray-800/50 flex items-center gap-3 transition-all duration-200"
                 onClick={handleMenuToggle}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <HelpCircle className="text-gray-400" />
-                <span className="text-sm font-medium">Support</span>
+                <HelpCircle className="w-5 h-5 text-gray-400" />
+                <span className="text-sm font-medium text-gray-200">Support</span>
               </Link>
             </li>
 
@@ -141,10 +159,10 @@ const UserMenu: React.FC<UserMenuProps> = ({
                 Logout();
                 handleMenuToggle();
               }}
-              className="px-6 py-3 hover:bg-gray-700 flex items-center gap-3 rounded-lg cursor-pointer transition-all duration-200"
+              className="px-4 py-3 hover:bg-gray-800/50 flex items-center gap-3 cursor-pointer transition-all duration-200 group"
             >
-              <LogOut className="text-red-500" />
-              <span className="text-sm font-medium">Logout</span>
+              <LogOut className="w-5 h-5 text-red-400 group-hover:text-red-300" />
+              <span className="text-sm font-medium text-gray-200 group-hover:text-gray-100">Logout</span>
             </li>
           </ul>
         </motion.div>

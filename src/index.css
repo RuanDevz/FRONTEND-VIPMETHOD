@@ -36,3 +36,69 @@
 .animate-pulse-brightness {
   animation: pulse-brightness 2.5s infinite;
 }
+
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 8s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 8s ease infinite;
+}
+
+:root {
+  --background: 255 255 255;
+  --foreground: 15 23 42;
+}
+
+:root[class~="dark"] {
+  --background: 15 23 42;
+  --foreground: 255 255 255;
+}
+
+body {
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+}
+
+/* Light mode styles */
+.light {
+  --bg-gradient: linear-gradient(to bottom right, #f8fafc, #f1f5f9, #e2e8f0);
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --border-color: #e2e8f0;
+}
+
+/* Dark mode styles */
+.dark {
+  --bg-gradient: linear-gradient(to bottom right, #0f172a, #1e293b, #334155);
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --border-color: #334155;
+}

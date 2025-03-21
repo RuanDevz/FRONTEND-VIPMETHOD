@@ -5,7 +5,7 @@ import Loading from "../components/Loading/Loading";
 import ErrorMessage from "../components/ErrorMessage";
 import { Link } from "react-router-dom";
 import { Userdatatypes, FavoriteContent } from "../../types/Userdatatypes";
-import { CheckCircle, User, Star, Calendar, Heart, XCircle } from "lucide-react";
+import { CheckCircle, User, Star, Calendar, Heart, XCircle, Crown, Sparkles } from "lucide-react";
 
 const YourAccount: React.FC = () => {
   const [userData, setUserData] = useState<Userdatatypes | undefined>(undefined);
@@ -18,7 +18,7 @@ const YourAccount: React.FC = () => {
     const fetchUserData = async () => {
       try {
         const response = await fetch(
-          `https://backend-vip.vercel.app/auth/dashboard`,
+          `${import.meta.env.VITE_BACKEND_URL}/auth/dashboard`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -33,10 +33,9 @@ const YourAccount: React.FC = () => {
             localStorage.setItem("isCanceling", "true");
           }
   
-          // Verifica se os dias restantes são 0 e cancela automaticamente
           const daysLeft = calculateDaysLeft(data.vipExpirationDate);
           if (daysLeft === 0 && data.isVip && !data.isSubscriptionCanceled) {
-            cancelSubscription(); // Chama a função de cancelamento
+            cancelSubscription();
           }
         } else {
           console.error("Error fetching user data");
@@ -60,7 +59,7 @@ const YourAccount: React.FC = () => {
   const cancelSubscription = async () => {
     try {
       const response = await fetch(
-        `https://backend-vip.vercel.app/auth/cancel-subscription`,
+        `${import.meta.env.VITE_BACKEND_URL}/auth/cancel-subscription`,
         {
           method: "POST",
           headers: {
@@ -77,14 +76,10 @@ const YourAccount: React.FC = () => {
         localStorage.setItem("isCanceling", "true");
 
         setUserData((prevData) => {
-          if (!prevData) {
-            return prevData; // Retorna undefined se prevData for undefined
-          }
-
-          // Retorna um novo objeto com as propriedades atualizadas
+          if (!prevData) return prevData;
           return {
             ...prevData,
-            stripeSubscriptionId: null, // Atualiza o stripeSubscriptionId
+            stripeSubscriptionId: null,
           };
         });
 
@@ -112,115 +107,165 @@ const YourAccount: React.FC = () => {
     return <ErrorMessage message="User not found or unable to fetch user data." />;
   }
 
-  // Verifica se a assinatura ainda está ativa
   const isSubscriptionActive = userData.vipExpirationDate
     ? new Date(userData.vipExpirationDate) > new Date()
     : false;
 
   return (
-    <div className="p-8 bg-gray-800 text-white rounded-lg shadow-lg w-full h-full flex flex-col">
-      <h1 className="text-3xl font-semibold text-center mb-8">Your Account</h1>
+    <div className="min-h-screen bg-gray-900 text-white p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-3xl shadow-2xl p-8 border border-gray-700">
+          <div className="flex items-center justify-center mb-8">
+            <Crown className="w-12 h-12 text-yellow-400 mr-4" />
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+              Your Account
+            </h1>
+          </div>
 
-      <UserDetails userData={userData} />
+          <UserDetails userData={userData} />
 
-      {/* Subscription Management */}
-      <div className="my-6 p-6 bg-gray-900 rounded-lg shadow-md w-full">
-        <h2 className="text-xl font-semibold text-yellow-500 mb-4">Subscription Management</h2>
-        <div className="flex items-center gap-3 mb-3">
-          <Star className="text-yellow-400" />
-          <p className="text-lg">{userData.isVip ? "VIP" : "Free"} Subscription</p>
-        </div>
-        <div className="flex items-center gap-3 mb-6">
-          <Calendar className="text-blue-500" />
-          <p>
-            {userData.isVip
-              ? `Next Billing Date: ${new Date(userData.vipExpirationDate).toLocaleDateString()}`
-              : "No active subscription."}
-          </p>
-        </div>
-        <Link to="/plans">
-          <button className="bg-gradient-to-r from-blue-500 to-teal-500 text-white py-2 px-6 rounded-lg hover:shadow-lg transition-all">
-            Upgrade or Change Plan
-          </button>
-        </Link>
-
-        {/* Cancel Subscription Button */}
-        {userData.isVip && isSubscriptionActive && !isCanceling && (
-          <button
-            onClick={() => setShowCancelModal(true)}
-            className="mt-4 bg-red-600 text-white py-2 px-6 rounded-lg hover:shadow-lg transition-all"
-          >
-            <XCircle className="inline-block mr-2" />
-            Cancel VIP Subscription
-          </button>
-        )}
-
-        {isCanceling && (
-          <p className="mt-4 text-yellow-500">
-            Your subscription has been canceled. You will retain VIP access until{" "}
-            {new Date(userData.vipExpirationDate).toLocaleDateString()}.
-          </p>
-        )}
-
-        {userData.isVip && !isSubscriptionActive && (
-          <p className="mt-4 text-yellow-500">
-            Your VIP subscription has expired. You can renew it by upgrading your plan.
-          </p>
-        )}
-      </div>
-
-      {userData.isVip && (
-        <VIPBenefits
-          vipExpirationDate={userData.vipExpirationDate}
-          calculateDaysLeft={calculateDaysLeft}
-        />
-      )}
-
-      {/* Favorite Content */}
-      <div className="my-6 p-6 bg-gray-900 rounded-lg shadow-md w-full pb-36">
-        <h2 className="text-xl font-semibold text-pink-400 mb-4">Favorite Content</h2>
-        {userData.favorites.length > 0 ? (
-          <ul className="space-y-3">
-            {userData.favorites.map((content: FavoriteContent) => (
-              <li key={content.id} className="flex items-center gap-2 text-lg">
-                <Heart className="text-red-400" />
-                {content.title}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-400">You have no favorite content.</p>
-        )}
-      </div>
-
-      {/* Modal de Cancelamento */}
-      {showCancelModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
-            <h2 className="text-xl font-semibold text-yellow-500 mb-4">Cancel Subscription</h2>
-            <p className="text-gray-300 mb-6">
-              Are you sure you want to cancel your VIP subscription?<br />
-              - You will retain VIP access until{" "}
-              {new Date(userData.vipExpirationDate).toLocaleDateString()}.<br />
-              - All future Stripe charges will be canceled.
-            </p>
-            <div className="flex justify-end gap-4">
-              <button
-                onClick={() => setShowCancelModal(false)}
-                className="bg-gray-600 text-white py-2 px-6 rounded-lg hover:bg-gray-700 transition-all"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={cancelSubscription}
-                className="bg-red-600 text-white py-2 px-6 rounded-lg hover:bg-red-700 transition-all"
-              >
-                Confirm
-              </button>
+          {/* Subscription Management */}
+          <div className="mt-12 bg-gray-800/50 rounded-2xl shadow-xl p-8 border border-gray-700">
+            <div className="flex items-center mb-6">
+              <Sparkles className="w-8 h-8 text-yellow-400 mr-3" />
+              <h2 className="text-2xl font-bold text-yellow-400">Subscription Management</h2>
             </div>
+            
+            <div className="space-y-4 mb-8">
+              <div className="flex items-center gap-4 p-4 bg-gray-800 rounded-xl border border-gray-700">
+                <Star className="w-6 h-6 text-yellow-400" />
+                <div>
+                  <p className="text-lg font-semibold">{userData.isVip ? "VIP" : "Free"} Subscription</p>
+                  <p className="text-sm text-gray-400">Current subscription status</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4 bg-gray-800 rounded-xl border border-gray-700">
+                <Calendar className="w-6 h-6 text-blue-400" />
+                <div>
+                  <p className="text-lg font-semibold">
+                    {userData.isVip
+                      ? new Date(userData.vipExpirationDate).toLocaleDateString()
+                      : "No active subscription"}
+                  </p>
+                  <p className="text-sm text-gray-400">Next billing date</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-4">
+              <Link to="/plans">
+                <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl font-semibold hover:from-blue-600 hover:to-indigo-700 transform hover:scale-[1.02] transition-all duration-200 flex items-center gap-2">
+                  <Sparkles className="w-5 h-5" />
+                  Upgrade or Change Plan
+                </button>
+              </Link>
+
+              {userData.isVip && isSubscriptionActive && !isCanceling && (
+                <button
+                  onClick={() => setShowCancelModal(true)}
+                  className="px-6 py-3 bg-red-500/10 text-red-400 border border-red-500/20 rounded-xl font-semibold hover:bg-red-500/20 transition-all duration-200 flex items-center gap-2"
+                >
+                  <XCircle className="w-5 h-5" />
+                  Cancel VIP Subscription
+                </button>
+              )}
+            </div>
+
+            {isCanceling && (
+              <div className="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl">
+                <p className="text-yellow-400">
+                  Your subscription has been canceled. You will retain VIP access until{" "}
+                  {new Date(userData.vipExpirationDate).toLocaleDateString()}.
+                </p>
+              </div>
+            )}
+
+            {userData.isVip && !isSubscriptionActive && (
+              <div className="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl">
+                <p className="text-yellow-400">
+                  Your VIP subscription has expired. You can renew it by upgrading your plan.
+                </p>
+              </div>
+            )}
+          </div>
+
+          {userData.isVip && (
+            <div className="mt-12">
+              <VIPBenefits
+                vipExpirationDate={userData.vipExpirationDate}
+                calculateDaysLeft={calculateDaysLeft}
+              />
+            </div>
+          )}
+
+          {/* Favorite Content */}
+          <div className="mt-12 bg-gray-800/50 rounded-2xl shadow-xl p-8 border border-gray-700">
+            <div className="flex items-center mb-6">
+              <Heart className="w-8 h-8 text-pink-400 mr-3" />
+              <h2 className="text-2xl font-bold text-pink-400">Favorite Content</h2>
+            </div>
+
+            {userData.favorites.length > 0 ? (
+              <div className="grid gap-4">
+                {userData.favorites.map((content: FavoriteContent) => (
+                  <div
+                    key={content.id}
+                    className="p-4 bg-gray-800 rounded-xl border border-gray-700 flex items-center gap-3 group hover:bg-gray-700/50 transition-all duration-200"
+                  >
+                    <Heart className="w-5 h-5 text-pink-400 group-hover:scale-110 transition-transform duration-200" />
+                    <span className="text-gray-200 group-hover:text-white transition-colors duration-200">
+                      {content.title}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 bg-gray-800 rounded-xl border border-gray-700">
+                <Heart className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <p className="text-gray-400">You have no favorite content yet</p>
+              </div>
+            )}
           </div>
         </div>
-      )}
+
+        {/* Cancel Modal */}
+        {showCancelModal && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm z-50">
+            <div className="bg-gray-900 border border-gray-700 rounded-3xl shadow-2xl p-8 max-w-md w-full mx-4">
+              <div className="flex items-center justify-center mb-6">
+                <XCircle className="w-12 h-12 text-red-400" />
+              </div>
+              <h2 className="text-2xl font-bold text-center mb-4">Cancel Subscription</h2>
+              <div className="space-y-4 mb-8">
+                <p className="text-gray-300">
+                  Are you sure you want to cancel your VIP subscription?
+                </p>
+                <div className="p-4 bg-gray-800 rounded-xl border border-gray-700">
+                  <p className="text-sm text-gray-400">You will retain VIP access until:</p>
+                  <p className="text-lg font-semibold text-white">
+                    {new Date(userData.vipExpirationDate).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setShowCancelModal(false)}
+                  className="flex-1 py-3 bg-gray-800 text-gray-300 rounded-xl font-semibold hover:bg-gray-700 transition-all duration-200"
+                >
+                  Keep Subscription
+                </button>
+                <button
+                  onClick={cancelSubscription}
+                  className="flex-1 py-3 bg-red-500/10 text-red-400 border border-red-500/20 rounded-xl font-semibold hover:bg-red-500/20 transition-all duration-200"
+                >
+                  Cancel Subscription
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

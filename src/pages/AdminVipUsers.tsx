@@ -1,14 +1,30 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Search, Calendar, AlertCircle, CheckCircle2, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Search,
+  Calendar,
+  AlertCircle,
+  CheckCircle2,
+  X,
+  Users,
+  Clock,
+  Shield,
+  ShieldCheck,
+  ShieldX,
+  Loader2,
+  ChevronDown,
+  Filter,
+  RefreshCw
+} from "lucide-react";
 
 interface User {
   id: string;
   name: string;
   email: string;
   vipExpirationDate: string | null;
-  vipDisabled?: boolean; // flag para indicar se o VIP foi desativado manualmente
+  vipDisabled?: boolean;
 }
 
 interface ConfirmModalProps {
@@ -19,43 +35,72 @@ interface ConfirmModalProps {
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({ title, message, onConfirm, onCancel }) => (
-  <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-    <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
-      <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50"
+  >
+    <motion.div
+      initial={{ scale: 0.95, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.95, opacity: 0 }}
+      className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full mx-4"
+    >
+      <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
       <p className="text-gray-600 mb-6">{message}</p>
       <div className="flex justify-end gap-3">
-        <button
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={onCancel}
-          className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+          className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors rounded-lg hover:bg-gray-100"
         >
-          Cancelar
-        </button>
-        <button
+          Cancel
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={onConfirm}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
-          Confirmar
-        </button>
+          Confirm
+        </motion.button>
       </div>
-    </div>
-  </div>
+    </motion.div>
+  </motion.div>
 );
 
 const SuccessModal: React.FC<{ message: string; onClose: () => void }> = ({ message, onClose }) => (
-  <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-    <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50"
+  >
+    <motion.div
+      initial={{ scale: 0.95, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.95, opacity: 0 }}
+      className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full mx-4"
+    >
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
-          <CheckCircle2 className="w-6 h-6 text-green-500 mr-2" />
-          <h3 className="text-xl font-semibold text-gray-900">Sucesso</h3>
+        <div className="flex items-center gap-2">
+          <CheckCircle2 className="w-6 h-6 text-green-500" />
+          <h3 className="text-xl font-bold text-gray-900">Success</h3>
         </div>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={onClose}
+          className="text-gray-400 hover:text-gray-600 rounded-full p-1 hover:bg-gray-100"
+        >
           <X className="w-5 h-5" />
-        </button>
+        </motion.button>
       </div>
       <p className="text-gray-600 mb-4">{message}</p>
-    </div>
-  </div>
+    </motion.div>
+  </motion.div>
 );
 
 const AdminVipUsers: React.FC = () => {
@@ -71,6 +116,7 @@ const AdminVipUsers: React.FC = () => {
     message: string;
     onConfirm: () => void;
   } | null>(null);
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "expired">("all");
 
   const navigate = useNavigate();
 
@@ -81,24 +127,27 @@ const AdminVipUsers: React.FC = () => {
   useEffect(() => {
     const filtered = vipUsers.filter(
       (user) =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+        (user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (statusFilter === "all" ||
+        (statusFilter === "active" && !isVipExpired(user.vipExpirationDate)) ||
+        (statusFilter === "expired" && isVipExpired(user.vipExpirationDate)))
     );
     setFilteredUsers(filtered);
-  }, [searchTerm, vipUsers]);
+  }, [searchTerm, vipUsers, statusFilter]);
 
   const fetchVipUsers = async (): Promise<void> => {
     try {
       setLoading(true);
+      setError(null);
       const response = await axios.get<User[]>(
-        `https://backend-vip.vercel.app/auth/vip-users`,
+        `${import.meta.env.VITE_BACKEND_URL}/auth/vip-users`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` },
         }
       );
 
       if (Array.isArray(response.data)) {
-        // Se a API não retornar a flag vipDisabled, definimos como false por padrão
         const usersWithStatus = response.data.map((user) => ({
           ...user,
           vipDisabled: user.vipDisabled ?? false,
@@ -106,13 +155,11 @@ const AdminVipUsers: React.FC = () => {
         setVipUsers(usersWithStatus);
         setFilteredUsers(usersWithStatus);
       } else {
-        setError("Dados inválidos recebidos da API.");
-        setVipUsers([]);
-        setFilteredUsers([]);
+        throw new Error("Invalid data received from API");
       }
     } catch (error) {
       console.error("Error fetching VIP users:", error);
-      setError("Erro ao carregar usuários VIP.");
+      setError("Failed to load VIP users. Please try again.");
       setVipUsers([]);
       setFilteredUsers([]);
     } finally {
@@ -121,11 +168,11 @@ const AdminVipUsers: React.FC = () => {
   };
 
   const formatDate = (dateString: string | null): string => {
-    if (!dateString || dateString === "Not defined") return "Não definido";
+    if (!dateString || dateString === "Not defined") return "Not defined";
     const date = new Date(dateString);
-    return date.toLocaleDateString("pt-BR", {
+    return date.toLocaleDateString("en-US", {
       day: "2-digit",
-      month: "2-digit",
+      month: "short",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
@@ -139,213 +186,250 @@ const AdminVipUsers: React.FC = () => {
 
   const disableVip = async (email: string): Promise<void> => {
     setConfirmAction({
-      title: "Desativar VIP",
-      message: `Tem certeza que deseja desativar o VIP do usuário ${email}?`,
+      title: "Disable VIP Access",
+      message: `Are you sure you want to disable VIP access for ${email}?`,
       onConfirm: async () => {
         try {
+          setLoading(true);
           await axios.put(
-            `https://backend-vip.vercel.app/auth/disable-user/${email}`,
+            `${import.meta.env.VITE_BACKEND_URL}/auth/disable-user/${email}`,
             {},
             { headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` } }
           );
-          setSuccessMessage("VIP desativado com sucesso!");
+          setSuccessMessage("VIP access disabled successfully!");
           setShowSuccessModal(true);
-          fetchVipUsers();
+          await fetchVipUsers();
         } catch (error) {
           console.error("Error disabling VIP:", error);
-          setError("Erro ao desativar VIP.");
+          setError("Failed to disable VIP access. Please try again.");
+        } finally {
+          setLoading(false);
+          setConfirmAction(null);
         }
-        setConfirmAction(null);
       },
     });
   };
 
-  // Função para renovar o VIP (30 dias ou 1 ano)
   const renewVip = async (email: string, period: "30days" | "1year"): Promise<void> => {
-    const periodText = period === "30days" ? "30 dias" : "1 ano";
+    const periodText = period === "30days" ? "30 days" : "1 year";
     setConfirmAction({
-      title: "Renovar VIP",
-      message: `Deseja renovar o VIP do usuário ${email} por ${periodText}?`,
+      title: "Renew VIP Access",
+      message: `Are you sure you want to renew VIP access for ${email} for ${periodText}?`,
       onConfirm: async () => {
         try {
-          const endpoint =
-            period === "30days"
-              ? `https://backend-vip.vercel.app/auth/renew-vip/${email}`
-              : `https://backend-vip.vercel.app/auth/renew-vip-year/${email}`;
+          setLoading(true);
+          const endpoint = period === "30days"
+            ? `${import.meta.env.VITE_BACKEND_URL}/auth/renew-vip/${email}`
+            : `${import.meta.env.VITE_BACKEND_URL}/auth/renew-vip-year/${email}`;
+          
           const response = await axios.put(
             endpoint,
             {},
             { headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` } }
           );
-          setSuccessMessage(response.data.message);
+          setSuccessMessage(response.data.message || "VIP access renewed successfully!");
           setShowSuccessModal(true);
-          fetchVipUsers();
+          await fetchVipUsers();
         } catch (error) {
           console.error("Error renewing VIP:", error);
-          setError("Erro ao renovar VIP.");
+          setError("Failed to renew VIP access. Please try again.");
+        } finally {
+          setLoading(false);
+          setConfirmAction(null);
         }
-        setConfirmAction(null);
       },
     });
   };
 
-  // Ordena os usuários pela data de expiração (pode ser ajustado conforme sua necessidade)
-  const sortedVipUsers = filteredUsers.sort((a, b) => {
-    const dateA = a.vipExpirationDate ? new Date(a.vipExpirationDate).getTime() : 0;
-    const dateB = b.vipExpirationDate ? new Date(b.vipExpirationDate).getTime() : 0;
-    if (isVipExpired(a.vipExpirationDate) && !isVipExpired(b.vipExpirationDate)) return -1;
-    if (!isVipExpired(a.vipExpirationDate) && isVipExpired(b.vipExpirationDate)) return 1;
-    return dateA - dateB;
-  });
-
-  const newLocal = "bg-gray-200";
-  // Exclui alguns usuários, se necessário
-  // const filteredVipUsers = sortedVipUsers.filter(
-  //   (user) =>
-  //     user.email !== "vjacex@gmail.com" &&
-  //     user.email !== "jvstintimberlake@gmail.com"
-  // );
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Cabeçalho com o título e o botão para redirecionar para usuários desabilitados */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Gerenciamento de VIP</h1>
-          <button
-            onClick={() => navigate("/admin-vip-disabled")}
-            className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors"
-          >
-            Ver usuários VIP desabilitados
-          </button>
-        </div>
-        <div className="relative mb-8">
-          <input
-            type="text"
-            placeholder="Buscar por nome ou email..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 pl-10 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-          <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-bold">VIP Users Management</h1>
+            <p className="text-gray-400 mt-2">Manage and monitor VIP user access</p>
+          </div>
+          <div className="flex gap-4">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate("/admin-vip-disabled")}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
+            >
+              <Users className="w-5 h-5" />
+              Disabled VIP Users
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={fetchVipUsers}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+            >
+              <RefreshCw className="w-5 h-5" />
+              Refresh
+            </motion.button>
+          </div>
         </div>
 
         {error && (
-          <div className="mb-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
-            <div className="flex">
-              <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
-              <span className="text-red-700">{error}</span>
-            </div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-red-500/10 border border-red-500 text-red-500 p-4 rounded-lg mb-6 flex items-center gap-2"
+          >
+            <AlertCircle className="w-5 h-5" />
+            {error}
+          </motion.div>
         )}
 
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-xl p-6">
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="Search by name or email..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400"
+                />
+              </div>
+            </div>
+            <div className="relative">
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as "all" | "active" | "expired")}
+                className="pl-10 pr-8 py-2 bg-gray-700/50 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white appearance-none"
+              >
+                <option value="all">All Users</option>
+                <option value="active">Active VIP</option>
+                <option value="expired">Expired VIP</option>
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            </div>
           </div>
-        ) : (
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Nome
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Email
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Data de Expiração
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Ações
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {filteredUsers.map((user: any) => (
-                    <tr
-                      key={user.email}
-                      className={`${
-                        user.vipDisabled
-                          ? newLocal // Se o VIP foi desativado, fundo cinza
-                          : isVipExpired(user.vipExpirationDate)
-                          ? "bg-red-50" // Se estiver expirado (mas não desativado), fundo vermelho
-                          : "bg-green-50" // Se estiver ativo, fundo verde
-                      }`}
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {user.name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {user.email}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <div className="flex items-center">
-                          <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                          {formatDate(user.vipExpirationDate)}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <div className="flex space-x-2">
-                          {user.vipDisabled ? (
-                            // Se o usuário teve o VIP desativado, mostra apenas os botões de renovação
-                            <>
-                              <button
-                                onClick={() => renewVip(user.email, "30days")}
-                                className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
-                              >
-                                VIP 30 dias
-                              </button>
-                              <button
-                                onClick={() => renewVip(user.email, "1year")}
-                                className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition-colors"
-                              >
-                                VIP 1 ano
-                              </button>
-                            </>
-                          ) : isVipExpired(user.vipExpirationDate) ? (
-                            // Se o VIP está expirado e não foi desativado, exibe os três botões (renovar e desativar)
-                            <>
-                              <button
-                                onClick={() => renewVip(user.email, "30days")}
-                                className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
-                              >
-                                VIP 30 dias
-                              </button>
-                              <button
-                                onClick={() => renewVip(user.email, "1year")}
-                                className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition-colors"
-                              >
-                                VIP 1 ano
-                              </button>
-                              <button
-                                onClick={() => disableVip(user.email)}
-                                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors"
-                              >
-                                Desativar VIP
-                              </button>
-                            </>
-                          ) : (
-                            // Se o usuário está ativo (VIP válido e não desativado), exibe apenas o botão para desativar
-                            <button
-                              onClick={() => disableVip(user.email)}
-                              className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors"
-                            >
-                              Desativar VIP
-                            </button>
-                          )}
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-gray-700">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">User</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Expiration</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-700">
+                <AnimatePresence>
+                  {loading ? (
+                    <tr>
+                      <td colSpan={4}>
+                        <div className="flex items-center justify-center py-8">
+                          <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
                         </div>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  ) : filteredUsers.length === 0 ? (
+                    <tr>
+                      <td colSpan={4}>
+                        <div className="text-center py-8 text-gray-400">
+                          No users found
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredUsers.map((user) => (
+                      <motion.tr
+                        key={user.id}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className={`${
+                          user.vipDisabled
+                            ? "bg-gray-700/20"
+                            : isVipExpired(user.vipExpirationDate)
+                            ? "bg-red-500/10"
+                            : "bg-green-500/10"
+                        }`}
+                      >
+                        <td className="px-6 py-4">
+                          <div>
+                            <div className="font-medium">{user.name}</div>
+                            <div className="text-sm text-gray-400">{user.email}</div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            {user.vipDisabled ? (
+                              <>
+                                <ShieldX className="w-5 h-5 text-red-500" />
+                                <span className="text-red-500">Disabled</span>
+                              </>
+                            ) : isVipExpired(user.vipExpirationDate) ? (
+                              <>
+                                <Shield className="w-5 h-5 text-yellow-500" />
+                                <span className="text-yellow-500">Expired</span>
+                              </>
+                            ) : (
+                              <>
+                                <ShieldCheck className="w-5 h-5 text-green-500" />
+                                <span className="text-green-500">Active</span>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-gray-400" />
+                            <span>{formatDate(user.vipExpirationDate)}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex gap-2">
+                            {user.vipDisabled || isVipExpired(user.vipExpirationDate) ? (
+                              <>
+                                <motion.button
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  onClick={() => renewVip(user.email, "30days")}
+                                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-sm"
+                                >
+                                  30 Days
+                                </motion.button>
+                                <motion.button
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  onClick={() => renewVip(user.email, "1year")}
+                                  className="px-3 py-1 bg-green-600 hover:bg-green-700 rounded-lg transition-colors text-sm"
+                                >
+                                  1 Year
+                                </motion.button>
+                              </>
+                            ) : (
+                              <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => disableVip(user.email)}
+                                className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded-lg transition-colors text-sm"
+                              >
+                                Disable VIP
+                              </motion.button>
+                            )}
+                          </div>
+                        </td>
+                      </motion.tr>
+                    ))
+                  )}
+                </AnimatePresence>
+              </tbody>
+            </table>
           </div>
-        )}
+        </div>
+      </div>
 
+      <AnimatePresence>
         {confirmAction && (
           <ConfirmModal
             title={confirmAction.title}
@@ -361,7 +445,7 @@ const AdminVipUsers: React.FC = () => {
             onClose={() => setShowSuccessModal(false)}
           />
         )}
-      </div>
+      </AnimatePresence>
     </div>
   );
 };

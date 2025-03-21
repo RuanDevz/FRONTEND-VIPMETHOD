@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PlanCard from "../components/Plans/PlanCard";
 import Loading from "../components/Loading/Loading";
+import { motion } from "framer-motion";
+import { Crown, Sparkles, Shield } from "lucide-react";
 
 const Plans: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -55,38 +57,36 @@ const Plans: React.FC = () => {
   }, [token, email]);
 
   const handleAccessClick = async (planType: "monthly" | "annual"): Promise<void> => {
-    const email = localStorage.getItem("email"); 
+    const email = localStorage.getItem("email");
 
     if (!token || !email) {
-        navigate("/login");
-        return;
+      navigate("/login");
+      return;
     }
 
     localStorage.setItem("selectedPlan", planType);
 
     try {
-        const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/pay/vip-payment`,
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, planType }),
-            }
-        );
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || "Erro ao criar sessão de pagamento.");
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/pay/vip-payment`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, planType }),
         }
+      );
 
-        const { url } = await response.json();
-        window.open(url, "_blank");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error creating payment session.");
+      }
+
+      const { url } = await response.json();
+      window.open(url, "_blank");
     } catch (error) {
-        console.error("Erro ao criar sessão de pagamento:", error);
+      console.error("Error creating payment session:", error);
     }
-};
-
-
+  };
 
   const handleFreeContentClick = () => {
     if (isAuthenticated) {
@@ -139,69 +139,100 @@ const Plans: React.FC = () => {
   if (loading) return <Loading />;
 
   return (
-    <main className="min-h-screen bg-gray-100 text-black p-8 flex items-center justify-center">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl relative">
-        <PlanCard
-          title="VIP ALL CONTENT ACCESS"
-          price="USD 10.00 / month"
-          description="(1 MONTH OF CONTENT)"
-          features={[
-            "Access to all content before it's posted for free users.",
-            "VIP badge in our Discord community.",
-            "Early access to exclusive content and special newsletters.",
-            "Priority support for viewing and accessing all content.",
-            "Exclusive Q&A sessions, webinars",
-            "No ads on the platform.",
-            "Ability to recommend content to be posted.",
-            "Priority in support requests.",
-          ]}
-          buttonText="Get VIP Access"
-          onButtonClick={() => handleAccessClick("monthly")}
-          isPopular={false}
-        />
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+      <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h1 className="text-4xl font-bold mb-4">Choose Your Perfect Plan</h1>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+              Get access to exclusive content and features with our premium plans. Choose the plan that best fits your needs.
+            </p>
+          </motion.div>
 
-        <PlanCard
-          title="ANNUAL PLAN"
-          price="USD 5.00 / Per Month"
-          description="(1 year of content access without ads)"
-          features={[
-            "Access to all content before it's posted for free users.",
-            "VIP badge in our Discord community.",
-            "Early access to exclusive content and newsletters.",
-            "Priority support for viewing and accessing all content.",
-            "Exclusive Q&A sessions, webinars",
-            "50% discount on future content.",
-            "No ads on the platform.",
-            "Ability to recommend content to be posted.",
-            "Priority in support requests.",
-          ]}
-          buttonText="Get Annual Plan"
-          onButtonClick={() => handleAccessClick("annual")}
-          isPopular={true}
-        />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="flex justify-center gap-8 mt-8 flex-wrap"
+          >
+            <div className="flex items-center gap-2 text-sm text-gray-400">
+              <Crown className="w-5 h-5 text-yellow-400" />
+              <span>Premium Content</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-400">
+              <Sparkles className="w-5 h-5 text-blue-400" />
+              <span>Early Access</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-400">
+              <Shield className="w-5 h-5 text-green-400" />
+              <span>Priority Support</span>
+            </div>
+          </motion.div>
+        </div>
 
-        <PlanCard
-          title="FREE CONTENT"
-          price="USD $0"
-          description="(Free content with ads)"
-          features={[
-            "Free content with ads",
-            "Access to all content before it's posted for free users.",
-            "VIP badge in our Discord community.",
-            "Early access to exclusive content and newsletters.",
-            "Priority support for viewing and accessing all content.",
-            "50% discount on future content.",
-            "No ads on the platform.",
-            "Ability to recommend content to be posted.",
-            "Priority in support requests.",
-          ]}
-          buttonText="Access Free Content"
-          onButtonClick={handleFreeContentClick}
-          isPopular={false}
-          unPopular={true}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          <PlanCard
+            title="VIP ALL ACCESS"
+            price="$10.00"
+            description="Monthly Premium Access"
+            features={[
+              "Exclusive VIP content access",
+              "Early access to new content",
+              "VIP Discord community badge",
+              "Priority support 24/7",
+              "Ad-free experience",
+              "Exclusive webinars & Q&A",
+              "Content recommendation priority",
+              "Monthly newsletter"
+            ]}
+            buttonText="Get VIP Access"
+            onButtonClick={() => handleAccessClick("monthly")}
+          />
+
+          <PlanCard
+            title="ANNUAL PREMIUM"
+            price="$5.00/mo"
+            description="Billed annually ($60.00/year)"
+            features={[
+              "All VIP features included",
+              "50% monthly price savings",
+              "Exclusive annual member badge",
+              "Premium Discord channels",
+              "Priority feature requests",
+              "Exclusive annual events",
+              "Personal support manager",
+              "Advanced content analytics"
+            ]}
+            buttonText="Get Annual Plan"
+            onButtonClick={() => handleAccessClick("annual")}
+            isPopular={true}
+          />
+
+          <PlanCard
+            title="FREE ACCESS"
+            price="$0.00"
+            description="Basic Features"
+            features={[
+              "Free content with ads",
+              "Basic Discord access",
+              "Standard support",
+              "Community features",
+              "Limited content access",
+              "Ad-supported experience",
+              "Standard response time",
+              "Basic analytics"
+            ]}
+            buttonText="Access Free Content"
+            onButtonClick={handleFreeContentClick}
+            unPopular={true}
+          />
+        </div>
       </div>
-    </main>
+    </div>
   );
 };
 
