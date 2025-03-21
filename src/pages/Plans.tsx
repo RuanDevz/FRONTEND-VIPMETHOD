@@ -88,12 +88,13 @@ const Plans: React.FC = () => {
     }
   };
 
-  const handleFreeContentClick = () => {
+  const handleFreeContentClick = (): Promise<void> => {
     if (isAuthenticated) {
       navigate("/");
     } else {
       navigate("/login");
     }
+    return Promise.resolve();
   };
 
   const handleRedirect = async () => {
@@ -179,6 +180,7 @@ const Plans: React.FC = () => {
             title="VIP ALL ACCESS"
             price="$10.00"
             description="Monthly Premium Access"
+            isPopular={false}
             features={[
               "Exclusive VIP content access",
               "Early access to new content",
@@ -228,6 +230,7 @@ const Plans: React.FC = () => {
             ]}
             buttonText="Access Free Content"
             onButtonClick={handleFreeContentClick}
+            isPopular={true}
             unPopular={true}
           />
         </div>
