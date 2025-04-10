@@ -16,21 +16,23 @@ const Header: React.FC = () => {
         {/* Logo Section */}
         <Link to="/" className="group flex items-center">
           <Flame className="w-8 h-8 text-blue-500 group-hover:text-blue-400 transition-all duration-300 transform group-hover:scale-110" />
-          <div className="ml-2 text-2xl font-black bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 bg-clip-text text-transparent hover:from-blue-400 hover:via-blue-300 hover:to-blue-400 transition duration-300">
+          <div className="ml-2 text-xl md:text-2xl font-black bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 bg-clip-text text-transparent hover:from-blue-400 hover:via-blue-300 hover:to-blue-400 transition duration-300">
             SEVENXLEAKS
           </div>
         </Link>
 
-        {/* Center Message */}
-        <div className="hidden md:flex bg-gradient-to-r from-gray-800/80 to-gray-800/60 backdrop-blur-sm px-4 py-2 rounded-full text-center items-center space-x-3 border border-gray-700/50 shadow-xl mx-4">
-          <Sparkles className="w-4 h-4 text-blue-400 animate-pulse" />
-          <span className="text-gray-300">Watch the videos for free at  -  <a className="text-blue-600" href="https://sevenxhub.com">sevenxhub.com</a></span>
+
+
+
+        {/* Centered Theme Toggle for Mobile */}
+        <div className="md:hidden flex justify-center flex-grow">
+          <ThemeToggle />
         </div>
 
         {/* VIP Button */}
         <Link
           to="/plans"
-          className="relative group overflow-hidden px-6 py-2 rounded-lg font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:via-blue-400 hover:to-indigo-500 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/20"
+          className="relative group overflow-hidden px-6 py-2 rounded-lg font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:via-blue-400 hover:to-indigo-500 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/20 hidden sm:block"
         >
           <span className="relative z-10 flex items-center space-x-2">
             <Sparkles className="w-4 h-4" />
@@ -39,7 +41,6 @@ const Header: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-500 ease-in-out"></div>
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
           <Link
             to="/login"
@@ -53,10 +54,8 @@ const Header: React.FC = () => {
           >
             Register
           </Link>
-
-          {/* Theme Toggle Button */}
-          <ThemeToggle />
         </nav>
+
 
         {/* Mobile Menu Toggle */}
         <button
@@ -91,7 +90,8 @@ const Header: React.FC = () => {
             Register
           </Link>
 
-          {/* Theme Toggle in Mobile Menu */}
+
+          {/* Theme Toggle in Mobile Menu (Centered) */}
           <div className="flex justify-center py-2">
             <ThemeToggle />
           </div>

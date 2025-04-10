@@ -54,7 +54,7 @@ const FreeContent = () => {
       try {
         setLoading(true);
         const response = await axios.get<LinkItem[]>(
-          `${import.meta.env.VITE_BACKEND_URL}/freecontent`
+          `https://backend-vip.vercel.app/freecontent`
         );
         setLoading(false);
         setLinks(response.data);
@@ -151,19 +151,11 @@ const FreeContent = () => {
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div className={`min-h-screen ${theme === 'dark' ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'} zoom-80`}>
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex justify-end mb-6">
         </div>
-        
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-600 mb-4 animate-gradient">
-            Free Content
-          </h1>
-          <p className={`text-lg max-w-2xl mx-auto ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-            Explore our collection of free content. Upgrade to VIP for exclusive access to premium features.
-          </p>
-        </div>
+      
 
         {showPopup && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm z-50">
@@ -308,7 +300,7 @@ const FreeContent = () => {
                   {groupedLinks[date].map((link: LinkItem) => (
                     <div 
                       key={link.id} 
-                      className={`p-6 transition-colors duration-200 ${
+                      className={`px-6 py-4 transition-colors duration-200 ${
                         theme === 'dark' 
                           ? 'hover:bg-gray-700/50' 
                           : 'hover:bg-gray-50'

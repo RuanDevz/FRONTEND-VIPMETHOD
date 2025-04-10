@@ -12,7 +12,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>(() => {
     const savedTheme = localStorage.getItem('theme');
-    return (savedTheme as Theme) || 'dark';
+    return (savedTheme as Theme) || 'light'; // Default to 'light' if not saved
   });
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
+    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light'); // Correct toggle logic
   };
 
   return (

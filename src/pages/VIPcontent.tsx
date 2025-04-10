@@ -53,7 +53,7 @@ const VIPContent: React.FC = () => {
     const fetchLinks = async () => {
       try {
         setLoading(true);
-        const response = await axios.get<LinkItem[]>(`${import.meta.env.VITE_BACKEND_URL}/vipcontent`);
+        const response = await axios.get<LinkItem[]>(`https://backend-vip.vercel.app/vipcontent`);
         setLoading(false);
         setLinks(response.data);
         setFilteredLinks(response.data);
@@ -135,11 +135,9 @@ const VIPContent: React.FC = () => {
   });
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex justify-end mb-6">
-          <ThemeToggle />
-        </div>
+<div className={`min-h-screen ${theme === 'dark' ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-br from-gray-50 via-white to-gray-100'} zoom-80`}>
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
 
         <div className="text-center mb-12">
           <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-600 mb-4 animate-gradient">

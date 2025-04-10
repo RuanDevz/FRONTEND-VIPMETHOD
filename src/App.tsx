@@ -33,6 +33,7 @@ interface User {
   updatedAt: string;
 }
 
+
 const App = () => {
   const [hasPermission, setHasPermission] = useState({ vip: false, admin: false });
   const token = localStorage.getItem("Token");
@@ -47,7 +48,7 @@ const App = () => {
 
       try {
         // Fazendo a requisição para verificar as permissões do usuário
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/status`, {
+        const response = await axios.get(`https://backend-vip.vercel.app/auth/status`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

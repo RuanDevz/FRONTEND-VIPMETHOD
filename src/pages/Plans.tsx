@@ -24,7 +24,7 @@ const Plans: React.FC = () => {
 
       try {
         const authResponse = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/auth/dashboard`,
+          `https://backend-vip.vercel.app/auth/dashboard`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -38,7 +38,7 @@ const Plans: React.FC = () => {
         }
 
         const vipResponse = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`,
+          `https://backend-vip.vercel.app/auth/is-vip/${email}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -70,7 +70,7 @@ const Plans: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/pay/vip-payment`,
+        `https://backend-vip.vercel.app/pay/vip-payment`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -112,7 +112,7 @@ const Plans: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/update-vip-status`,
+        `https://backend-vip.vercel.app/update-vip-status`,
         {
           method: "POST",
           headers: {

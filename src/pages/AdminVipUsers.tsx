@@ -141,7 +141,7 @@ const AdminVipUsers: React.FC = () => {
       setLoading(true);
       setError(null);
       const response = await axios.get<User[]>(
-        `${import.meta.env.VITE_BACKEND_URL}/auth/vip-users`,
+        `https://backend-vip.vercel.app/auth/vip-users`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` },
         }
@@ -192,7 +192,7 @@ const AdminVipUsers: React.FC = () => {
         try {
           setLoading(true);
           await axios.put(
-            `${import.meta.env.VITE_BACKEND_URL}/auth/disable-user/${email}`,
+            `https://backend-vip.vercel.app/auth/disable-user/${email}`,
             {},
             { headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` } }
           );
@@ -219,8 +219,8 @@ const AdminVipUsers: React.FC = () => {
         try {
           setLoading(true);
           const endpoint = period === "30days"
-            ? `${import.meta.env.VITE_BACKEND_URL}/auth/renew-vip/${email}`
-            : `${import.meta.env.VITE_BACKEND_URL}/auth/renew-vip-year/${email}`;
+            ? `https://backend-vip.vercel.app/auth/renew-vip/${email}`
+            : `https://backend-vip.vercel.app/auth/renew-vip-year/${email}`;
           
           const response = await axios.put(
             endpoint,
@@ -340,87 +340,92 @@ const AdminVipUsers: React.FC = () => {
                       </td>
                     </tr>
                   ) : (
-                    filteredUsers.map((user) => (
-                      <motion.tr
-                        key={user.id}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className={`${
-                          user.vipDisabled
-                            ? "bg-gray-700/20"
-                            : isVipExpired(user.vipExpirationDate)
-                            ? "bg-red-500/10"
-                            : "bg-green-500/10"
-                        }`}
-                      >
-                        <td className="px-6 py-4">
-                          <div>
-                            <div className="font-medium">{user.name}</div>
-                            <div className="text-sm text-gray-400">{user.email}</div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            {user.vipDisabled ? (
-                              <>
-                                <ShieldX className="w-5 h-5 text-red-500" />
-                                <span className="text-red-500">Disabled</span>
-                              </>
-                            ) : isVipExpired(user.vipExpirationDate) ? (
-                              <>
-                                <Shield className="w-5 h-5 text-yellow-500" />
-                                <span className="text-yellow-500">Expired</span>
-                              </>
-                            ) : (
-                              <>
-                                <ShieldCheck className="w-5 h-5 text-green-500" />
-                                <span className="text-green-500">Active</span>
-                              </>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <Clock className="w-4 h-4 text-gray-400" />
-                            <span>{formatDate(user.vipExpirationDate)}</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex gap-2">
-                            {user.vipDisabled || isVipExpired(user.vipExpirationDate) ? (
-                              <>
-                                <motion.button
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                  onClick={() => renewVip(user.email, "30days")}
-                                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-sm"
-                                >
-                                  30 Days
-                                </motion.button>
-                                <motion.button
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                  onClick={() => renewVip(user.email, "1year")}
-                                  className="px-3 py-1 bg-green-600 hover:bg-green-700 rounded-lg transition-colors text-sm"
-                                >
-                                  1 Year
-                                </motion.button>
-                              </>
-                            ) : (
-                              <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => disableVip(user.email)}
-                                className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded-lg transition-colors text-sm"
-                              >
-                                Disable VIP
-                              </motion.button>
-                            )}
-                          </div>
-                        </td>
-                      </motion.tr>
-                    ))
+                    filteredUsers.map((user) => {
+                      const expired = isVipExpired(user.vipExpirationDate);
+                      return (
+                        <motion.tr
+                          key={user.id}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className={`${
+                            user.vipDisabled
+                              ? "bg-gray-700/20"
+                              : expired
+                              ? "bg-red-500/10"
+                              : "bg-green-500/10"
+                          }`}
+                        >
+                          <td className="px-6 py-4">
+                            <div>
+                              <div className="font-medium">{user.name}</div>
+                              <div className="text-sm text-gray-400">{user.email}</div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              {user.vipDisabled ? (
+                                <>
+                                  <ShieldX className="w-5 h-5 text-red-500" />
+                                  <span className="text-red-500">Disabled</span>
+                                </>
+                              ) : expired ? (
+                                <>
+                                  <Shield className="w-5 h-5 text-yellow-500" />
+                                  <span className="text-yellow-500">Expired</span>
+                                </>
+                              ) : (
+                                <>
+                                  <ShieldCheck className="w-5 h-5 text-green-500" />
+                                  <span className="text-green-500">Active</span>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              <Clock className="w-4 h-4 text-gray-400" />
+                              <span>{formatDate(user.vipExpirationDate)}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex gap-2">
+                              {expired ? (
+                                <>
+                                  <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => disableVip(user.email)}
+                                    className="px-3 py-1 bg-red-600 hover:bg-red-700 rounded-lg transition-colors text-sm text-white flex items-center gap-1"
+                                  >
+                                    <ShieldX className="w-4 h-4" />
+                                    Disable VIP
+                                  </motion.button>
+                                  <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => renewVip(user.email, "30days")}
+                                    className="px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-sm text-white flex items-center gap-1"
+                                  >
+                                    <Calendar className="w-4 h-4" />
+                                    30 Days
+                                  </motion.button>
+                                  <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => renewVip(user.email, "1year")}
+                                    className="px-3 py-1 bg-green-600 hover:bg-green-700 rounded-lg transition-colors text-sm text-white flex items-center gap-1"
+                                  >
+                                    <Calendar className="w-4 h-4" />
+                                    1 Year
+                                  </motion.button>
+                                </>
+                              ) : null}
+                            </div>
+                          </td>
+                        </motion.tr>
+                      );
+                    })
                   )}
                 </AnimatePresence>
               </tbody>
