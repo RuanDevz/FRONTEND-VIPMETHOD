@@ -147,7 +147,7 @@ const AdminDisabledVipUsers: React.FC = () => {
       setLoading(true);
       setError(null);
       const response = await axios.get<User[]>(
-        `https://backend-vip.vercel.app/auth/vip-disabled-users`,
+        `${import.meta.env.VITE_BACKEND_URL}/auth/vip-disabled-users`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` },
         }
@@ -183,8 +183,8 @@ const AdminDisabledVipUsers: React.FC = () => {
         try {
           setLoading(true);
           const endpoint = period === "30days"
-            ? `https://backend-vip.vercel.app/auth/renew-vip/${email}`
-            : `https://backend-vip.vercel.app/auth/renew-vip-year/${email}`;
+            ? `${import.meta.env.VITE_BACKEND_URL}/auth/renew-vip/${email}`
+            : `${import.meta.env.VITE_BACKEND_URL}/auth/renew-vip-year/${email}`;
           
           const response = await axios.put(
             endpoint,
