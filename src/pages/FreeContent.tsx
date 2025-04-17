@@ -20,7 +20,14 @@ function FreeContent() {
   const [loading, setLoading] = useState(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [openEmojiMenu, setOpenEmojiMenu] = useState<number | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("Token");
+    setIsLoggedIn(!!token);
+  }, []);
 
   useEffect(() => {
     const fetchLinks = async () => {
@@ -123,10 +130,23 @@ function FreeContent() {
   }, [searchName, selectedMonth, selectedCategory, sortOption, links]);
 
   const handleEmojiReaction = async (linkId: number, emojiName: string) => {
+    const token = localStorage.getItem("Token");
+  
+    if (!token) {
+      alert("Your Need Logged!");
+      return;
+    }
+  
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/emoji/${emojiName}/react`, {
-        linkId
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/emoji/${emojiName}/react`,
+        { linkId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
   
       if (response.data.success) {
         setLinks((prevLinks) =>
@@ -150,11 +170,16 @@ function FreeContent() {
           })
         );
       }
-    } catch (error) {
-      console.error("Erro ao reagir com emoji:", error);
+    } catch (error: any) {
+      if (error.response?.status === 403) {
+        alert("Você já reagiu a esse conteúdo.");
+      } else {
+        console.error("Erro ao reagir com emoji:", error);
+      }
     }
     setOpenEmojiMenu(null);
   };
+  
   
 
   const groupedLinks: { [key: string]: LinkItem[] } = {};
