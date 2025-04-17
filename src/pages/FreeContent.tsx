@@ -8,7 +8,7 @@ import { ContentList } from "../components/FreeContent/ContentList";
 import { LinkItem, Category } from "../components/FreeContent/types/index";
 import { months } from "../components/FreeContent/types/constants";
 
-function App() {
+function FreeContent() {
   const { theme } = useTheme();
   const [links, setLinks] = useState<LinkItem[]>([]);
   const [filteredLinks, setFilteredLinks] = useState<LinkItem[]>([]);
@@ -55,20 +55,30 @@ function App() {
     const fetchEmojiCounts = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/emojis`);
-        setLinks(prevLinks => 
-          prevLinks.map(link => ({
-            ...link,
-            reactions: response.data.reduce((acc: any, emoji: any) => {
-              acc[emoji.name] = emoji.count;
-              return acc;
-            }, {})
-          }))
+        const emojisByLink = response.data.reduce((acc: any, emoji: any) => {
+          if (!acc[emoji.linkId]) acc[emoji.linkId] = [];
+          acc[emoji.linkId].push({ name: emoji.name, count: emoji.count });
+          return acc;
+        }, {});
+  
+        setLinks((prevLinks) =>
+          prevLinks.map((link) => {
+            const reactions = emojisByLink[link.id] || [];
+            const top5Reactions = reactions
+              .sort((a: any, b: any) => b.count - a.count)
+              .slice(0, 5)
+              .reduce((acc: any, emoji: any) => {
+                acc[emoji.name] = emoji.count;
+                return acc;
+              }, {});
+            return { ...link, reactions: top5Reactions };
+          })
         );
       } catch (error) {
         console.error("Error fetching emoji counts:", error);
       }
     };
-
+  
     fetchEmojiCounts();
   }, []);
 
@@ -114,18 +124,26 @@ function App() {
 
   const handleEmojiReaction = async (linkId: number, emojiName: string) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/emoji/${emojiName}/react`);
-      
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/emoji/${emojiName}/react`, {
+        linkId
+      });
+  
       if (response.data.success) {
-        setLinks(prevLinks => 
-          prevLinks.map(link => {
+        setLinks((prevLinks) =>
+          prevLinks.map((link) => {
             if (link.id === linkId) {
+              const updatedReactions = {
+                ...link.reactions,
+                [emojiName]: (link.reactions?.[emojiName] || 0) + 1,
+              };
+  
+              const sorted = Object.entries(updatedReactions)
+                .sort(([, a], [, b]) => b - a)
+                .slice(0, 5);
+  
               return {
                 ...link,
-                reactions: {
-                  ...link.reactions,
-                  [emojiName]: (link.reactions?.[emojiName] || 0) + 1
-                }
+                reactions: Object.fromEntries(sorted),
               };
             }
             return link;
@@ -133,10 +151,11 @@ function App() {
         );
       }
     } catch (error) {
-      console.error("Error adding reaction:", error);
+      console.error("Erro ao reagir com emoji:", error);
     }
     setOpenEmojiMenu(null);
   };
+  
 
   const groupedLinks: { [key: string]: LinkItem[] } = {};
   filteredLinks.forEach((link) => {
@@ -197,4 +216,4 @@ function App() {
   );
 }
 
-export default App;
+export default FreeContent;

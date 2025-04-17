@@ -21,11 +21,9 @@ export const ContentItem: React.FC<ContentItemProps> = ({
   setOpenEmojiMenu,
 }) => {
   return (
-    <div 
+    <div
       className={`px-6 py-4 transition-colors duration-200 ${
-        theme === 'dark' 
-          ? 'hover:bg-gray-700/50' 
-          : 'hover:bg-gray-50'
+        theme === 'dark' ? 'hover:bg-gray-700/50' : 'hover:bg-gray-50'
       }`}
     >
       <div className="flex items-center justify-between group">
@@ -41,16 +39,31 @@ export const ContentItem: React.FC<ContentItemProps> = ({
         >
           {link.name}
         </a>
+
         <div className="flex items-center space-x-2">
-          <div className="flex items-center space-x-1 flex-wrap gap-1">
-            {Object.entries(link.reactions || {}).map(([emojiName, count]) => (
-              <div key={emojiName} className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-full px-2 py-1">
-                <img src={emojiOptions.find(e => e.name === emojiName)?.src} alt={emojiName} className="w-4 h-4" />
-                <span className="ml-1 text-xs text-gray-600 dark:text-gray-300">{count}</span>
-              </div>
-            ))}
+          {/* Reações exibidas */}
+          <div className="flex items-center flex-wrap gap-1">
+            {Object.entries(link.reactions || {})
+              .sort(([, a], [, b]) => b - a)
+              .slice(0, 5)
+              .map(([emojiName, count]) => (
+                <button
+                  key={emojiName}
+                  onClick={() => onEmojiReaction(link.id, emojiName)}
+                  className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-full px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+                  title={emojiName}
+                >
+                  <img
+                    src={emojiOptions.find((e) => e.name === emojiName)?.src}
+                    alt={emojiName}
+                    className="w-4 h-4"
+                  />
+                  <span className="ml-1 text-xs text-gray-600 dark:text-gray-300">{count}</span>
+                </button>
+              ))}
           </div>
-          
+
+          {/* Botão de menu de emojis */}
           <div className="relative">
             <button
               onClick={() => setOpenEmojiMenu(openEmojiMenu === link.id ? null : link.id)}
@@ -60,9 +73,9 @@ export const ContentItem: React.FC<ContentItemProps> = ({
             >
               <Smile className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             </button>
-            
+
             {openEmojiMenu === link.id && (
-              <div 
+              <div
                 className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 z-[60] emoji-menu"
                 style={{ width: '500px', maxHeight: '400px' }}
               >
@@ -81,7 +94,7 @@ export const ContentItem: React.FC<ContentItemProps> = ({
               </div>
             )}
           </div>
-          
+
           {isRecent && (
             <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20">
               NEW
