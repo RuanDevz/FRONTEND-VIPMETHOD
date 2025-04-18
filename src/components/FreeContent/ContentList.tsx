@@ -11,6 +11,7 @@ interface ContentListProps {
   onEmojiReaction: (linkId: number, emojiName: string) => void;
   openEmojiMenu: number | null;
   setOpenEmojiMenu: (id: number | null) => void;
+  userReactions: { [linkId: number]: string }; // 👈 esta linha deve existir
 }
 
 export const ContentList: React.FC<ContentListProps> = ({

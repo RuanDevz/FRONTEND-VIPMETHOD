@@ -21,6 +21,8 @@ function FreeContent() {
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [openEmojiMenu, setOpenEmojiMenu] = useState<number | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [userReactions, setUserReactions] = useState<{ [linkId: number]: string }>({});
+
 
   const navigate = useNavigate();
 
@@ -133,7 +135,7 @@ function FreeContent() {
     const token = localStorage.getItem("Token");
   
     if (!token) {
-      alert("Your Need Logged!");
+      alert("Você precisa estar logado para reagir.");
       return;
     }
   
@@ -152,11 +154,22 @@ function FreeContent() {
         setLinks((prevLinks) =>
           prevLinks.map((link) => {
             if (link.id === linkId) {
-              const updatedReactions = {
-                ...link.reactions,
-                [emojiName]: (link.reactions?.[emojiName] || 0) + 1,
-              };
+              const currentEmoji = userReactions[linkId];
   
+              const updatedReactions = { ...link.reactions };
+  
+              // Remove 1 da reação anterior (se houver)
+              if (currentEmoji && updatedReactions[currentEmoji]) {
+                updatedReactions[currentEmoji] -= 1;
+                if (updatedReactions[currentEmoji] <= 0) {
+                  delete updatedReactions[currentEmoji];
+                }
+              }
+  
+              // Adiciona 1 na nova reação
+              updatedReactions[emojiName] = (updatedReactions[emojiName] || 0) + 1;
+  
+              // Ordena e pega as 5 principais
               const sorted = Object.entries(updatedReactions)
                 .sort(([, a], [, b]) => b - a)
                 .slice(0, 5);
@@ -169,16 +182,21 @@ function FreeContent() {
             return link;
           })
         );
+  
+        // Atualiza o estado com a reação do usuário para esse conteúdo
+        setUserReactions((prev) => ({ ...prev, [linkId]: emojiName }));
       }
     } catch (error: any) {
       if (error.response?.status === 403) {
-        alert("Você já reagiu a esse conteúdo.");
+        alert("Você já reagiu com esse emoji. Tente outro para trocar.");
       } else {
         console.error("Erro ao reagir com emoji:", error);
       }
     }
+  
     setOpenEmojiMenu(null);
   };
+  
   
   
 
@@ -227,15 +245,16 @@ function FreeContent() {
           onSortChange={setSortOption}
         />
 
-        <ContentList
-          theme={theme}
-          loading={loading}
-          groupedLinks={groupedLinks}
-          recentLinks={recentLinks}
-          onEmojiReaction={handleEmojiReaction}
-          openEmojiMenu={openEmojiMenu}
-          setOpenEmojiMenu={setOpenEmojiMenu}
-        />
+<ContentList
+  theme={theme}
+  loading={loading}
+  groupedLinks={groupedLinks}
+  recentLinks={recentLinks}
+  onEmojiReaction={handleEmojiReaction}
+  openEmojiMenu={openEmojiMenu}
+  setOpenEmojiMenu={setOpenEmojiMenu}
+  userReactions={userReactions} // 👈 adiciona essa linha!
+/>
       </div>
     </div>
   );

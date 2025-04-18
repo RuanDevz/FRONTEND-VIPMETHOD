@@ -10,6 +10,7 @@ interface ContentItemProps {
   onEmojiReaction: (linkId: number, emojiName: string) => void;
   openEmojiMenu: number | null;
   setOpenEmojiMenu: (id: number | null) => void;
+  userReaction?: string; // nova prop
 }
 
 export const ContentItem: React.FC<ContentItemProps> = ({
@@ -19,6 +20,7 @@ export const ContentItem: React.FC<ContentItemProps> = ({
   onEmojiReaction,
   openEmojiMenu,
   setOpenEmojiMenu,
+  userReaction,
 }) => {
   return (
     <div
@@ -50,7 +52,11 @@ export const ContentItem: React.FC<ContentItemProps> = ({
                 <button
                   key={emojiName}
                   onClick={() => onEmojiReaction(link.id, emojiName)}
-                  className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-full px-2 py-1 hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+                  className={`flex items-center rounded-full px-2 py-1 transition
+                    ${emojiName === userReaction
+                      ? 'bg-blue-100 text-blue-600 dark:bg-blue-800 dark:text-white ring-2 ring-blue-400'
+                      : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
                   title={emojiName}
                 >
                   <img
@@ -58,7 +64,7 @@ export const ContentItem: React.FC<ContentItemProps> = ({
                     alt={emojiName}
                     className="w-4 h-4"
                   />
-                  <span className="ml-1 text-xs text-gray-600 dark:text-gray-300">{count}</span>
+                  <span className="ml-1 text-xs">{count}</span>
                 </button>
               ))}
           </div>
@@ -84,7 +90,11 @@ export const ContentItem: React.FC<ContentItemProps> = ({
                     <button
                       key={emoji.name}
                       onClick={() => onEmojiReaction(link.id, emoji.name)}
-                      className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                      className={`p-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 ${
+                        emoji.name === userReaction
+                          ? 'bg-blue-100 dark:bg-blue-800 ring-2 ring-blue-400'
+                          : ''
+                      }`}
                       title={emoji.name}
                     >
                       <img src={emoji.src} alt={emoji.name} className="w-8 h-8" />
