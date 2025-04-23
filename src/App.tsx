@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
-import axios from "axios";  // Importando o axios
+import axios from "axios";
 import Header from "./components/Header";
 import HeaderLogged from "./components/HeaderLogged";
 import Footer from "./components/Footer";
@@ -15,13 +15,15 @@ import ResetPassword from "./pages/ResetPassword";
 import Plans from "./pages/Plans";
 import VIPcontent from "./pages/VIPcontent";
 import FreeContent from "./pages/FreeContent";
+import FreeContentDetails from "./components/FreeContent/FreeContentDetails";
+import VIPContentDetails from "./components/FreeContent/VIPContentDetails";
 import AdminPainel from "./pages/AdminPainel";
-import AdminVipUsers from "./pages/AdminVipUsers"; // Importando a página AdminVipUsers
+import AdminVipUsers from "./pages/AdminVipUsers";
 import SupportPage from "./pages/SupportPage";
 import RecommendContent from "./pages/RecommendContent";
 import ViewStats from "./pages/Viewstats";
 import ViewRequests from "./pages/ViewRequests";
-import AccessDenied from "./pages/AccessDenied"; // Importando a página de acesso negado
+import AccessDenied from "./pages/AccessDenied";
 import AdminDisabledVipUsers from "./pages/AdminDisabledVipUsers";
 
 interface User {
@@ -33,15 +35,11 @@ interface User {
   updatedAt: string;
 }
 
-
-
-
 const App = () => {
   const [hasPermission, setHasPermission] = useState({ vip: false, admin: false });
   const token = localStorage.getItem("Token");
 
   useEffect(() => {
-    // Verificando permissões via API
     const checkPermissions = async () => {
       if (!token) {
         setHasPermission({ vip: false, admin: false });
@@ -49,7 +47,6 @@ const App = () => {
       }
 
       try {
-        // Fazendo a requisição para verificar as permissões do usuário
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/status`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -65,7 +62,6 @@ const App = () => {
       }
     };
 
-    // Chama a função para verificar as permissões
     checkPermissions();
   }, [token]);
 
@@ -76,12 +72,24 @@ const App = () => {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<FreeContent />} />
+            <Route path="/free/:slug" element={<FreeContentDetails />} />
             
             <Route 
               path="/vip" 
               element={
                 hasPermission.vip ? (
                   <VIPcontent />
+                ) : (
+                  <AccessDenied message="You are not a VIP to access this page." />
+                )
+              } 
+            />
+            
+            <Route 
+              path="/vip/:slug" 
+              element={
+                hasPermission.vip ? (
+                  <VIPContentDetails />
                 ) : (
                   <AccessDenied message="You are not a VIP to access this page." />
                 )
@@ -128,8 +136,7 @@ const App = () => {
                 )
               } 
             />
-
-<Route 
+            <Route 
               path="/admin-vip-disabled" 
               element={
                 hasPermission.admin ? (

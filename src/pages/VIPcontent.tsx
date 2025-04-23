@@ -12,6 +12,7 @@ type LinkItem = {
   link: string;
   category: string;
   createdAt: string;
+  slug: string
 };
 
 type Category = {
@@ -298,8 +299,7 @@ const VIPContent: React.FC = () => {
                       }`}
                     >
                       <a
-                        href={link.link}
-                        target="_blank"
+                        href={`#/vip/${link.slug}`}
                         rel="noopener noreferrer"
                         className="flex items-center justify-between group"
                       >
