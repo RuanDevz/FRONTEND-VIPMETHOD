@@ -20,6 +20,9 @@ export interface Userdatatypes {
   recentlyViewed: string[];
   transactions: Transaction[];
   favorites: FavoriteContent[];
+  profileImage: any,
+  username: string,
+  createdAt: string
 }
 
 export type LinkItem = {
