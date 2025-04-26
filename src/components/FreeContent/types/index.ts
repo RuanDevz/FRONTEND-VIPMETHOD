@@ -12,8 +12,3 @@ export interface LinkItem {
     name: string;
     category: string;
   }
-  
-  export interface EmojiOption {
-    name: string;
-    src: string;
-  }

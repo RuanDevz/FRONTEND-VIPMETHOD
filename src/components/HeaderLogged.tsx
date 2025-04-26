@@ -28,12 +28,12 @@ const HeaderLogged: React.FC = () => {
       if (token && email) {
         try {
           const vipResponse = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`
+            `https://backend-vip.vercel.app/auth/is-vip/${email}`
           );
           setIsVip(vipResponse.data.isVip);
 
           const adminResponse = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/auth/is-admin/${email}`
+            `https://backend-vip.vercel.app/auth/is-admin/${email}`
           );
           setIsAdmin(adminResponse.data.isAdmin);
         } catch (error) {
@@ -86,12 +86,16 @@ const HeaderLogged: React.FC = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-500 ease-in-out"></div>
               </Link>
             ) : (
-              <Link
-                to="/plans"
-                className="px-4 py-2 rounded-lg font-bold bg-black text-white border-2 border-gray-700 hover:border-blue-500 hover:bg-gray-900 transition-all duration-300 transform hover:scale-105 shadow-lg"
-              >
-                Become VIP
-              </Link>
+        <Link
+          to="/plans"
+          className="relative group overflow-hidden px-6 py-2 rounded-lg font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 hover:from-blue-500 hover:via-blue-400 hover:to-indigo-500 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/20 hidden sm:block"
+        >
+          <span className="relative z-10 flex items-center space-x-2">
+            <Sparkles className="w-4 h-4" />
+            <span>Become VIP</span>
+          </span>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:translate-x-full transition-transform duration-500 ease-in-out"></div>
+        </Link>
             )}
   
             <a
@@ -171,8 +175,7 @@ const HeaderLogged: React.FC = () => {
                   to="/plans"
                   className="px-4 py-3 rounded-lg font-bold bg-black text-white border-2 border-gray-700 hover:border-blue-500 hover:bg-gray-900 transition-all duration-300 text-center"
                 >
-                  Become VIP
-                </Link>
+sssss                </Link>
               )}
   
               {/* Mobile Discord Button */}

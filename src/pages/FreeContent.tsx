@@ -63,9 +63,8 @@ const FreeContent = () => {
       try {
         setLoading(true);
         const response = await axios.get<LinkItem[]>(
-          `${import.meta.env.VITE_BACKEND_URL}/freecontent`
+          `https://backend-vip.vercel.app/freecontent`
         );
-        setLoading(false);
         setLinks(response.data);
         setFilteredLinks(response.data);
 
@@ -78,8 +77,14 @@ const FreeContent = () => {
         }));
 
         setCategories(extractedCategories);
+        console.log(links.map(link => link.postDate));
+
+        
       } catch (error) {
         console.error("Error fetching free content:", error);
+        setLoading(false);
+      }
+      finally{
         setLoading(false);
       }
     };
@@ -135,10 +140,18 @@ const FreeContent = () => {
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
-    return `${(date.getMonth() + 1).toString().padStart(2, "0")}/${date
-      .getDate()
-      .toString()
-      .padStart(2, "0")}/${date.getFullYear()}`;
+    const options: Intl.DateTimeFormatOptions = {
+      timeZone: "America/Sao_Paulo",
+      year: "numeric", // <- aqui o ano vai como 2025
+      month: "2-digit",
+      day: "2-digit",
+    };
+  
+    const [month, day, year] = date
+      .toLocaleDateString("en-US", options)
+      .split("/");
+  
+    return `${month}/${day}/${year}`;
   };
 
   const groupedLinks: { [key: string]: LinkItem[] } = {};
@@ -285,7 +298,9 @@ const FreeContent = () => {
           {loading ? (
             <Loading />
           ) : Object.keys(groupedLinks).length > 0 ? (
-            Object.keys(groupedLinks).map((date) => (
+            Object.keys(groupedLinks)
+            .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+            .map((date) => (          
               <div 
                 key={date} 
                 className={`${

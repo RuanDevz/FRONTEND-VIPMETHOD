@@ -26,7 +26,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/reset-password`, {
+      const response = await axios.post(`https://backend-vip.vercel.app/reset-password`, {
         token,
         password: newPassword,
       });

@@ -2,7 +2,7 @@ import React from 'react';
 import DownloadButton from './DownloadButton';
 import MEGA from '../assets/MEGA.png';
 import Pixeldrain from '../assets/pixeldrain.png';
-import Gofile from '../assets/Gofile.png';
+import Gofile from '../assets/Gofile.jpg';
 
 interface DownloadOptionsProps {
   primaryLinks: {
@@ -43,8 +43,8 @@ const DownloadOptions: React.FC<DownloadOptionsProps> = ({ primaryLinks, mirrorL
         fallbackUrl={mirrorLinks.gofile}
         label="Gofile"
         icon={Gofile}
-        bgColor="bg-yellow-400"
-        hoverColor="hover:bg-yellow-500"
+        bgColor="bg-[#353a40]"
+        hoverColor="hover:bg-[#454B52]"
       />
     </div>
   );
