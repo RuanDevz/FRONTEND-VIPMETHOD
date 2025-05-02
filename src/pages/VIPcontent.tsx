@@ -58,21 +58,30 @@ const VIPContent: React.FC = () => {
         setLoading(false);
         setLinks(response.data);
         setFilteredLinks(response.data);
-
+  
         const extractedCategories = Array.from(new Set(response.data.map((item) => item.category)))
           .map((category) => ({
             id: category,
             name: category,
             category: category,
           }));
-
+  
         setCategories(extractedCategories);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching VIP content:", error);
+  
+        if (
+          error.message === "Network Error" ||
+          (error.response === undefined && error.request)
+        ) {
+          console.warn("Possível erro de CORS detectado. Recarregando a página...");
+          window.location.reload();
+        }
+  
         setLoading(false);
       }
     };
-
+  
     fetchLinks();
   }, []);
 

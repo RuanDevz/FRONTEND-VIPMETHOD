@@ -6,22 +6,8 @@ import { Search, Calendar, LayoutGrid, SortDesc, X, Crown, Sparkles } from 'luci
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../contexts/ThemeContext";
 import { linkvertise } from "../components/Linkvertise";
+import { LinkItem } from "../utils";
 
-type LinkItem = {
-  id: number;
-  name: string;
-  link: string;
-  linkP: string;
-  linkG: string;
-  linkMV1: string;
-  linkMV2: string;
-  linkMV3: string;
-  category: string;
-  postDate: string;
-  createdAt: string;
-  updatedAt: string;
-  slug: string;
-};
 
 type Category = {
   id: string;
@@ -67,7 +53,7 @@ const FreeContent = () => {
         );
         setLinks(response.data);
         setFilteredLinks(response.data);
-
+      
         const extractedCategories = Array.from(
           new Set(response.data.map((item) => item.category))
         ).map((category) => ({
@@ -75,16 +61,20 @@ const FreeContent = () => {
           name: category,
           category: category,
         }));
-
+      
         setCategories(extractedCategories);
-        console.log(links.map(link => link.postDate));
-
-        
-      } catch (error) {
+      
+      } catch (error: any) {
         console.error("Error fetching free content:", error);
-        setLoading(false);
-      }
-      finally{
+      
+        if (
+          error.message === "Network Error" ||
+          (error.response === undefined && error.request)
+        ) {
+          window.location.reload();
+        }
+      
+      } finally {
         setLoading(false);
       }
     };

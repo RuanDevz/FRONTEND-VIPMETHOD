@@ -40,7 +40,7 @@ const ContactSection: React.FC = () => {
                 isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"
               }`}
             >
-              support@sevenxleaks.com
+              https://discord.com/invite/95BKaYTPPS
               <ExternalLink size={12} className="ml-1" />
             </a>
           </div>

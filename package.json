@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-virtual": "^3.13.6",
     "axios": "^1.7.7",
     "framer-motion": "^11.11.11",
     "lucide-react": "^0.441.0",
@@ -23,7 +24,8 @@
     "react-spring": "^9.7.4",
     "recharts": "^2.15.1",
     "rollup": "^4.40.0",
-    "stripe": "^17.6.0"
+    "stripe": "^17.6.0",
+    "use-debounce": "^10.0.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

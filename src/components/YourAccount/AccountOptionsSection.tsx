@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Settings, Bell, Shield, Download, Trash2, LogOut, AlertTriangle } from "lucide-react";
+import React from "react";
+import { Settings, Download, Trash2, LogOut, Shield, AlertTriangle } from "lucide-react";
 import { Userdatatypes } from "../../../types/Userdatatypes";
 import { useTheme } from "../../contexts/ThemeContext";
 
@@ -10,21 +10,7 @@ interface AccountOptionsSectionProps {
 const AccountOptionsSection: React.FC<AccountOptionsSectionProps> = ({ userData }) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
-  
-  const [notifications, setNotifications] = useState({
-    newContent: true,
-    updates: true,
-    offers: userData.isVip,
-    newsletter: false
-  });
-  
-  const toggleNotification = (key: keyof typeof notifications) => {
-    setNotifications(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
-  };
-  
+
   return (
     <div className={`overflow-hidden rounded-2xl transition-colors duration-300 ${
       isDark 
@@ -60,13 +46,10 @@ const AccountOptionsSection: React.FC<AccountOptionsSectionProps> = ({ userData 
               <li>• Profile image upload</li>
               <li>• Banner image customization</li>
               <li>• Edit profile information</li>
-              <li>• Platform updates notifications</li>
               <li>• New content alerts</li>
-              <li>• Special offers notifications</li>
               <li>• Change password functionality</li>
               <li>• Automatic subscription cancellation</li>
               <li>• Logout process optimization</li>
-              <li>• Two-factor authentication setup</li>
               <li>• Data export functionality</li>
               <li>• Account deletion process</li>
             </ul>
@@ -74,47 +57,6 @@ const AccountOptionsSection: React.FC<AccountOptionsSectionProps> = ({ userData 
         </div>
 
         <div className="space-y-6">
-          {/* Notification Settings */}
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Bell size={18} className={isDark ? "text-purple-400" : "text-purple-600"} />
-              <h4 className="font-medium">Notification Preferences</h4>
-            </div>
-            
-            <div className="space-y-2">
-              {Object.entries(notifications).map(([key, value]) => (
-                <div 
-                  key={key}
-                  className="flex items-center justify-between"
-                >
-                  <span className={`text-sm ${isDark ? "text-gray-300" : "text-gray-700"}`}>
-                    {key === "newContent" 
-                      ? "New content alerts" 
-                      : key === "updates" 
-                        ? "Platform updates" 
-                        : key === "offers" 
-                          ? "Special offers" 
-                          : "Weekly newsletter"}
-                  </span>
-                  <button
-                    onClick={() => toggleNotification(key as keyof typeof notifications)}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      value 
-                        ? isDark ? "bg-purple-500" : "bg-purple-600" 
-                        : isDark ? "bg-gray-600" : "bg-gray-300"
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        value ? "translate-x-6" : "translate-x-1"
-                      }`}
-                    />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-          
           {/* Security */}
           <div>
             <div className="flex items-center gap-2 mb-3">
@@ -129,23 +71,14 @@ const AccountOptionsSection: React.FC<AccountOptionsSectionProps> = ({ userData 
             }`}>
               Change password
             </button>
-            
-            <button className={`w-full p-2 text-left rounded-lg text-sm transition-colors duration-200 ${
-              isDark 
-                ? "text-gray-300 hover:bg-gray-700" 
-                : "text-gray-700 hover:bg-gray-100"
-            }`}>
-              Two-factor authentication
-            </button>
           </div>
-          
-          {/* Additional Options */}
+
           <div>
             <div className="flex items-center gap-2 mb-3">
               <Settings size={18} className={isDark ? "text-purple-400" : "text-purple-600"} />
               <h4 className="font-medium">More Options</h4>
             </div>
-            
+
             <button className={`w-full p-2 text-left rounded-lg text-sm transition-colors duration-200 flex items-center gap-2 ${
               isDark 
                 ? "text-gray-300 hover:bg-gray-700" 
@@ -154,7 +87,7 @@ const AccountOptionsSection: React.FC<AccountOptionsSectionProps> = ({ userData 
               <Download size={16} />
               <span>Download my data</span>
             </button>
-            
+
             <button className={`w-full p-2 text-left rounded-lg text-sm transition-colors duration-200 flex items-center gap-2 ${
               isDark 
                 ? "text-red-400 hover:bg-red-500/10" 
@@ -163,7 +96,7 @@ const AccountOptionsSection: React.FC<AccountOptionsSectionProps> = ({ userData 
               <Trash2 size={16} />
               <span>Delete account</span>
             </button>
-            
+
             <button className={`w-full p-2 text-left rounded-lg text-sm transition-colors duration-200 flex items-center gap-2 ${
               isDark 
                 ? "text-gray-300 hover:bg-gray-700" 
