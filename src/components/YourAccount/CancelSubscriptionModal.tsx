@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { XCircle, X } from "lucide-react";
+import { XCircle, X, CheckCircle } from "lucide-react";
 import { useTheme } from "../../contexts/ThemeContext";
 import { Userdatatypes } from "../../../types/Userdatatypes";
 
@@ -15,13 +15,11 @@ const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = ({
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [userData, setUserData] = useState<Userdatatypes | null>(null);
-
-
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const cancelSubscription = async () => {
-  
     const token = localStorage.getItem("Token");
-  
+
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/cancel-subscription`, {
         method: "POST",
@@ -31,18 +29,39 @@ const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = ({
         },
       });
 
-      console.log('Assinatura cancelada')
-  
-      if (!response.ok) {
-        throw new Error("Error");
-      }
-  
-      const result = await response.json();
+      if (!response.ok) throw new Error("Error");
+
+      setShowSuccessModal(true); // Mostrar modal de sucesso
     } catch (error) {
       alert("Erro ao cancelar: " + (error instanceof Error ? error.message : "Erro desconhecido"));
     }
   };
-  
+
+  if (showSuccessModal) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+        <div className={`max-w-md mx-4 rounded-2xl p-6 text-center ${isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"}`}>
+          <div className="flex justify-center mb-4">
+            <CheckCircle size={48} className={`${isDark ? "text-green-400" : "text-green-600"}`} />
+          </div>
+          <h3 className="text-2xl font-semibold mb-2">Subscription Canceled</h3>
+          <p className="mb-6">
+            Your VIP subscription has been successfully canceled. You’ll retain access until{" "}
+            <span className="font-semibold">
+              {new Date(expirationDate).toLocaleDateString()}
+            </span>.
+          </p>
+          <button
+            onClick={onCancel}
+            className={`px-4 py-2 rounded-lg font-medium ${isDark ? "bg-green-600 hover:bg-green-700 text-white" : "bg-green-500 hover:bg-green-600 text-white"}`}
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
       <div 
