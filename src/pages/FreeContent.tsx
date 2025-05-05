@@ -53,7 +53,7 @@ const FreeContent = () => {
         );
         setLinks(response.data);
         setFilteredLinks(response.data);
-      
+  
         const extractedCategories = Array.from(
           new Set(response.data.map((item) => item.category))
         ).map((category) => ({
@@ -61,26 +61,30 @@ const FreeContent = () => {
           name: category,
           category: category,
         }));
-      
+  
         setCategories(extractedCategories);
-      
+  
       } catch (error: any) {
         console.error("Error fetching free content:", error);
-      
+  
         if (
           error.message === "Network Error" ||
           (error.response === undefined && error.request)
         ) {
           window.location.reload();
         }
-      
+  
       } finally {
-        setLoading(false);
+        // Adiciona um delay de 5 segundos antes de remover o loading
+        setTimeout(() => {
+          setLoading(false);
+        }, 3000);
       }
     };
-
+  
     fetchLinks();
   }, []);
+  
 
   useEffect(() => {
     let filtered = [...links];
