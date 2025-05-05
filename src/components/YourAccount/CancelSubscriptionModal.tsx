@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { XCircle, X } from "lucide-react";
 import { useTheme } from "../../contexts/ThemeContext";
+import { Userdatatypes } from "../../../types/Userdatatypes";
 
 interface CancelSubscriptionModalProps {
   onCancel: () => void;
@@ -15,6 +16,36 @@ const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = ({
 }) => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const [userData, setUserData] = useState<Userdatatypes | null>(null);
+
+
+
+  const cancelSubscription = async () => {
+    if (!userData?.stripeSubscriptionId) {
+      alert("You have already canceled your subscription");
+      return;
+    }
+  
+    const token = localStorage.getItem("Token");
+  
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/cancel-subscription`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Error");
+      }
+  
+      const result = await response.json();
+    } catch (error) {
+      alert("Erro ao cancelar: " + (error instanceof Error ? error.message : "Erro desconhecido"));
+    }
+  };
   
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
@@ -86,7 +117,7 @@ const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = ({
             </button>
             
             <button
-              onClick={onConfirm}
+              onClick={cancelSubscription}
               className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                 isDark
                   ? "bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30" 

@@ -32,19 +32,7 @@ const YourAccount: React.FC = () => {
           const data = await response.json();
           setUserData(data);
 
-          const storedCanceling = localStorage.getItem("isCanceling");
-          if (storedCanceling === "true" || data.isSubscriptionCanceled) {
-            setIsCanceling(true);
-            localStorage.setItem("isCanceling", "true");
-          }
-
-          const daysLeft = calculateDaysLeft(data.vipExpirationDate);
-          if (daysLeft === 0 && data.isVip && !data.isSubscriptionCanceled) {
-            cancelSubscription();
-          }
-        } else {
-          console.error("Error fetching user data");
-        }
+         
       } catch (error) {
         console.error("Error fetching user data:", error);
       } finally {
@@ -61,33 +49,7 @@ const YourAccount: React.FC = () => {
     return Math.max(Math.ceil(timeDiff / (1000 * 60 * 60 * 24)), 0);
   };
 
-  const cancelSubscription = async () => {
-    if (!userData?.stripeSubscriptionId) {
-      alert("You have already canceled your subscription");
-      return;
-    }
   
-    const token = localStorage.getItem("Token");
-  
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/cancel-subscription`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ subscriptionId: userData.stripeSubscriptionId }),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Error");
-      }
-  
-      const result = await response.json();
-    } catch (error) {
-      alert("Erro ao cancelar: " + (error instanceof Error ? error.message : "Erro desconhecido"));
-    }
-  };
 
 
   if (loading) {
