@@ -31,8 +31,7 @@ const YourAccount: React.FC = () => {
         if (response.ok) {
           const data = await response.json();
           setUserData(data);
-
-         
+        } // <- esse fechamento estava faltando
       } catch (error) {
         console.error("Error fetching user data:", error);
       } finally {
