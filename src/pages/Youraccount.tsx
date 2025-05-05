@@ -23,7 +23,7 @@ const YourAccount: React.FC = () => {
     const fetchUserData = async () => {
       try {
         const response = await fetch(
-          `https://backend-vip.vercel.app/auth/dashboard`,
+          `${import.meta.env.VITE_BACKEND_URL}/auth/dashboard`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -62,47 +62,33 @@ const YourAccount: React.FC = () => {
   };
 
   const cancelSubscription = async () => {
+    if (!userData?.stripeSubscriptionId) {
+      alert("You have already canceled your subscription");
+      return;
+    }
+  
+    const token = localStorage.getItem("Token");
+  
     try {
-      const response = await fetch(
-        `https://backend-vip.vercel.app/auth/cancel-subscription`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ userId: userData?.id }),
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        setIsCanceling(true);
-        localStorage.setItem("isCanceling", "true");
-
-        setUserData((prevData) => {
-          if (!prevData) return prevData;
-          return {
-            ...prevData,
-            stripeSubscriptionId: null,
-          };
-        });
-
-        alert(
-          `Your subscription has been canceled. You will retain VIP access until ${new Date(
-            data.vipExpirationDate
-          ).toLocaleDateString()}.`
-        );
-      } else {
-        alert("Failed to cancel subscription. Please try again.");
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/cancel-subscription`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ subscriptionId: userData.stripeSubscriptionId }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Error");
       }
+  
+      const result = await response.json();
     } catch (error) {
-      console.error("Error canceling subscription:", error);
-      alert("An error occurred while canceling your subscription.");
-    } finally {
-      setShowCancelModal(false);
+      alert("Erro ao cancelar: " + (error instanceof Error ? error.message : "Erro desconhecido"));
     }
   };
+
 
   if (loading) {
     return <Loading />;

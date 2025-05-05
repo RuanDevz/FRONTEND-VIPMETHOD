@@ -24,7 +24,7 @@ const Plans: React.FC = () => {
 
       try {
         const authResponse = await fetch(
-          `https://backend-vip.vercel.app/auth/dashboard`,
+          `${import.meta.env.VITE_BACKEND_URL}/auth/dashboard`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -38,7 +38,7 @@ const Plans: React.FC = () => {
         }
 
         const vipResponse = await fetch(
-          `https://backend-vip.vercel.app/auth/is-vip/${email}`,
+          `${import.meta.env.VITE_BACKEND_URL}/auth/is-vip/${email}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -58,35 +58,50 @@ const Plans: React.FC = () => {
     checkAuthAndVipStatus();
   }, [token, email]);
 
-  const handleAccessClick = async (planType: "monthly" | "annual"): Promise<void> => {
+  const handleAccessClick = async (plan: "monthly" | "annual") => {
+    const token = localStorage.getItem("Token");
     const email = localStorage.getItem("email");
+  
+    if (!token) {
+      navigate('/register')
 
-    if (!token || !email) {
-      navigate("/login");
       return;
     }
-
-    localStorage.setItem("selectedPlan", planType);
-
+  
+    if (!email) {
+      alert('/login');
+      return;
+    }
+  
     try {
-      const response = await fetch(
-        `https://backend-vip.vercel.app/pay/vip-payment`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, planType }),
-        }
-      );
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/dashboard`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const data = await response.json();
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error creating payment session.");
+
+      const paymentResponse = await fetch(`${import.meta.env.VITE_BACKEND_URL}/pay/vip-payment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, planType: plan }),
+      });
+      
+  
+      const paymentData = await paymentResponse.json();
+  
+      if (paymentData.url) {
+        window.location.href = paymentData.url;
+      } else {
+        alert(paymentData.error || "Erro ao redirecionar para o Stripe.");
       }
-
-      const { url } = await response.json();
-      window.open(url, "_blank");
     } catch (error) {
-      console.error("Error creating payment session:", error);
+      console.error("Erro ao iniciar o checkout:", error);
+      alert("Erro ao processar pagamento. Veja o console para detalhes.");
     }
   };
 
@@ -112,7 +127,7 @@ const Plans: React.FC = () => {
 
     try {
       const response = await fetch(
-        `https://backend-vip.vercel.app/update-vip-status`,
+        `${import.meta.env.VITE_BACKEND_URL}/update-vip-status`,
         {
           method: "POST",
           headers: {

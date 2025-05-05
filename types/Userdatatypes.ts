@@ -20,6 +20,7 @@ export interface Userdatatypes {
   recentlyViewed: string[];
   transactions: Transaction[];
   favorites: FavoriteContent[];
+  stripeSubscriptionId: string
   profileImage: any,
   username: string,
   createdAt: string

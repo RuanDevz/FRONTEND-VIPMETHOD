@@ -41,7 +41,7 @@ const FreeContentDetails = () => {
       try {
         setLoading(true);
         const response = await axios.get<ContentItem>(
-          `https://backend-vip.vercel.app/freecontent/${slug}`
+          `${import.meta.env.VITE_BACKEND_URL}/freecontent/${slug}`
         );
         setContent(response.data);
       } catch (error) {

@@ -32,7 +32,7 @@ const VIPContentDetails = () => {
         setLoading(true);
         const token = localStorage.getItem("Token");
         const response = await axios.get<ContentItem>(
-          `https://backend-vip.vercel.app/vipcontent/${slug}`,
+          `${import.meta.env.VITE_BACKEND_URL}/vipcontent/${slug}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

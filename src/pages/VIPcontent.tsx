@@ -54,7 +54,7 @@ const VIPContent: React.FC = () => {
     const fetchLinks = async () => {
       try {
         setLoading(true);
-        const response = await axios.get<LinkItem[]>(`https://backend-vip.vercel.app/vipcontent`);
+        const response = await axios.get<LinkItem[]>(`${import.meta.env.VITE_BACKEND_URL}/vipcontent`);
         setLoading(false);
         setLinks(response.data);
         setFilteredLinks(response.data);
