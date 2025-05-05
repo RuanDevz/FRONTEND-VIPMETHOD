@@ -5,13 +5,11 @@ import { Userdatatypes } from "../../../types/Userdatatypes";
 
 interface CancelSubscriptionModalProps {
   onCancel: () => void;
-  onConfirm: () => void;
   expirationDate: number;
 }
 
 const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = ({
   onCancel,
-  onConfirm,
   expirationDate,
 }) => {
   const { theme } = useTheme();

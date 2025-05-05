@@ -116,7 +116,6 @@ const YourAccount: React.FC = () => {
       {showCancelModal && (
         <CancelSubscriptionModal 
           onCancel={() => setShowCancelModal(false)}
-          onConfirm={cancelSubscription}
           expirationDate={userData.vipExpirationDate}
         />
       )}
