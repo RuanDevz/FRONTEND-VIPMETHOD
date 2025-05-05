@@ -19,10 +19,6 @@ const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = ({
 
 
   const cancelSubscription = async () => {
-    if (!userData?.stripeSubscriptionId) {
-      alert("You have already canceled your subscription");
-      return;
-    }
   
     const token = localStorage.getItem("Token");
   
