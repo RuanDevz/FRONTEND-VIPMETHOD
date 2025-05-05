@@ -30,6 +30,8 @@ const CancelSubscriptionModal: React.FC<CancelSubscriptionModalProps> = ({
           Authorization: `Bearer ${token}`,
         },
       });
+
+      console.log('Assinatura cancelada')
   
       if (!response.ok) {
         throw new Error("Error");
