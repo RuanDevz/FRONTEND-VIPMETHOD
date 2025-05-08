@@ -312,7 +312,7 @@ const VIPContent: React.FC = () => {
                       }`}
                     >
                       <a
-                        href={`#/vip/${link.slug}`}
+                        href={`/vip/${link.slug}`}
                         rel="noopener noreferrer"
                         className="flex items-center justify-between group"
                       >

@@ -48,7 +48,6 @@ const AccountOptionsSection: React.FC<AccountOptionsSectionProps> = ({ userData 
               <li>• Edit profile information</li>
               <li>• New content alerts</li>
               <li>• Change password functionality</li>
-              <li>• Automatic subscription cancellation</li>
               <li>• Logout process optimization</li>
               <li>• Data export functionality</li>
               <li>• Account deletion process</li>

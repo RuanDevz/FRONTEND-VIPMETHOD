@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import Header from "./components/Header";
 import HeaderLogged from "./components/HeaderLogged";
 import Footer from "./components/Footer";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Homepage from "./pages/Plans";
 import YourAccount from "./pages/Youraccount";
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
